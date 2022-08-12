@@ -6,7 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.BrainUtils;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 import java.util.List;
 

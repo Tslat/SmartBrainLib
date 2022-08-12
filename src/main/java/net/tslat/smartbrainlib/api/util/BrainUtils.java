@@ -1,4 +1,4 @@
-package net.tslat.smartbrainlib.api;
+package net.tslat.smartbrainlib.api.util;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
