@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
@@ -21,20 +22,26 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
 /**
- * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br/>
+ * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br>
  * Handles most of Piglin's memories at once.
  * @param <E> The entity
  */
 public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, MemoryModuleType.NEARBY_ADULT_PIGLINS, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, MemoryModuleType.NEAREST_REPELLENT);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_NEMESIS, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEARBY_ADULT_PIGLINS);
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.PIGLIN_SPECIFIC.get();
 	}
 
 	@Override

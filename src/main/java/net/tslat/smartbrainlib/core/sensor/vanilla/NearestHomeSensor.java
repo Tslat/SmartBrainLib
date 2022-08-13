@@ -9,12 +9,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.AcquirePoi;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 import java.util.Set;
@@ -22,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * A sensor that looks for the nearest home point of interest in the surrounding area.<br/>
+ * A sensor that looks for the nearest home point of interest in the surrounding area.<br>
  * Defaults:
  * <ul>
  *     <li>48 block radius</li>
@@ -55,8 +58,13 @@ public class NearestHomeSensor<E extends Mob> extends PredicateSensor<E, E> {
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEAREST_HOME.get();
 	}
 
 	@Override

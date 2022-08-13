@@ -19,7 +19,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private final Activity activity;
 	private int priorityStart = 0;
 	private final List<Behavior<? super T>> behaviours = new ObjectArrayList<>();
-	private Set<Pair<MemoryModuleType<?>, MemoryStatus>> activityStartMemoryConditions = new ObjectOpenHashSet<>();
+	private final Set<Pair<MemoryModuleType<?>, MemoryStatus>> activityStartMemoryConditions = new ObjectOpenHashSet<>();
 	@Nullable
 	private Set<MemoryModuleType<?>> wipedMemoriesOnFinish = null;
 

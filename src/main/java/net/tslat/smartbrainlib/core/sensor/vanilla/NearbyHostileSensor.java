@@ -6,15 +6,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
 /**
- * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by checking the existing visible entities for nearby hostiles. <br/>
+ * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by checking the existing visible entities for nearby hostiles. <br>
  * By default, this is used for villager hostile detection, but it can be configured at instantiation for any types.
  * @see net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor
  * @param <E> The entity
@@ -22,6 +24,7 @@ import java.util.function.BiPredicate;
 @SuppressWarnings("unchecked")
 public class NearbyHostileSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	private final Map<EntityType<?>, Float> hostileDistanceMap = new Object2FloatOpenHashMap<>(11);
+
 	public NearbyHostileSensor() {
 		setHostiles(
 				Pair.of(EntityType.DROWNED, 8f),
@@ -70,8 +73,8 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory(), MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEARBY_HOSTILE.get();
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 
 /**
- * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br/>
- * This is most useful for things like attacks that have associated animations, or action which require a charge up or prep time. <br/>
+ * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br>
+ * This is most useful for things like attacks that have associated animations, or action which require a charge up or prep time. <br>
  *
  * @param <E> The entity
  */

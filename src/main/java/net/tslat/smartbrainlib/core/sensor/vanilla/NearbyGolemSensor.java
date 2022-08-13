@@ -6,13 +6,16 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
 /**
- * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY} memory by checking if any of the detected nearby entities are {@link net.minecraft.world.entity.animal.IronGolem Iron Golems}. <br/>
+ * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY} memory by checking if any of the detected nearby entities are {@link net.minecraft.world.entity.animal.IronGolem Iron Golems}. <br>
  * Defaults:
  * <ul>
  *     <li>200-tick scan rate</li>
@@ -23,7 +26,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY, MemoryModuleType.NEAREST_LIVING_ENTITIES);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
 
 	private int timeToRemember = 600;
 
@@ -45,8 +48,13 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEARBY_GOLEM.get();
 	}
 
 	@Override

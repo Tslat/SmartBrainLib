@@ -15,8 +15,8 @@ import net.tslat.smartbrainlib.APIOnly;
 import java.util.List;
 
 /**
- * An extension of the base Behavior class that is used for tasks in the brain system. <br/>
- * This extension auto-handles some boilerplate and adds in some additional auto-handled functions: <br/>
+ * An extension of the base Behavior class that is used for tasks in the brain system. <br>
+ * This extension auto-handles some boilerplate and adds in some additional auto-handled functions: <br>
  * <ul>
  *     <li>Task start and stop callbacks for additional entity-interactions</li>
  *     <li>A functional implementation of a duration provider</li>
@@ -55,7 +55,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * A callback for when the task stops. Use this to trigger effects or handle things when the entity ends this task. <br/>
+	 * A callback for when the task stops. Use this to trigger effects or handle things when the entity ends this task. <br>
 	 * Note that the task stopping does not necessarily mean it was successful.
 	 *
 	 * @param callback The callback
@@ -109,7 +109,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Check any extra conditions required for this behaviour to start. <br/>
+	 * Check any extra conditions required for this behaviour to start. <br>
 	 * By this stage, memory conditions from {@link ExtendedBehaviour#getMemoryRequirements()} have already been checked.
 	 *
 	 * @param level The level the entity is in
@@ -122,7 +122,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * The root stop method for when this behaviour stops. This method should only be overridden by other abstract subclasses. <br/>
+	 * The root stop method for when this behaviour stops. This method should only be overridden by other abstract subclasses. <br>
 	 * If overriding, ensure you either call {@code super} or manually call {@code stop(E)} yourself.
 	 *
 	 * @param level The level the entity is in
@@ -137,8 +137,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br/>
-	 * This is called when the behaviour is to start. Set up any instance variables needed or perform the required actions.<br/>
+	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br>
+	 * This is called when the behaviour is to start. Set up any instance variables needed or perform the required actions.<br>
 	 * By this stage any memory requirements set in {@link ExtendedBehaviour#getMemoryRequirements()} are true, so any memories paired with {@link MemoryStatus#VALUE_PRESENT} are safe to retrieve.
 	 *
 	 * @param entity The entity being handled (I.E. the owner of the brain)
@@ -146,7 +146,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	protected void start(E entity) {}
 
 	/**
-	 * The root stop method for when this behaviour stops. This method should only be overridden by other abstract subclasses. <br/>
+	 * The root stop method for when this behaviour stops. This method should only be overridden by other abstract subclasses. <br>
 	 * If overriding, ensure you either call {@code super} or manually call {@code stop(E)} yourself.
 	 *
 	 * @param level The level the entity is in
@@ -163,7 +163,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br/>
+	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br>
 	 * This is called when the behaviour is to stop. Close off any instanced variables and such here, ready for the next start.
 	 *
 	 * @param entity The entity being handled (I.E. the owner of the brain)
@@ -171,7 +171,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	protected void stop(E entity) {}
 
 	/**
-	 * Check whether the behaviour can continue running. This is checked before {@link ExtendedBehaviour#tick(E)}. <br/>
+	 * Check whether the behaviour can continue running. This is checked before {@link ExtendedBehaviour#tick(E)}. <br>
 	 * Memories are not guaranteed to be in their required state here, so if you have required memories, it might be worth checking them here.
 	 *
 	 * @param level The level the entity is in
@@ -185,7 +185,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * The root tick method for when this behaviour ticks. This method should only be overridden by other abstract subclasses. <br/>
+	 * The root tick method for when this behaviour ticks. This method should only be overridden by other abstract subclasses. <br>
 	 * If overriding, ensure you either call {@code super} or manually call {@code tick(E)} yourself.
 	 *
 	 * @param level The level the entity is in
@@ -199,8 +199,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br/>
-	 * This is called when the behaviour is ticked. Be aware this is called <i>every tick</i>, so use tick reduction if needed to minimise performance impacts of goals. <br/>
+	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br>
+	 * This is called when the behaviour is ticked. Be aware this is called <i>every tick</i>, so use tick reduction if needed to minimise performance impacts of goals. <br>
 	 * NOTE: Memory requirements are <i>not</i> guaranteed at this stage. If you are retrieving brain memories, you'll need to check their presence before use.
 	 *
 	 * @param entity The entity being handled (I.E. the owner of the brain)
@@ -220,7 +220,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * The list of memory requirements this task has prior to starting. This outlines the approximate state the brain should be in, in order to allow this behaviour to run. <br/>
+	 * The list of memory requirements this task has prior to starting. This outlines the approximate state the brain should be in, in order to allow this behaviour to run. <br>
 	 * Bonus points if it's a statically-initialised list.
 	 *
 	 * @return The {@link List} of {@link MemoryModuleType Memories} and their associated required {@link MemoryStatus status}

@@ -45,7 +45,7 @@ public abstract class PredicateSensor<P, E extends LivingEntity> extends Extende
 	}
 
 	/**
-	 * Set the scan rate provider for this sensor. <br/>
+	 * Set the scan rate provider for this sensor. <br>
 	 * The provider will be sampled every time the sensor does a scan.
 	 *
 	 * @param intProvider The scan rate provider

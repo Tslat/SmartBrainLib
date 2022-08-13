@@ -5,11 +5,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.Comparator;
 import java.util.List;
@@ -38,8 +41,13 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.INCOMING_PROJECTILES.get();
 	}
 
 	@Override

@@ -4,14 +4,16 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
- * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory by checking the existing visible entities for nearby adults of the same entity type. <br/>
+ * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory by checking the existing visible entities for nearby adults of the same entity type. <br>
  * @see net.minecraft.world.entity.ai.sensing.AdultSensor
  * @param <E> The entity
  */
@@ -22,8 +24,8 @@ public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSens
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory(), MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEARBY_ADULT.get();
 	}
 
 	@Override

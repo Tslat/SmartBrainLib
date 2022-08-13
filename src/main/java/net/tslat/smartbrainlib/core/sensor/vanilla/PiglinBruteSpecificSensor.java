@@ -6,26 +6,33 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
 /**
- * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinBruteSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br/>
+ * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinBruteSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br>
  * Keeps track of nearby {@link Piglin piglins} and {@link MemoryModuleType#NEAREST_VISIBLE_NEMESIS nemesis}
  * @param <E> The entity
  */
 public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, MemoryModuleType.NEARBY_ADULT_PIGLINS);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEARBY_ADULT_PIGLINS);
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.PIGLIN_BRUTE_SPECIFIC.get();
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
- * An abstract class that is used to pick out certain entities from the existing {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory. <br/>
+ * An abstract class that is used to pick out certain entities from the existing {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory. <br>
  * This requires that another sensor has pre-filled that memory.
  * @see net.minecraft.world.entity.ai.sensing.NearestVisibleLivingEntitySensor
  * @param <P> The target entity
@@ -29,8 +29,8 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 	protected abstract BiPredicate<LivingEntity, E> predicate();
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory(), MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	public List<MemoryModuleType<?>> memoriesUsed() {
+		return List.of(getMemory());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 	}
 
 	/**
-	 * Find and return matches based on the provided list of entities. <br/>
+	 * Find and return matches based on the provided list of entities. <br>
 	 * The returned value is saved as the memory for this sensor.
 	 * @param entity The entity
 	 * @param matcher The nearby entities list retrieved from the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory

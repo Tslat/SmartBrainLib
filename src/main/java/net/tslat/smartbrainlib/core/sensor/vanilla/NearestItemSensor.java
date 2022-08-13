@@ -5,17 +5,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
 /**
- * A sensor that looks for the nearest item entity in the surrounding area.<br/>
+ * A sensor that looks for the nearest item entity in the surrounding area.<br>
  * Defaults:
  * <ul>
  *     <li>32x16x32 radius</li>
@@ -56,8 +59,13 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEAREST_ITEM.get();
 	}
 
 	@Override

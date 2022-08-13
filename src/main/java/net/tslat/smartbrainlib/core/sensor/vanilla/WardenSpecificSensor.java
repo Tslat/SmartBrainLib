@@ -11,12 +11,12 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import java.util.List;
 
 /**
- * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.WardenEntitySensor}. Not really useful, but included for completeness' sake and legibility. <br/>
+ * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.WardenEntitySensor}. Not really useful, but included for completeness' sake and legibility. <br>
  * Handle's the Warden's nearest attackable target, prioritising players.
  * @param <E> The entity
  */
 public class WardenSpecificSensor<E extends Warden> extends NearbyLivingEntitySensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_ATTACKABLE);
 
 	public WardenSpecificSensor() {
 		setRadius(24);
@@ -24,7 +24,7 @@ public class WardenSpecificSensor<E extends Warden> extends NearbyLivingEntitySe
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
 	}
 

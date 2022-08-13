@@ -5,16 +5,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * A sensor that looks for nearby living entities in the surrounding area, sorted by proximity to the brain owner.<br/>
+ * A sensor that looks for nearby living entities in the surrounding area, sorted by proximity to the brain owner.<br>
  * Defaults:
  * <ul>
  *     <li>16x16x16 radius</li>
@@ -54,8 +57,13 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
+	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.NEARBY_LIVING_ENTITY.get();
 	}
 
 	@Override

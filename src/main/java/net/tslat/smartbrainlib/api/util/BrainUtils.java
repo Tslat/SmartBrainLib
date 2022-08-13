@@ -111,7 +111,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Set an entity's memory value for the given memory type. <br/>
+	 * Set an entity's memory value for the given memory type. <br>
 	 * Use {@link BrainUtils#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
 	 *
 	 * @param entity The entity
@@ -124,7 +124,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Set a brain's memory value for the given memory type. <br/>
+	 * Set a brain's memory value for the given memory type. <br>
 	 * Use {@link BrainUtils#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
 	 *
 	 * @param brain The brain
@@ -137,7 +137,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Set a brain's memory value for the given memory type, with the memory expiring after a certain time.<br/>
+	 * Set a brain's memory value for the given memory type, with the memory expiring after a certain time.<br>
 	 * Use {@link BrainUtils#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
 	 * @param entity The entity
 	 * @param memoryType Memory type to set the value for
@@ -150,7 +150,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Set an entity's memory value for the given memory type, with the memory expiring after a certain time.<br/>
+	 * Set an entity's memory value for the given memory type, with the memory expiring after a certain time.<br>
 	 * Use {@link BrainUtils#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
 	 * @param brain The brain
 	 * @param memoryType Memory type to set the value for
@@ -228,7 +228,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Gets the last entity to attack the given entity, if present. <br/>
+	 * Gets the last entity to attack the given entity, if present. <br>
 	 * Requires that the entity uses the {@link MemoryModuleType#HURT_BY_ENTITY} memory type, and a sensor that sets it
 	 *
 	 * @param entity The entity
@@ -240,7 +240,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Sets the attack target of the given entity, and safely sets the non-brain attack target for compatibility purposes. <br/>
+	 * Sets the attack target of the given entity, and safely sets the non-brain attack target for compatibility purposes. <br>
 	 * Provided target can be null to effectively remove an entity's attack target.
 	 *
 	 * @param entity The entity

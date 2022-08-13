@@ -21,7 +21,7 @@ public final class SBLSensors {
 	public static final RegistryObject<SensorType<NearestItemSensor<?>>> NEAREST_ITEM = register("nearest_item", NearestItemSensor::new);
 	public static final RegistryObject<SensorType<NearbyLivingEntitySensor<?>>> NEARBY_LIVING_ENTITY = register("nearby_living_entity", NearbyLivingEntitySensor::new);
 	public static final RegistryObject<SensorType<NearbyPlayersSensor<?>>> NEARBY_PLAYERS = register("nearby_players", NearbyPlayersSensor::new);
-	public static final RegistryObject<SensorType<NearestHomeSensor<?>>> NEAREST_BED = register("nearby_players", NearestHomeSensor::new);
+	public static final RegistryObject<SensorType<NearestHomeSensor<?>>> NEAREST_HOME = register("nearest_home", NearestHomeSensor::new);
 	public static final RegistryObject<SensorType<HurtBySensor<?>>> HURT_BY = register("hurt_by", HurtBySensor::new);
 	public static final RegistryObject<SensorType<NearbyHostileSensor<?>>> NEARBY_HOSTILE = register("nearby_hostile", NearbyHostileSensor::new);
 	public static final RegistryObject<SensorType<NearbyBabySensor<?>>> NEARBY_BABY = register("nearby_baby", NearbyBabySensor::new);

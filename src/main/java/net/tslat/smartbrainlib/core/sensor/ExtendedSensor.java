@@ -7,12 +7,13 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 
 import java.util.List;
 import java.util.Set;
 
 /**
- * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br/>
+ * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br>
  * All custom sensor implementations should use this superclass.
  *
  * @param <E> The entity
@@ -26,7 +27,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	}
 
 	/**
-	 * Set the scan rate provider for this sensor. <br/>
+	 * Set the scan rate provider for this sensor. <br>
 	 * The provider will be sampled every time the sensor does a scan.
 	 *
 	 * @param intProvider The scan rate provider
@@ -57,15 +58,21 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	protected void doTick(ServerLevel level, E entity) {}
 
 	/**
-	 * The list of memory types this sensor utilises. This should contain <i>all</i> relevant memories, whether used for setting or reading. <br/>
+	 * The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain <br>
 	 * Bonus points if it's a statically-initialised list.
 	 *
-	 * @return The list of memory types used by this sensor
+	 * @return The list of memory types saves by this sensor
 	 */
-	protected abstract List<MemoryModuleType<?>> memoriesUsed();
+	public abstract List<MemoryModuleType<?>> memoriesUsed();
 
 	/**
-	 * Vanilla's implementation of the required memory collection. Functionally replaced by {@link ExtendedSensor#memoriesUsed()}. <br/>
+	 * The {@link SensorType} of the sensor, used for reverse lookups.
+	 * @return The sensor type
+	 */
+	public abstract SensorType<? extends ExtendedSensor<?>> type();
+
+	/**
+	 * Vanilla's implementation of the required memory collection. Functionally replaced by {@link ExtendedSensor#memoriesUsed()}. <br>
 	 * Left in place for compatibility reasons.
 	 *
 	 * @return A set view of the list returned by {@code memoriesUsed()}

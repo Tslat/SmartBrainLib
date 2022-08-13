@@ -4,9 +4,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.UUID;
 import java.util.function.BiPredicate;
 
 /**
- * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.FrogAttackablesSensor}. Not really useful, but included for completeness' sake and legibility. <br/>
+ * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.FrogAttackablesSensor}. Not really useful, but included for completeness' sake and legibility. <br>
  * Handles the Frog's tongue target.
  * @param <E> The entity
  */
@@ -25,8 +28,8 @@ public class FrogSpecificSensor<E extends LivingEntity> extends EntityFilteringS
 	}
 
 	@Override
-	protected List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory(), MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS, MemoryModuleType.HAS_HUNTING_COOLDOWN);
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.FROG_SPECIFIC.get();
 	}
 
 	@Override

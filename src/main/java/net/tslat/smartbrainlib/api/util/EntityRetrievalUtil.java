@@ -50,7 +50,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br/>
+	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param origin The entity to act as the central point of the search radius
@@ -65,7 +65,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br/>
+	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param origin The entity to act as the central point of the search radius
@@ -82,7 +82,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br/>
+	 * Retrieve the nearest entity with a certain radius of a given origin point that meet a given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param level The level to search in
@@ -225,7 +225,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve all nearby entities from the given area that meet the given criteria. <br/>
+	 * Retrieve all nearby entities from the given area that meet the given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param origin The entity to act as the central point of the search radius
@@ -239,7 +239,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve all nearby entities from the given area that meet the given criteria. <br/>
+	 * Retrieve all nearby entities from the given area that meet the given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param origin The entity to act as the central point of the search radius
@@ -255,7 +255,7 @@ public final class EntityRetrievalUtil {
 	}
 
 	/**
-	 * Retrieve all nearby entities from the given area that meet the given criteria. <br/>
+	 * Retrieve all nearby entities from the given area that meet the given criteria. <br>
 	 * Note that the output is blind-cast to your intended output type for ease of use. Make sure you check {@code instanceof} in your predicate if you intend to use any subclass of Entity
 	 *
 	 * @param level The level to search in
