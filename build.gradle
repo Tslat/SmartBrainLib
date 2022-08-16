@@ -80,6 +80,15 @@ minecraft {
     }
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {}

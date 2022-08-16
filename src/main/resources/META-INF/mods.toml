@@ -8,6 +8,7 @@ modId="smartbrainlib"
 version="${file.jarVersion}"
 displayName="SmartBrainLib"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
+logoFile="logo.png"
 authors="Tslat"
 displayTest="IGNORE_SERVER_VERSION"
 description='''
