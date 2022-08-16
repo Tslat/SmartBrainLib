@@ -9,8 +9,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.tslat.smartbrainlib.SmartBrainLib;
@@ -84,7 +84,15 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	private ImmutableList<MemoryModuleType<?>> createMemoryList(Map<Activity, BrainActivityGroup<T>> taskList, List<? extends ExtendedSensor<?>> sensors) {
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
-		taskList.forEach((key, value) -> value.getBehaviours().forEach(task -> memoryTypes.addAll(task.entryCondition.keySet())));
+		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> {
+			if (behaviour instanceof GateBehavior<?> gateBehavior) {
+				gateBehavior.behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
+			}
+			else {
+				memoryTypes.addAll(behaviour.entryCondition.keySet());
+			}
+		}));
+
 		sensors.forEach(sensor -> memoryTypes.addAll(sensor.memoriesUsed()));
 
 		return ImmutableList.copyOf(memoryTypes);
@@ -122,21 +130,6 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	private void sanityCheckBrainState(SmartBrain<T> brain) {
 		if (!FMLLoader.isProduction()) {
 			SmartBrainLib.LOGGER.log(Level.INFO, "SmartBrainLib checking brain state for " + this.owner.toString() + ". This will only occur while in debug mode");
-
-			for (MemoryModuleType<?> memory : brain.memories.keySet()) {
-				boolean foundSensor = false;
-
-				for (Sensor<?> sensor : brain.sensors.values()) {
-					if (sensor.requires().contains(memory)) {
-						foundSensor = true;
-
-						break;
-					}
-				}
-
-				if (!foundSensor)
-					SmartBrainLib.LOGGER.log(Level.WARN, "Memory module " + memory.toString() + " does not have an associated sensor. This memory will always be empty. (" + this.owner.toString() + ")");
-			}
 
 			for (Activity activity : brain.coreActivities) {
 				if (!brain.activityRequirements.containsKey(activity))
