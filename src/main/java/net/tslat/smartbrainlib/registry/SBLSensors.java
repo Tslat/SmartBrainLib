@@ -6,6 +6,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.*;
 
@@ -35,12 +36,13 @@ public final class SBLSensors {
 	public static final RegistryObject<SensorType<FrogSpecificSensor<?>>> FROG_SPECIFIC = register("frog_specific", FrogSpecificSensor::new);
 	public static final RegistryObject<SensorType<AxolotlSpecificSensor<?>>> AXOLOTL_SPECIFIC = register("axolotl_specific", AxolotlSpecificSensor::new);
 	public static final RegistryObject<SensorType<PiglinSpecificSensor<?>>> PIGLIN_SPECIFIC = register("piglin_specific", PiglinSpecificSensor::new);
-	public static final RegistryObject<SensorType<PiglinBruteSpecificSensor<?>>> PIGLIN_BRUTE_SPECIFIC = register("piglin_specific", PiglinBruteSpecificSensor::new);
+	public static final RegistryObject<SensorType<PiglinBruteSpecificSensor<?>>> PIGLIN_BRUTE_SPECIFIC = register("piglin_brute_specific", PiglinBruteSpecificSensor::new);
 	public static final RegistryObject<SensorType<HoglinSpecificSensor<?>>> HOGLIN_SPECIFIC = register("hoglin_specific", HoglinSpecificSensor::new);
 	public static final RegistryObject<SensorType<WardenSpecificSensor<?>>> WARDEN_SPECIFIC = register("warden_speciifc", WardenSpecificSensor::new);
 
 	// Custom
 	public static final RegistryObject<SensorType<IncomingProjectilesSensor<?>>> INCOMING_PROJECTILES = register("incoming_projectiles", IncomingProjectilesSensor::new);
+	public static final RegistryObject<SensorType<GenericAttackTargetSensor<?>>> GENERIC_ATTACK_TARGET = register("generic_attack_target", GenericAttackTargetSensor::new);
 
 	private static <T extends ExtendedSensor<?>> RegistryObject<SensorType<T>> register(String id, Supplier<T> sensor) {
 		return SENSORS.register(id, () -> new SensorType<>(sensor));
