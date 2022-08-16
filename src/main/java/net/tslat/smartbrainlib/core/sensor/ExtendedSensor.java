@@ -2,8 +2,6 @@ package net.tslat.smartbrainlib.core.sensor;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -11,6 +9,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br>
@@ -19,7 +18,7 @@ import java.util.Set;
  * @param <E> The entity
  */
 public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
-	protected IntProvider scanRate = ConstantInt.of(20);
+	protected Function<E, Integer> scanRate = entity -> 20;
 	private long nextTickTime = 0;
 
 	public ExtendedSensor() {
@@ -30,11 +29,11 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	 * Set the scan rate provider for this sensor. <br>
 	 * The provider will be sampled every time the sensor does a scan.
 	 *
-	 * @param intProvider The scan rate provider
+	 * @param function The function to provide the tick rate
 	 * @return this
 	 */
-	public ExtendedSensor<E> setScanRate(IntProvider intProvider) {
-		this.scanRate = intProvider;
+	public ExtendedSensor<E> setScanRate(Function<E, Integer> function) {
+		this.scanRate = function;
 
 		return this;
 	}
@@ -42,7 +41,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	@Override
 	public final void tick(ServerLevel level, E entity) {
 		if (nextTickTime < level.getGameTime()) {
-			nextTickTime = level.getGameTime() + scanRate.sample(RANDOM);
+			nextTickTime = level.getGameTime() + scanRate.apply(entity);
 
 			doTick(level, entity);
 		}

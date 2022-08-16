@@ -7,7 +7,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.npc.Villager;
@@ -34,7 +33,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	protected Vec3i radius = new Vec3i(8, 4, 8);
 
 	public SecondaryPoiSensor() {
-		setScanRate(ConstantInt.of(40));
+		setScanRate(entity -> 40);
 	}
 
 	/**

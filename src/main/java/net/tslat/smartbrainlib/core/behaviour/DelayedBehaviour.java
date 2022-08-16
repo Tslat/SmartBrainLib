@@ -13,15 +13,20 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	private final int delayTime;
 	protected long delayFinishedAt = 0;
 
-	public DelayedBehaviour(int ticks) {
-		this.delayTime = ticks;
+	public DelayedBehaviour(int delayTicks) {
+		this.delayTime = delayTicks;
 	}
 
 	@Override
 	protected final void start(ServerLevel level, E entity, long gameTime) {
 		super.start(level, entity, gameTime);
 
-		this.delayFinishedAt = gameTime + this.delayTime;
+		if (this.delayTime > 0) {
+			this.delayFinishedAt = gameTime + this.delayTime;
+		}
+		else {
+			doDelayedAction(entity);
+		}
 	}
 
 	@Override

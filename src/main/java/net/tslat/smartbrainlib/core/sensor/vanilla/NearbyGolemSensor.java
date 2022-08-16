@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib.core.sensor.vanilla;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -31,7 +30,7 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 	private int timeToRemember = 600;
 
 	public NearbyGolemSensor() {
-		setScanRate(ConstantInt.of(200));
+		setScanRate(entity -> 200);
 		setPredicate((target, entity) -> target.getType() == EntityType.IRON_GOLEM && target.isAlive());
 	}
 

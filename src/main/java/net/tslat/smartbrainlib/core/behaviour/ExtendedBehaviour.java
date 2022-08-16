@@ -3,8 +3,6 @@ package net.tslat.smartbrainlib.core.behaviour;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -13,6 +11,8 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.APIOnly;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * An extension of the base Behavior class that is used for tasks in the brain system. <br>
@@ -27,11 +27,12 @@ import java.util.List;
  * @param <E> Your entity
  */
 public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior<E> {
+	private Predicate<E> startCondition = entity -> true;
 	private Runnable taskStartCallback = () -> {};
 	private Runnable taskStopCallback = () -> {};
 
-	private IntProvider runtimeProvider = ConstantInt.of(60);
-	private IntProvider cooldownProvider = ConstantInt.of(0);
+	private Function<E, Integer> runtimeProvider = entity -> 60;
+	private Function<E, Integer> cooldownProvider = entity -> 0;
 	protected long cooldownFinishedAt = 0;
 
 	public ExtendedBehaviour() {
@@ -69,41 +70,46 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 
 	/**
 	 * Set the length that the task should run for, once activated. The value used is in <i>ticks</i>.
-	 * @see net.minecraft.util.valueproviders.UniformInt
-	 * @see ConstantInt
-	 *
-	 * @param timeProvider An {@link IntProvider} implementation.
+	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> runFor(IntProvider timeProvider) {
+	public final ExtendedBehaviour<E> runFor(Function<E, Integer> timeProvider) {
 		this.runtimeProvider = timeProvider;
 
 		return this;
 	}
 
 	/**
-	 * Set the length that the task should wait for between activations. This is the time between when the task stops, and it is able to start again. The value used is in <i>ticks</i>.
-	 * @see net.minecraft.util.valueproviders.UniformInt
-	 * @see ConstantInt
-	 *
-	 * @param timeProvider An {@link IntProvider} implementation.
+	 * Set the length that the task should wait for between activations. This is the time between when the task stops, and it is able to start again. The value used is in <i>ticks</i>
+	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> cooldownFor(IntProvider timeProvider) {
+	public final ExtendedBehaviour<E> cooldownFor(Function<E, Integer> timeProvider) {
 		this.cooldownProvider = timeProvider;
 
 		return this;
 	}
 
+	/**
+	 * Set an additional condition for the behaviour to be able to start. Useful for dynamically predicating behaviours.
+	 * @param predicate The predicate
+	 * @return this
+	 */
+	public final ExtendedBehaviour<E> startCondition(Predicate<E> predicate) {
+		this.startCondition = predicate;
+
+		return this;
+	}
+
 	@Override
-	public final boolean tryStart(ServerLevel level, E owner, long gameTime) {
-		if (cooldownFinishedAt > gameTime || !hasRequiredMemories(owner) || !checkExtraStartConditions(level, owner))
+	public final boolean tryStart(ServerLevel level, E entity, long gameTime) {
+		if (cooldownFinishedAt > gameTime || !hasRequiredMemories(entity) || !this.startCondition.test(entity) || !checkExtraStartConditions(level, entity))
 			return false;
 
 		this.status = Status.RUNNING;
-		this.endTimestamp = gameTime + this.runtimeProvider.sample(owner.getRandom());
+		this.endTimestamp = gameTime + this.runtimeProvider.apply(entity);
 
-		start(level, owner, gameTime);
+		start(level, entity, gameTime);
 
 		return true;
 	}
@@ -156,7 +162,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	@Override
 	@APIOnly
 	protected void stop(ServerLevel level, E entity, long gameTime) {
-		this.cooldownFinishedAt = gameTime + cooldownProvider.sample(entity.getRandom());
+		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
 
 		this.taskStopCallback.run();
 		stop(entity);

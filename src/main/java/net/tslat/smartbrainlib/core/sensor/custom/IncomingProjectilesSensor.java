@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib.core.sensor.custom;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
@@ -31,7 +30,7 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());
 
 	public IncomingProjectilesSensor() {
-		setScanRate(ConstantInt.of(3));
+		setScanRate(entity -> 3);
 		setPredicate((projectile, entity) -> {
 			if (projectile.isOnGround() || projectile.horizontalCollision || projectile.verticalCollision)
 				return false;

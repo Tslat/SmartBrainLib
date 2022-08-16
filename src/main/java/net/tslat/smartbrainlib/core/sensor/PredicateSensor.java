@@ -1,9 +1,9 @@
 package net.tslat.smartbrainlib.core.sensor;
 
-import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 /**
  * An abstract sensor class used for sensors that utilise some form of predication in their function.
@@ -48,11 +48,11 @@ public abstract class PredicateSensor<P, E extends LivingEntity> extends Extende
 	 * Set the scan rate provider for this sensor. <br>
 	 * The provider will be sampled every time the sensor does a scan.
 	 *
-	 * @param intProvider The scan rate provider
+	 * @param function The function to provide the tick rate
 	 * @return this
 	 */
 	@Override
-	public PredicateSensor<P, E> setScanRate(IntProvider intProvider) {
-		return (PredicateSensor<P, E>)super.setScanRate(intProvider);
+	public PredicateSensor<P, E> setScanRate(Function<E, Integer> function) {
+		return (PredicateSensor<P, E>)super.setScanRate(function);
 	}
 }

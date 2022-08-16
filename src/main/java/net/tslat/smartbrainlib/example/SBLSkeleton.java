@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.example;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -73,7 +72,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
-				new EscapeSun<>().cooldownFor(ConstantInt.of(20)),													// Escape the sun
+				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
 				new AvoidEntity<>().avoiding(entity -> entity instanceof Wolf),												// Run away from wolves
 				new LookAtTargetSink(40, 300), 														// Look at the look target
 				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
