@@ -62,7 +62,7 @@ public final class BrainUtils {
 	 */
 	@Nullable
 	public static <T> T getMemory(Brain<?> brain, MemoryModuleType<T> memory) {
-		return memoryOrDefault(brain, memory, null);
+		return memoryOrDefault(brain, memory, () -> null);
 	}
 
 	/**
@@ -108,6 +108,26 @@ public final class BrainUtils {
 	 */
 	public static boolean hasMemory(Brain<?> brain, MemoryModuleType<?> memory) {
 		return brain.hasMemoryValue(memory);
+	}
+
+	/**
+	 * Gets the ticks remaining until a memory expires.
+	 * @param entity The entity
+	 * @param memory Memory type to get the expiry time for
+	 * @return The ticks until the memory expires, or 0 if the memory doesn't exist or doesn't expire
+	 */
+	public static long getTimeUntilMemoryExpires(LivingEntity entity, MemoryModuleType<?> memory) {
+		return getTimeUntilMemoryExpires(entity.getBrain(), memory);
+	}
+
+	/**
+	 * Gets the ticks remaining until a memory expires.
+	 * @param brain The brain
+	 * @param memory Memory type to get the expiry time for
+	 * @return The ticks until the memory expires, or 0 if the memory doesn't exist or doesn't expire
+	 */
+	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
+		return brain.getTimeUntilExpiry(memory);
 	}
 
 	/**
