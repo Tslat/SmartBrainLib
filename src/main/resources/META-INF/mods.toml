@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
 [[mods]]
 modId="smartbrainlib"
-version="${file.jarVersion}"
+version="1.0"
 displayName="SmartBrainLib"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
 logoFile="logo.png"
