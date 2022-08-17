@@ -56,13 +56,3 @@ jar {
 loom {
 	accessWidenerPath = file("src/main/resources/smartbrainlib.accesswidener")
 }
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-	repositories {
-	}
-}
