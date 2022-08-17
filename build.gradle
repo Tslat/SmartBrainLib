@@ -6,7 +6,7 @@ plugins {
 
 version = mod_version
 group = 'net.tslat.smartbrainlib'
-archivesBaseName = 'SmartBrainLib'
+archivesBaseName = 'SmartBrainLib-Forge'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
