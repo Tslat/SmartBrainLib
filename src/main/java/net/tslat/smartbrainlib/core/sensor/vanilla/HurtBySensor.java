@@ -34,7 +34,7 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.HURT_BY.get();
+		return SBLSensors.HURT_BY;
 	}
 
 	@Override

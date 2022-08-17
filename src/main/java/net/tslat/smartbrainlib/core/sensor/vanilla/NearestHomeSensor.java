@@ -64,7 +64,7 @@ public class NearestHomeSensor<E extends Mob> extends PredicateSensor<E, E> {
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEAREST_HOME.get();
+		return SBLSensors.NEAREST_HOME;
 	}
 
 	@Override

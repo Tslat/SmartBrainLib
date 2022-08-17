@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "smartbrainlib",
+  "version": "${version}",
+
+  "name": "SmartBrainLib",
+  "description": "A library mod for smarter Brains and easier usage of the Brain system.",
+  "authors": [
+    "tslat",
+    "AzureDoomC"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/smartbrainlib/",
+    "sources": "https://github.com/Tslat/SmartBrainLib"
+  },
+
+  "license": "MPL 2.0",
+  "icon": "logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.tslat.smartbrainlib.SmartBrainLib"
+    ],
+    "client": [
+      "net.tslat.smartbrainlib.SmartBrainLibClient"
+    ]
+  },
+  "mixins": [
+    "smartbrainlib.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.6",
+    "fabric": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "accessWidener": "smartbrainlib.accesswidener"
+}

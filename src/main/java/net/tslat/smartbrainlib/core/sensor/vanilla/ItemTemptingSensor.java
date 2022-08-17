@@ -49,7 +49,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.ITEM_TEMPTING.get();
+		return SBLSensors.ITEM_TEMPTING;
 	}
 
 	/**

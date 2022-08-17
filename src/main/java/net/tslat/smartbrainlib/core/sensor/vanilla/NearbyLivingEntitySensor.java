@@ -66,7 +66,7 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_LIVING_ENTITY.get();
+		return SBLSensors.NEARBY_LIVING_ENTITY;
 	}
 
 	@Override

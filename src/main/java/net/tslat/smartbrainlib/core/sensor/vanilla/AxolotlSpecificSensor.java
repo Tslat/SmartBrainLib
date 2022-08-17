@@ -33,7 +33,7 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.AXOLOTL_SPECIFIC.get();
+		return SBLSensors.AXOLOTL_SPECIFIC;
 	}
 
 	@Override

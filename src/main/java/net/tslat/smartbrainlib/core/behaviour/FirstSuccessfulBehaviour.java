@@ -17,6 +17,7 @@ import java.util.Map;
  * Group behaviour that attempts to run all sub-behaviours in order, until the first successful one.
  * @param <E>
  */
+@SuppressWarnings("unchecked")
 public final class FirstSuccessfulBehaviour<E extends LivingEntity> extends GateBehavior<E> {
 	public FirstSuccessfulBehaviour(Behavior<? super E>... taskList) {
 		this(ImmutableMap.of(), taskList);

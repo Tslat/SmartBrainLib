@@ -25,7 +25,7 @@ public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSens
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_ADULT.get();
+		return SBLSensors.NEARBY_ADULT;
 	}
 
 	@Override

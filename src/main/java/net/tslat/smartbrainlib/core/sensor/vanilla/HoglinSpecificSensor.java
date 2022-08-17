@@ -31,7 +31,7 @@ public class HoglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.HOGLIN_SPECIFIC.get();
+		return SBLSensors.HOGLIN_SPECIFIC;
 	}
 
 	@Override

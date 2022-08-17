@@ -35,7 +35,7 @@ public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E>
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.IN_WATER.get();
+		return SBLSensors.IN_WATER;
 	}
 
 	@Override

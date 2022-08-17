@@ -38,6 +38,6 @@ public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFil
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.GENERIC_ATTACK_TARGET.get();
+		return SBLSensors.GENERIC_ATTACK_TARGET;
 	}
 }
