@@ -51,6 +51,7 @@ public abstract class PredicateSensor<P, E extends LivingEntity> extends Extende
 	 * @param function The function to provide the tick rate
 	 * @return this
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public PredicateSensor<P, E> setScanRate(Function<E, Integer> function) {
 		return (PredicateSensor<P, E>)super.setScanRate(function);

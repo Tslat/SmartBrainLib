@@ -6,6 +6,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Items;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
@@ -20,7 +21,7 @@ public class BowAttack<E extends LivingEntity & RangedAttackMob> extends Animata
 	@Override
 	protected void start(E entity) {
 		BehaviorUtils.lookAtEntity(entity, this.target);
-		entity.startUsingItem(ProjectileUtil.getWeaponHoldingHand(entity, item -> item instanceof BowItem));
+		entity.startUsingItem(ProjectileUtil.getWeaponHoldingHand(entity, Items.BOW));
 	}
 
 	@Override

@@ -65,7 +65,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.SECONDARY_POI.get();
+		return SBLSensors.SECONDARY_POI;
 	}
 
 	@Override

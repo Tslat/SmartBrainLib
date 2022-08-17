@@ -29,7 +29,7 @@ public class FrogSpecificSensor<E extends LivingEntity> extends EntityFilteringS
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.FROG_SPECIFIC.get();
+		return SBLSensors.FROG_SPECIFIC;
 	}
 
 	@Override

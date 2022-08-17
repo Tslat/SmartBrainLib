@@ -65,7 +65,7 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEAREST_ITEM.get();
+		return SBLSensors.NEAREST_ITEM;
 	}
 
 	@Override

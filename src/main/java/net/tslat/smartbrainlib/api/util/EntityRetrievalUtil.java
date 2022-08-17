@@ -1,18 +1,19 @@
 package net.tslat.smartbrainlib.api.util;
 
+import java.util.List;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.mutable.MutableDouble;
+import org.apache.commons.lang3.mutable.MutableObject;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.entity.PartEntity;
-import org.apache.commons.lang3.mutable.MutableDouble;
-import org.apache.commons.lang3.mutable.MutableObject;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * A helper class for retrieving entities from a given world.
@@ -272,11 +273,6 @@ public final class EntityRetrievalUtil {
 			if (typeSafePredicate.test(entity))
 				entities.add((T)entity);
 		});
-
-		for (PartEntity<?> part : level.getPartEntities()) {
-			if (part.getBoundingBox().intersects(area) && typeSafePredicate.test(part))
-				entities.add((T)part);
-		}
 
 		return entities;
 	}

@@ -53,7 +53,7 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_GOLEM.get();
+		return SBLSensors.NEARBY_GOLEM;
 	}
 
 	@Override

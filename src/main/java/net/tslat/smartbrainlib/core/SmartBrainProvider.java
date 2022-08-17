@@ -1,10 +1,18 @@
 package net.tslat.smartbrainlib.core;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.logging.log4j.Level;
+
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -12,15 +20,9 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import org.apache.logging.log4j.Level;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> extends Brain.Provider<T> {
 	private static final Map<EntityType<? extends LivingEntity>, ImmutableList<MemoryModuleType<?>>> BRAIN_MEMORY_CACHE = new Object2ObjectOpenHashMap<>();
@@ -36,18 +38,22 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	public SmartBrainProvider(T owner) {
 		this(owner, false);
 	}
+
 	/**
-	 * @param owner The owner of the brain
-	 * @param nonStaticMemories Whether the entity has different behaviours or sensors depending on the entity instance
+	 * @param owner             The owner of the brain
+	 * @param nonStaticMemories Whether the entity has different behaviours or
+	 *                          sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(T owner, boolean nonStaticMemories) {
 		this(owner, false, nonStaticMemories);
 	}
 
 	/**
-	 * @param owner The owner of the brain
-	 * @param saveMemories Whether memory states should be saved & loaded when the entity is saved or loaded.
-	 * @param nonStaticMemories Whether the entity has different behaviours or sensors depending on the entity instance
+	 * @param owner             The owner of the brain
+	 * @param saveMemories      Whether memory states should be saved & loaded when
+	 *                          the entity is saved or loaded.
+	 * @param nonStaticMemories Whether the entity has different behaviours or
+	 *                          sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(T owner, boolean saveMemories, boolean nonStaticMemories) {
 		super(List.of(), List.of());
@@ -57,6 +63,7 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 		this.nonStaticMemories = nonStaticMemories;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final Brain<T> makeBrain(Dynamic<?> codecLoader) {
 		List<ExtendedSensor<T>> sensors = owner.getSensors();
@@ -65,12 +72,11 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 
 		if (!this.nonStaticMemories && BRAIN_MEMORY_CACHE.containsKey(owner.getType())) {
 			memories = BRAIN_MEMORY_CACHE.get(owner.getType());
-		}
-		else {
+		} else {
 			memories = createMemoryList(taskList, sensors);
 
 			if (!this.nonStaticMemories)
-				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>)this.owner.getType(), memories);
+				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>) this.owner.getType(), memories);
 		}
 
 		SmartBrain<T> brain = new SmartBrain<>(memories, sensors, this.saveMemories);
@@ -81,14 +87,15 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 		return brain;
 	}
 
-	private ImmutableList<MemoryModuleType<?>> createMemoryList(Map<Activity, BrainActivityGroup<T>> taskList, List<? extends ExtendedSensor<?>> sensors) {
+	private ImmutableList<MemoryModuleType<?>> createMemoryList(Map<Activity, BrainActivityGroup<T>> taskList,
+			List<? extends ExtendedSensor<?>> sensors) {
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
 		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> {
 			if (behaviour instanceof GateBehavior<?> gateBehavior) {
-				gateBehavior.behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
-			}
-			else {
+				gateBehavior.behaviors.stream()
+						.forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
+			} else {
 				memoryTypes.addAll(behaviour.entryCondition.keySet());
 			}
 		}));
@@ -128,12 +135,15 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	}
 
 	private void sanityCheckBrainState(SmartBrain<T> brain) {
-		if (!FMLLoader.isProduction()) {
-			SmartBrainLib.LOGGER.log(Level.INFO, "SmartBrainLib checking brain state for " + this.owner.toString() + ". This will only occur while in debug mode");
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			SmartBrainLib.LOGGER.log(Level.INFO, "SmartBrainLib checking brain state for " + this.owner.toString()
+					+ ". This will only occur while in debug mode");
 
 			for (Activity activity : brain.coreActivities) {
 				if (!brain.activityRequirements.containsKey(activity))
-					SmartBrainLib.LOGGER.log(Level.WARN, "Entity " + this.owner.toString() + " has " + activity.toString() + " listed as a core activity, but no behaviours for this activity have been registered.");
+					SmartBrainLib.LOGGER.log(Level.WARN, "Entity " + this.owner.toString() + " has "
+							+ activity.toString()
+							+ " listed as a core activity, but no behaviours for this activity have been registered.");
 			}
 		}
 	}
@@ -145,7 +155,9 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 			brain.activityMemoriesToEraseWhenStopped.put(activity, activityGroup.getWipedMemoriesOnFinish());
 
 		for (Pair<Integer, ? extends Behavior<? super T>> pair : activityGroup.pairBehaviourPriorities()) {
-			brain.availableBehaviorsByPriority.computeIfAbsent(pair.getFirst(), priority -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(activity, activityKey -> new ObjectOpenHashSet<>()).add(pair.getSecond());
+			brain.availableBehaviorsByPriority
+					.computeIfAbsent(pair.getFirst(), priority -> new Object2ObjectOpenHashMap<>())
+					.computeIfAbsent(activity, activityKey -> new ObjectOpenHashSet<>()).add(pair.getSecond());
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.PIGLIN_SPECIFIC.get();
+		return SBLSensors.PIGLIN_SPECIFIC;
 	}
 
 	@Override

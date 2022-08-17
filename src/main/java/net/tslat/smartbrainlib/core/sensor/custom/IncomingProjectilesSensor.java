@@ -1,5 +1,8 @@
 package net.tslat.smartbrainlib.core.sensor.custom;
 
+import java.util.Comparator;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,21 +16,18 @@ import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import java.util.Comparator;
-import java.util.List;
-
 /**
- * Custom sensor that detects incoming projectiles.
- * Defaults:
+ * Custom sensor that detects incoming projectiles. Defaults:
  * <ul>
- *     <li>3-tick scan rate</li>
- *     <li>Only projectiles that are still in flight</li>
- *     <li>Only projectiles that will hit the entity before the next scan</li>
+ * <li>3-tick scan rate</li>
+ * <li>Only projectiles that are still in flight</li>
+ * <li>Only projectiles that will hit the entity before the next scan</li>
  * </ul>
+ * 
  * @param <E>
  */
 public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<Projectile, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES);
 
 	public IncomingProjectilesSensor() {
 		setScanRate(entity -> 3);
@@ -35,7 +35,8 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 			if (projectile.isOnGround() || projectile.horizontalCollision || projectile.verticalCollision)
 				return false;
 
-			return entity.getBoundingBox().clip(projectile.position(), projectile.position().add(projectile.getDeltaMovement().multiply(3, 3, 3))).isPresent();
+			return entity.getBoundingBox().clip(projectile.position(),
+					projectile.position().add(projectile.getDeltaMovement().multiply(3, 3, 3))).isPresent();
 		});
 	}
 
@@ -46,19 +47,20 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.INCOMING_PROJECTILES.get();
+		return SBLSensors.INCOMING_PROJECTILES;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof Projectile projectile && predicate().test(projectile, entity));
+	protected void doTick(ServerLevel level, LivingEntity entity) {
+		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7),
+				target -> target instanceof Projectile projectile && predicate().test(projectile, (E) entity));
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));
-			BrainUtils.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get(), projectiles);
-		}
-		else {
-			BrainUtils.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get());
+			BrainUtils.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES, projectiles);
+		} else {
+			BrainUtils.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES);
 		}
 	}
 }

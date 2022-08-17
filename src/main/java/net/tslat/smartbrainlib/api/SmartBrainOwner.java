@@ -123,6 +123,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * This method does not need to be overridden.
 	 * @param entity The brain owner
 	 */
+	@SuppressWarnings("unchecked")
 	@APIOnly
 	default void tickBrain(T entity) {
 		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.getLevel(), entity);

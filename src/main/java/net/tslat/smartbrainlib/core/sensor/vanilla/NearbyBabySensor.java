@@ -26,7 +26,7 @@ public class NearbyBabySensor<E extends LivingEntity> extends EntityFilteringSen
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_BABY.get();
+		return SBLSensors.NEARBY_BABY;
 	}
 
 	@Override
