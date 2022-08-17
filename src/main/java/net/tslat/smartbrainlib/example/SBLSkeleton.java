@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.example;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +11,6 @@ import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
@@ -37,12 +34,14 @@ import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyPlayersSensor;
 
+import java.util.List;
+
 /**
  * Example Skeleton using the SBL brain system
  */
 public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton> {
 	public SBLSkeleton(EntityType<? extends SBLSkeleton> entityType, Level level) {
-		super((EntityType<? extends SBLSkeleton>)entityType, level);
+		super(entityType, level);
 	}
 
 	// Let's make sure we're definitely not using any goals
@@ -69,7 +68,6 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 								(target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
 	}																	// Keep track of nearby entities the Skeleton is interested in
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
@@ -81,7 +79,6 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new MoveToWalkTarget<>());																					// Move to the current walk target
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BrainActivityGroup<SBLSkeleton> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
