@@ -7,9 +7,8 @@ issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 modId="smartbrainlib"
 version="1.0"
 displayName="SmartBrainLib"
-#updateJSONURL="https://change.me.example.invalid/updates.json"
 logoFile="logo.png"
-authors="Tslat"
+authors="Tslat, AzureDoom (Fabric Port)"
 displayTest="IGNORE_SERVER_VERSION"
 description='''
 A library mod for smarter Brains and easier usage of the Brain system.
