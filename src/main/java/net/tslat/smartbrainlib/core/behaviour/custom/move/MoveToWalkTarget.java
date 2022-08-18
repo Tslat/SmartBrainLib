@@ -43,9 +43,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 		Brain<?> brain = entity.getBrain();
 		WalkTarget walkTarget = BrainUtils.getMemory(brain, MemoryModuleType.WALK_TARGET);
 
-		boolean reachedTarget = hasReachedTarget(entity, walkTarget);
-
-		if (reachedTarget || attemptNewPath(entity, walkTarget, false)) {
+		if (!hasReachedTarget(entity, walkTarget) && attemptNewPath(entity, walkTarget, false)) {
 			this.lastTargetPos = walkTarget.getTarget().currentBlockPosition();
 
 			return true;
