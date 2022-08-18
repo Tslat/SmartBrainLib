@@ -75,7 +75,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 		if (this.target == null)
 			return;
 
-		if (!BehaviorUtils.canSee(entity, this.target) || !entity.isWithinMeleeAttackRange(this.target))
+		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
 			return;
 
 		entity.doHurtTarget(this.target);
