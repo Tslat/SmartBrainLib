@@ -8,7 +8,7 @@ version = mod_version
 group = 'net.tslat.smartbrainlib'
 archivesBaseName = 'SmartBrainLib-Forge'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: mappings_channel, version: mappings_version
