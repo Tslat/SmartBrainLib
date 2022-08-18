@@ -1,28 +1,31 @@
 package net.tslat.smartbrainlib.core;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Dynamic;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.GateBehavior;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.schedule.Activity;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.tslat.smartbrainlib.SmartBrainLib;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import org.apache.logging.log4j.Level;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> extends Brain.Provider<T> {
+import org.apache.logging.log4j.Level;
+
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Dynamic;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.schedule.Activity;
+import net.minecraft.entity.ai.brain.task.MultiTask;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.tslat.smartbrainlib.SmartBrainLib;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+
+public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> extends Brain.BrainCodec<T> {
 	private static final Map<EntityType<? extends LivingEntity>, ImmutableList<MemoryModuleType<?>>> BRAIN_MEMORY_CACHE = new Object2ObjectOpenHashMap<>();
 
 	private final T owner;
@@ -50,7 +53,7 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	 * @param nonStaticMemories Whether the entity has different behaviours or sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(T owner, boolean saveMemories, boolean nonStaticMemories) {
-		super(List.of(), List.of());
+		super(new ArrayList<>(), new ArrayList<>());
 
 		this.owner = owner;
 		this.saveMemories = saveMemories;
@@ -85,8 +88,8 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
 		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> {
-			if (behaviour instanceof GateBehavior<?> gateBehavior) {
-				gateBehavior.behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
+			if (behaviour instanceof MultiTask<?>) {
+				((MultiTask)behaviour).behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
 			}
 			else {
 				memoryTypes.addAll(behaviour.entryCondition.keySet());
@@ -144,7 +147,7 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 		if (activityGroup.getWipedMemoriesOnFinish() != null)
 			brain.activityMemoriesToEraseWhenStopped.put(activity, activityGroup.getWipedMemoriesOnFinish());
 
-		for (Pair<Integer, ? extends Behavior<? super T>> pair : activityGroup.pairBehaviourPriorities()) {
+		for (Pair<Integer, ? extends Task<? super T>> pair : activityGroup.pairBehaviourPriorities()) {
 			brain.availableBehaviorsByPriority.computeIfAbsent(pair.getFirst(), priority -> new Object2ObjectOpenHashMap<>()).computeIfAbsent(activity, activityKey -> new ObjectOpenHashSet<>()).add(pair.getSecond());
 		}
 	}

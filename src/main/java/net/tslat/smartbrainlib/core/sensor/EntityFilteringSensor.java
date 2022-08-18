@@ -1,14 +1,17 @@
 package net.tslat.smartbrainlib.core.sensor;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiPredicate;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * An abstract class that is used to pick out certain entities from the existing {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory. <br>
@@ -30,11 +33,11 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory());
+		return Lists.newArrayList(getMemory());
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
+	protected void doTick(ServerWorld level, E entity) {
 		BrainUtils.setMemory(entity, getMemory(), testForEntity(entity));
 	}
 

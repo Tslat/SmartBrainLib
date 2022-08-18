@@ -1,13 +1,16 @@
 package net.tslat.smartbrainlib.api.util;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-
-import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.Memory;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -267,8 +270,8 @@ public final class BrainUtils {
 	 * @param target The entity to target
 	 */
 	public static void setTargetOfEntity(LivingEntity entity, @Nullable LivingEntity target) {
-		if (entity instanceof Mob mob)
-			mob.setTarget(target);
+		if (entity instanceof MobEntity)
+			((MobEntity)entity).setTarget(target);
 
 		if (target == null) {
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);

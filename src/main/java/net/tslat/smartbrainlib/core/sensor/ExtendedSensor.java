@@ -1,15 +1,15 @@
 package net.tslat.smartbrainlib.core.sensor;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.Sensor;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br>
@@ -39,7 +39,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	}
 
 	@Override
-	public final void tick(ServerLevel level, E entity) {
+	public final void tick(ServerWorld level, E entity) {
 		if (nextTickTime < level.getGameTime()) {
 			nextTickTime = level.getGameTime() + scanRate.apply(entity);
 
@@ -54,7 +54,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	 * @param entity The owner of the brain
 	 */
 	@Override
-	protected void doTick(ServerLevel level, E entity) {}
+	protected void doTick(ServerWorld level, E entity) {}
 
 	/**
 	 * The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain <br>

@@ -1,25 +1,27 @@
 package net.tslat.smartbrainlib.core;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.ExpirableValue;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.Sensor;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import org.apache.commons.lang3.mutable.MutableObject;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.commons.lang3.mutable.MutableObject;
+
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.Memory;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.Sensor;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 
 public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Brain<E> {
 	private final List<MemoryModuleType<?>> expirableMemories = new ObjectArrayList<>();
@@ -33,7 +35,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	}
 
 	@Override
-	public void tick(ServerLevel level, E entity) {
+	public void tick(ServerWorld level, E entity) {
 		entity.level.getProfiler().push("SmartBrain");
 
 		super.tick(level, entity);
@@ -42,8 +44,8 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		entity.level.getProfiler().pop();
 
-		if (entity instanceof Mob mob)
-			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
+		if (entity instanceof MobEntity)
+			((MobEntity)entity).setAggressive(BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET));
 	}
 
 	@Override
@@ -52,13 +54,13 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		while (expirable.hasNext()) {
 			MemoryModuleType<?> memoryType = expirable.next();
-			Optional<? extends ExpirableValue<?>> memory = memories.get(memoryType);
+			Optional<? extends Memory<?>> memory = memories.get(memoryType);
 
-			if (memory.isEmpty()) {
+			if (!memory.isPresent()) {
 				expirable.remove();
 			}
 			else {
-				ExpirableValue<?> value = memory.get();
+				Memory<?> value = memory.get();
 
 				if (!value.canExpire()) {
 					expirable.remove();
@@ -77,11 +79,11 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	@SuppressWarnings("unchecked")
 	@Override
 	public <U> Optional<U> getMemory(MemoryModuleType<U> type) {
-		return (Optional<U>)this.memories.computeIfAbsent(type, key -> Optional.empty()).map(ExpirableValue::getValue);
+		return (Optional<U>)this.memories.computeIfAbsent(type, key -> Optional.empty()).map(Memory::getValue);
 	}
-
+	
 	@Override
-	public <U> void setMemoryInternal(MemoryModuleType<U> memoryType, Optional<? extends ExpirableValue<?>> memory) {
+	public <U> void setMemoryInternal(MemoryModuleType<U> memoryType, Optional<? extends Memory<?>> memory) {
 		if (memory.isPresent() && memory.get().getValue() instanceof Collection<?> collection && collection.isEmpty())
 			memory = Optional.empty();
 

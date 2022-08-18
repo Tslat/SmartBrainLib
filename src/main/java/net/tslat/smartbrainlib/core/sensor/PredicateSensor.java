@@ -1,9 +1,9 @@
 package net.tslat.smartbrainlib.core.sensor;
 
-import net.minecraft.world.entity.LivingEntity;
-
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+
+import net.minecraft.entity.LivingEntity;
 
 /**
  * An abstract sensor class used for sensors that utilise some form of predication in their function.

@@ -1,25 +1,27 @@
 package net.tslat.smartbrainlib.core;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.schedule.Activity;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
-
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.schedule.Activity;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
 
 @SuppressWarnings("unchecked")
 public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private final Activity activity;
 	private int priorityStart = 0;
-	private final List<Behavior<? super T>> behaviours = new ObjectArrayList<>();
-	private final Set<Pair<MemoryModuleType<?>, MemoryStatus>> activityStartMemoryConditions = new ObjectOpenHashSet<>();
+	private final List<Task<? super T>> behaviours = new ObjectArrayList<>();
+	private final Set<Pair<MemoryModuleType<?>, MemoryModuleStatus>> activityStartMemoryConditions = new ObjectOpenHashSet<>();
 	@Nullable
 	private Set<MemoryModuleType<?>> wipedMemoriesOnFinish = null;
 
@@ -33,13 +35,13 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this;
 	}
 
-	public BrainActivityGroup<T> behaviours(Behavior<? super T>... behaviours) {
+	public BrainActivityGroup<T> behaviours(Task<? super T>... behaviours) {
 		this.behaviours.addAll(new ObjectArrayList<>(behaviours));
 
 		return this;
 	}
 
-	public BrainActivityGroup<T> onlyStartWithMemoryStatus(MemoryModuleType<?> memory, MemoryStatus status) {
+	public BrainActivityGroup<T> onlyStartWithMemoryStatus(MemoryModuleType<?> memory, MemoryModuleStatus status) {
 		this.activityStartMemoryConditions.add(Pair.of(memory, status));
 
 		return this;
@@ -58,7 +60,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 
 	public BrainActivityGroup<T> requireAndWipeMemoriesOnUse(MemoryModuleType<?>... memories) {
 		for (MemoryModuleType<?> memory : memories) {
-			onlyStartWithMemoryStatus(memory, MemoryStatus.VALUE_PRESENT);
+			onlyStartWithMemoryStatus(memory, MemoryModuleStatus.VALUE_PRESENT);
 		}
 
 		wipeMemoriesWhenFinished(memories);
@@ -70,7 +72,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this.activity;
 	}
 
-	public List<Behavior<? super T>> getBehaviours() {
+	public List<Task<? super T>> getBehaviours() {
 		return this.behaviours;
 	}
 
@@ -78,7 +80,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this.priorityStart;
 	}
 
-	public Set<Pair<MemoryModuleType<?>, MemoryStatus>> getActivityStartMemoryConditions() {
+	public Set<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getActivityStartMemoryConditions() {
 		return this.activityStartMemoryConditions;
 	}
 
@@ -87,11 +89,11 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this.wipedMemoriesOnFinish;
 	}
 
-	public List<Pair<Integer, Behavior<? super T>>> pairBehaviourPriorities() {
+	public List<Pair<Integer, Task<? super T>>> pairBehaviourPriorities() {
 		int priority = this.priorityStart;
-		List<Pair<Integer, Behavior<? super T>>> pairedBehaviours = new ObjectArrayList<>(this.behaviours.size());
+		List<Pair<Integer, Task<? super T>>> pairedBehaviours = new ObjectArrayList<>(this.behaviours.size());
 
-		for (Behavior<? super T> behaviour : this.behaviours) {
+		for (Task<? super T> behaviour : this.behaviours) {
 			pairedBehaviours.add(Pair.of(priority++, behaviour));
 		}
 
@@ -102,15 +104,15 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return new BrainActivityGroup<>(Activity.REST);
 	}
 
-	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> coreTasks(Behavior<? super T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> coreTasks(Task<? super T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.CORE).priority(0).behaviours(behaviours);
 	}
 
-	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleTasks(Behavior<? super T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleTasks(Task<? super T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.IDLE).priority(10).behaviours(behaviours);
 	}
 
-	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> fightTasks(Behavior<? super T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> fightTasks(Task<? super T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.FIGHT).priority(10).behaviours(behaviours).requireAndWipeMemoriesOnUse(MemoryModuleType.ATTACK_TARGET);
 	}
 }

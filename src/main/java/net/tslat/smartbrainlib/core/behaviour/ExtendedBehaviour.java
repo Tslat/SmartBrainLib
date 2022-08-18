@@ -1,18 +1,19 @@
 package net.tslat.smartbrainlib.core.behaviour;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.APIOnly;
-
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.APIOnly;
 
 /**
  * An extension of the base Behavior class that is used for tasks in the brain system. <br>
@@ -26,7 +27,7 @@ import java.util.function.Predicate;
  *
  * @param <E> Your entity
  */
-public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior<E> {
+public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> {
 	private Predicate<E> startCondition = entity -> true;
 	private Runnable taskStartCallback = () -> {};
 	private Runnable taskStopCallback = () -> {};
@@ -38,7 +39,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	public ExtendedBehaviour() {
 		super(new Object2ObjectOpenHashMap<>());
 
-		for (Pair<MemoryModuleType<?>, MemoryStatus> memoryReq : getMemoryRequirements()) {
+		for (Pair<MemoryModuleType<?>, MemoryModuleStatus> memoryReq : getMemoryRequirements()) {
 			this.entryCondition.put(memoryReq.getFirst(), memoryReq.getSecond());
 		}
 	}
@@ -102,7 +103,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	@Override
-	public final boolean tryStart(ServerLevel level, E entity, long gameTime) {
+	public final boolean tryStart(ServerWorld level, E entity, long gameTime) {
 		if (cooldownFinishedAt > gameTime || !hasRequiredMemories(entity) || !this.startCondition.test(entity) || !checkExtraStartConditions(level, entity))
 			return false;
 
@@ -123,7 +124,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @return Whether the conditions have been met to start the behaviour
 	 */
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		return true;
 	}
 
@@ -137,7 +138,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 */
 	@Override
 	@APIOnly
-	protected void start(ServerLevel level, E entity, long gameTime) {
+	protected void start(ServerWorld level, E entity, long gameTime) {
 		this.taskStartCallback.run();
 		start(entity);
 	}
@@ -161,7 +162,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 */
 	@Override
 	@APIOnly
-	protected void stop(ServerLevel level, E entity, long gameTime) {
+	protected void stop(ServerWorld level, E entity, long gameTime) {
 		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
 
 		this.taskStopCallback.run();
@@ -186,7 +187,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @return Whether the behaviour should continue ticking
 	 */
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return false;
 	}
 
@@ -200,7 +201,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 */
 	@Override
 	@APIOnly
-	protected void tick(ServerLevel level, E entity, long gameTime) {
+	protected void tick(ServerWorld level, E entity, long gameTime) {
 		tick(entity);
 	}
 
@@ -217,19 +218,19 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	public final boolean hasRequiredMemories(E entity) {
 		Brain<?> brain = entity.getBrain();
 
-		for (Pair<MemoryModuleType<?>, MemoryStatus> memoryPair : getMemoryRequirements()) {
+		for (Pair<MemoryModuleType<?>, MemoryModuleStatus> memoryPair : getMemoryRequirements()) {
 			if (!brain.checkMemory(memoryPair.getFirst(), memoryPair.getSecond()))
 				return false;
 		}
 
 		return true;
 	}
-
+	
 	/**
 	 * The list of memory requirements this task has prior to starting. This outlines the approximate state the brain should be in, in order to allow this behaviour to run. <br>
 	 * Bonus points if it's a statically-initialised list.
 	 *
 	 * @return The {@link List} of {@link MemoryModuleType Memories} and their associated required {@link MemoryStatus status}
 	 */
-	protected abstract List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements();
+	protected abstract List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements();
 }

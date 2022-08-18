@@ -1,20 +1,20 @@
 package net.tslat.smartbrainlib.api;
 
-import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.schedule.Activity;
-import net.tslat.smartbrainlib.APIOnly;
-import net.tslat.smartbrainlib.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.schedule.Activity;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.APIOnly;
+import net.tslat.smartbrainlib.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 
 /**
  * Implement this class for any entity you want to use the SmartBrain system. <br>
@@ -106,7 +106,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * @return An <b>ordered</b> {@link List} of {@link Activity} categories
 	 */
 	default List<Activity> getActivityPriorities() {
-		return ObjectArrayList.of(Activity.FIGHT, Activity.IDLE);
+		return Lists.newArrayList(Activity.FIGHT, Activity.IDLE);
 	}
 
 	/**
@@ -125,6 +125,6 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 */
 	@APIOnly
 	default void tickBrain(T entity) {
-		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.getLevel(), entity);
+		((Brain<T>)entity.getBrain()).tick((ServerWorld)entity.level, entity);
 	}
 }

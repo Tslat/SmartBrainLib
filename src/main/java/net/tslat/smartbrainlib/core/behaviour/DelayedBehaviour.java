@@ -1,7 +1,7 @@
 package net.tslat.smartbrainlib.core.behaviour;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br>
@@ -18,7 +18,7 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	}
 
 	@Override
-	protected final void start(ServerLevel level, E entity, long gameTime) {
+	protected final void start(ServerWorld level, E entity, long gameTime) {
 		super.start(level, entity, gameTime);
 
 		if (this.delayTime > 0) {
@@ -30,19 +30,19 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	}
 
 	@Override
-	protected final void stop(ServerLevel level, E entity, long gameTime) {
+	protected final void stop(ServerWorld level, E entity, long gameTime) {
 		super.stop(level, entity, gameTime);
 
 		this.delayFinishedAt = 0;
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return this.delayFinishedAt >= gameTime;
 	}
 
 	@Override
-	protected final void tick(ServerLevel level, E entity, long gameTime) {
+	protected final void tick(ServerWorld level, E entity, long gameTime) {
 		super.tick(level, entity, gameTime);
 
 		if (this.delayFinishedAt <= gameTime)

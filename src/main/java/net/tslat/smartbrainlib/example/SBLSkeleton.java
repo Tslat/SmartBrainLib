@@ -1,20 +1,23 @@
 package net.tslat.smartbrainlib.example;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
+import net.minecraft.entity.passive.TurtleEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BowItem;
+import net.minecraft.world.World;
 import net.minecraft.world.entity.ai.behavior.DoNothing;
 import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.behavior.RandomStroll;
 import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.core.SmartBrainProvider;
@@ -34,13 +37,11 @@ import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyPlayersSensor;
 
-import java.util.List;
-
 /**
  * Example Skeleton using the SBL brain system
  */
-public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton> {
-	public SBLSkeleton(EntityType<? extends SBLSkeleton> entityType, Level level) {
+public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSkeleton> {
+	public SBLSkeleton(EntityType<? extends SBLSkeleton> entityType, World level) {
 		super(entityType, level);
 	}
 
@@ -62,10 +63,10 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new NearbyPlayersSensor<>(), 							// Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>()
 						.setPredicate((target, entity) ->
-								target instanceof Player ||
-								target instanceof IronGolem ||
-								target instanceof Wolf ||
-								(target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
+								target instanceof PlayerEntity ||
+								target instanceof IronGolemEntity ||
+								target instanceof WolfEntity ||
+								(target instanceof TurtleEntity turtle && turtle.isBaby() && !turtle.isInWater())));
 	}																	// Keep track of nearby entities the Skeleton is interested in
 
 	@Override
@@ -73,7 +74,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 		return BrainActivityGroup.coreTasks(
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
 				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
-				new AvoidEntity<>().avoiding(entity -> entity instanceof Wolf),												// Run away from wolves
+				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity),												// Run away from wolves
 				new LookAtTargetSink(40, 300), 														// Look at the look target
 				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
 				new MoveToWalkTarget<>());																					// Move to the current walk target
