@@ -8,6 +8,7 @@ import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
+import net.tslat.smartbrainlib.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.*;
 
 import java.util.function.Supplier;
@@ -43,6 +44,7 @@ public final class SBLSensors {
 	// Custom
 	public static final RegistryObject<SensorType<IncomingProjectilesSensor<?>>> INCOMING_PROJECTILES = register("incoming_projectiles", IncomingProjectilesSensor::new);
 	public static final RegistryObject<SensorType<GenericAttackTargetSensor<?>>> GENERIC_ATTACK_TARGET = register("generic_attack_target", GenericAttackTargetSensor::new);
+	public static final RegistryObject<SensorType<UnreachableTargetSensor<?>>> UNREACHABLE_TARGET = register("unreachable_target", UnreachableTargetSensor::new);
 
 	private static <T extends ExtendedSensor<?>> RegistryObject<SensorType<T>> register(String id, Supplier<T> sensor) {
 		return SENSORS.register(id, () -> new SensorType<>(sensor));
