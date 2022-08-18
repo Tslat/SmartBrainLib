@@ -36,6 +36,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
 
 	private LivingEntity toTarget = null;
+	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
@@ -48,6 +49,17 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 		return this;
 	}
 
+	/**
+	 * Set the memory type that is checked first to target an entity.
+	 * Useful for switching to player-only targeting
+	 * @return this
+	 */
+	public TargetOrRetaliate<E> useMemory(MemoryModuleType<? extends LivingEntity> memory) {
+		this.priorityTargetMemory = memory;
+
+		return this;
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
@@ -56,7 +68,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel pLevel, E owner) {
 		Brain<?> brain = owner.getBrain();
-		this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_ATTACKABLE);
+		this.toTarget = BrainUtils.getMemory(brain, this.priorityTargetMemory);
 
 		if (this.toTarget == null)
 			this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
@@ -75,10 +87,12 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected void start(ServerLevel pLevel, E owner, long gameTime) {
-		BrainUtils.setTargetOfEntity(owner, this.toTarget);
-		BrainUtils.clearMemory(owner, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+	protected void start(E entity) {
+		BrainUtils.setTargetOfEntity(entity, this.toTarget);
+		BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		this.toTarget = null;
+
+		doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
 	}
 }
