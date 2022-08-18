@@ -17,6 +17,7 @@ public final class SBLMemoryTypes {
 	public static final DeferredRegister<MemoryModuleType<?>> MEMORY_TYPES = DeferredRegister.create(ForgeRegistries.Keys.MEMORY_MODULE_TYPES, SmartBrainLib.MOD_ID);
 
 	public static final RegistryObject<MemoryModuleType<List<Projectile>>> INCOMING_PROJECTILES = register("incoming_projectiles");
+	public static final RegistryObject<MemoryModuleType<Boolean>> TARGET_UNREACHABLE = register("target_unreachable");
 
 	private static <T> RegistryObject<MemoryModuleType<T>> register(String id) {
 		return MEMORY_TYPES.register(id, () -> new MemoryModuleType<T>(Optional.empty()));
