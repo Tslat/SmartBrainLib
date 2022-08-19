@@ -67,7 +67,7 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 		else if (this.lastUnpathableTime < unpathableTime) {
 			this.lastUnpathableTime = unpathableTime;
 
-			BrainUtils.setMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get(), target.getY() > entity.getEyeY());
+			BrainUtils.setForgettableMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get(), target.getY() > entity.getEyeY(), this.scanRate.apply(entity) + 10);
 		}
 	}
 
