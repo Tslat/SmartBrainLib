@@ -3,7 +3,9 @@ package net.tslat.smartbrainlib.core.behaviour.custom.attack;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
@@ -73,9 +75,20 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+		if (!this.requireTarget)
+			return true;
+
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return !requireTarget || BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET);
+		return this.target != null;
+	}
+
+	@Override
+	protected void start(E entity) {
+		entity.swing(InteractionHand.MAIN_HAND);
+
+		if (this.requireTarget)
+			BehaviorUtils.lookAtEntity(entity, this.target);
 	}
 
 	@Override
