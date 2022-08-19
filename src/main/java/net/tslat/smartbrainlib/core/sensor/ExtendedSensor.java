@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.core.sensor;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -19,6 +20,7 @@ import net.minecraft.world.server.ServerWorld;
  */
 public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	protected Function<E, Integer> scanRate = entity -> 20;
+	protected Consumer<E> scanCallback = entity -> {};
 	private long nextTickTime = 0;
 
 	public ExtendedSensor() {
@@ -38,12 +40,24 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 		return this;
 	}
 
+	/**
+	 * Set a callback function for when the sensor completes a scan. <br>
+	 * @param callback
+	 * @return
+	 */
+	public ExtendedSensor<E> afterScanning(Consumer<E> callback) {
+		this.scanCallback = callback;
+
+		return this;
+	}
+
 	@Override
 	public final void tick(ServerWorld level, E entity) {
 		if (nextTickTime < level.getGameTime()) {
 			nextTickTime = level.getGameTime() + scanRate.apply(entity);
 
 			doTick(level, entity);
+			this.scanCallback.accept(entity);
 		}
 	}
 
