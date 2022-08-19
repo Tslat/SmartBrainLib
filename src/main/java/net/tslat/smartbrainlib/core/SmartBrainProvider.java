@@ -84,18 +84,20 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	private ImmutableList<MemoryModuleType<?>> createMemoryList(Map<Activity, BrainActivityGroup<T>> taskList, List<? extends ExtendedSensor<?>> sensors) {
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
-		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> {
-			if (behaviour instanceof GateBehavior<?> gateBehavior) {
-				gateBehavior.behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
-			}
-			else {
-				memoryTypes.addAll(behaviour.entryCondition.keySet());
-			}
-		}));
+		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> collectMemoriesFromTask(memoryTypes, behaviour)));
 
 		sensors.forEach(sensor -> memoryTypes.addAll(sensor.memoriesUsed()));
 
 		return ImmutableList.copyOf(memoryTypes);
+	}
+
+	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Behavior<?> behaviour) {
+		if (behaviour instanceof GateBehavior<?> gateBehavior) {
+			gateBehavior.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
+		}
+		else {
+			memories.addAll(behaviour.entryCondition.keySet());
+		}
 	}
 
 	private Map<Activity, BrainActivityGroup<T>> compileTasks() {
