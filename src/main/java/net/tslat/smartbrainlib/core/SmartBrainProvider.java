@@ -101,6 +101,15 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 		return ImmutableList.copyOf(memoryTypes);
 	}
 
+	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Task<?> behaviour) {
+		if (behaviour instanceof MultiTask<?>) {
+			((MultiTask)behaviour).behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, (Task<?>) subBehaviour));
+		}
+		else {
+			memories.addAll(behaviour.entryCondition.keySet());
+		}
+	}
+
 	private Map<Activity, BrainActivityGroup<T>> compileTasks() {
 		Map<Activity, BrainActivityGroup<T>> map = new Object2ObjectOpenHashMap<>();
 		BrainActivityGroup<T> activityGroup;
