@@ -58,7 +58,7 @@ public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return BrainUtils.canSee(entity, this.target) && BrainUtil.isWithinMeleeAttackRange(entity, this.target);
+		return entity.getSensing().canSee(this.target) && BrainUtil.isWithinMeleeAttackRange(entity, this.target);
 	}
 
 	@Override
