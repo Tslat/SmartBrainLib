@@ -21,6 +21,10 @@ public final class OneRandomBehaviour<E extends LivingEntity> extends FirstShuff
 		this(behavioursToWeightedList(behaviours));
 	}
 
+	public OneRandomBehaviour(Pair<Task<? super E>, Integer>... behaviours) {
+		this(ObjectArrayList.wrap(behaviours));
+	}
+
 	public OneRandomBehaviour(List<Pair<Task<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
