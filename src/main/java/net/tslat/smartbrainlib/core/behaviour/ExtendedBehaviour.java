@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.core.behaviour;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,8 +30,8 @@ import net.tslat.smartbrainlib.APIOnly;
  */
 public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> {
 	private Predicate<E> startCondition = entity -> true;
-	private Runnable taskStartCallback = () -> {};
-	private Runnable taskStopCallback = () -> {};
+	private Consumer<E> taskStartCallback = entity -> {};
+	private Consumer<E> taskStopCallback = entity -> {};
 
 	private Function<E, Integer> runtimeProvider = entity -> 60;
 	private Function<E, Integer> cooldownProvider = entity -> 0;
@@ -50,7 +51,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * @param callback The callback
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> whenStarting(Runnable callback) {
+	public final ExtendedBehaviour<E> whenStarting(Consumer<E> callback) {
 		this.taskStartCallback = callback;
 
 		return this;
@@ -63,7 +64,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * @param callback The callback
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> whenStopping(Runnable callback) {
+	public final ExtendedBehaviour<E> whenStopping(Consumer<E> callback) {
 		this.taskStopCallback = callback;
 
 		return this;
@@ -139,7 +140,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	@Override
 	@APIOnly
 	protected void start(ServerWorld level, E entity, long gameTime) {
-		this.taskStartCallback.run();
+		this.taskStartCallback.accept(entity);
 		start(entity);
 	}
 
@@ -165,7 +166,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	protected void stop(ServerWorld level, E entity, long gameTime) {
 		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
 
-		this.taskStopCallback.run();
+		this.taskStopCallback.accept(entity);
 		stop(entity);
 	}
 
