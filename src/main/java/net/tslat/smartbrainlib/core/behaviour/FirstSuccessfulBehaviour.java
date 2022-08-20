@@ -22,6 +22,14 @@ public final class FirstSuccessfulBehaviour<E extends LivingEntity> extends Gate
 		this(ImmutableMap.of(), taskList);
 	}
 
+	public FirstSuccessfulBehaviour(Pair<Behavior<? super E>, Integer>... behaviours) {
+		this(ObjectArrayList.of(behaviours));
+	}
+
+	public FirstSuccessfulBehaviour(List<Pair<Behavior<? super E>, Integer>> behaviours) {
+		this(ImmutableMap.of(), behaviours);
+	}
+
 	public FirstSuccessfulBehaviour(Map<MemoryModuleType<?>, MemoryStatus> memoryRequirements, Behavior<? super E>... taskList) {
 		this(memoryRequirements, behavioursToWeightedList(taskList));
 	}
