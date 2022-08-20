@@ -20,6 +20,10 @@ public final class OneRandomBehaviour<E extends LivingEntity> extends RunOne<E> 
 		this(behavioursToWeightedList(behaviours));
 	}
 
+	public OneRandomBehaviour(Pair<Behavior<? super E>, Integer>... behaviours) {
+		this(ObjectArrayList.of(behaviours));
+	}
+
 	public OneRandomBehaviour(List<Pair<Behavior<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
