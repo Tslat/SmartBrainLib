@@ -3,6 +3,8 @@ package net.tslat.smartbrainlib.core.behaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.function.Consumer;
+
 /**
  * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br>
  * This is most useful for things like attacks that have associated animations, or action which require a charge up or prep time. <br>
@@ -12,9 +14,21 @@ import net.minecraft.world.entity.LivingEntity;
 public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private final int delayTime;
 	protected long delayFinishedAt = 0;
+	protected Consumer<E> delayedCallback = entity -> {};
 
 	public DelayedBehaviour(int delayTicks) {
 		this.delayTime = delayTicks;
+	}
+
+	/**
+	 * A callback for when the delayed action is called.
+	 * @param callback The callback
+	 * @return this
+	 */
+	public final DelayedBehaviour<E> whenActivating(Consumer<E> callback) {
+		this.delayedCallback = callback;
+
+		return this;
 	}
 
 	@Override
@@ -45,8 +59,10 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	protected final void tick(ServerLevel level, E entity, long gameTime) {
 		super.tick(level, entity, gameTime);
 
-		if (this.delayFinishedAt <= gameTime)
+		if (this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
+			this.delayedCallback.accept(entity);
+		}
 	}
 
 	/**
