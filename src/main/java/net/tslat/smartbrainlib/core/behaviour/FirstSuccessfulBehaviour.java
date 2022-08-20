@@ -23,6 +23,14 @@ public final class FirstSuccessfulBehaviour<E extends LivingEntity> extends Mult
 		this(ImmutableMap.of(), taskList);
 	}
 
+	public FirstSuccessfulBehaviour(Pair<Task<? super E>, Integer>... behaviours) {
+		this(ObjectArrayList.wrap(behaviours));
+	}
+
+	public FirstSuccessfulBehaviour(List<Pair<Task<? super E>, Integer>> behaviours) {
+		this(ImmutableMap.of(), behaviours);
+	}
+
 	public FirstSuccessfulBehaviour(Map<MemoryModuleType<?>, MemoryModuleStatus> memoryRequirements, Task<? super E>... taskList) {
 		this(memoryRequirements, behavioursToWeightedList(taskList));
 	}
