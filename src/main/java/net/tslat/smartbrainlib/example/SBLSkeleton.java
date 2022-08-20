@@ -97,7 +97,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new StopAttackingIfTargetInvalid<>(target -> !target.isAlive() || target instanceof Player && ((Player)target).isCreative()), 	 // Invalidate the attack target if it's no longer applicable
 				new FirstSuccessfulBehaviour<>( 																							  	 // Run only one of the below behaviours, trying each one in order
 						new BowAttack<>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
-						new AnimatableMeleeAttack<>(0).whenStarting(() -> setAggressive(true)).whenStarting(() -> setAggressive(false)))// Melee attack
+						new AnimatableMeleeAttack<>(0).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)))// Melee attack
 		);
 	}
 
