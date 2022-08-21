@@ -36,4 +36,9 @@ public final class CustomBehaviour<E extends LivingEntity> extends ExtendedBehav
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();
 	}
+
+	@Override
+	protected void start(E entity) {
+		this.callback.accept(entity);
+	}
 }
