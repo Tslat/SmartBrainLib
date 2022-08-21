@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @param <E> The entity
  */
 public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private final int delayTime;
+	protected final int delayTime;
 	protected long delayFinishedAt = 0;
 	protected Consumer<E> delayedCallback = entity -> {};
 
@@ -33,12 +33,13 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 
 	@Override
 	protected final void start(ServerWorld level, E entity, long gameTime) {
-		super.start(level, entity, gameTime);
-
 		if (this.delayTime > 0) {
 			this.delayFinishedAt = gameTime + this.delayTime;
+
+			super.start(level, entity, gameTime);
 		}
 		else {
+			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
 	}
