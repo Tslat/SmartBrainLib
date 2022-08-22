@@ -63,6 +63,7 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 		if (this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);
+			doStop(level, entity, gameTime);
 		}
 	}
 
