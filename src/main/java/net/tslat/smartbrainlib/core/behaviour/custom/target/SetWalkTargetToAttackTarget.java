@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.memory.WalkTarget;
 import net.minecraft.util.math.EntityPosWrapper;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
@@ -52,5 +53,7 @@ public class SetWalkTargetToAttackTarget<E extends MobEntity> extends ExtendedBe
 			BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
 			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityPosWrapper(target, false), this.speedModifier, 0));
 		}
+
+		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 }

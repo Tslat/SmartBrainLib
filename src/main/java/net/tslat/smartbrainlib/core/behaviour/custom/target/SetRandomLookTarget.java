@@ -57,6 +57,7 @@ public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehavio
 		double angle = 2 * Math.PI * entity.getRandom().nextDouble();
 
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition(1).add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
+		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 
 	@Override
