@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
 /**
@@ -42,5 +43,6 @@ public final class CustomBehaviour<E extends LivingEntity> extends ExtendedBehav
 	@Override
 	protected void start(E entity) {
 		this.callback.accept(entity);
+		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 }
