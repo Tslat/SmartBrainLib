@@ -58,7 +58,7 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	}
 
 	@Override
-	public final Brain<T> makeBrain(Dynamic<?> codecLoader) {
+	public final SmartBrain<T> makeBrain(Dynamic<?> codecLoader) {
 		List<ExtendedSensor<T>> sensors = owner.getSensors();
 		Map<Activity, BrainActivityGroup<T>> taskList = compileTasks();
 		ImmutableList<MemoryModuleType<?>> memories;
