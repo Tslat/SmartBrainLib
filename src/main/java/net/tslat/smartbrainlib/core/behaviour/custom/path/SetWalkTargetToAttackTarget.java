@@ -1,4 +1,4 @@
-package net.tslat.smartbrainlib.core.behaviour.custom.target;
+package net.tslat.smartbrainlib.core.behaviour.custom.path;
 
 import java.util.List;
 
