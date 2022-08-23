@@ -116,6 +116,11 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 		return true;
 	}
 
+	@APIOnly
+	protected boolean doStartCheck(ServerWorld level, E entity, long gameTime) {
+		return cooldownFinishedAt <= gameTime && hasRequiredMemories(entity) && this.startCondition.test(entity) && checkExtraStartConditions(level, entity);
+	}
+
 	/**
 	 * Check any extra conditions required for this behaviour to start. <br>
 	 * By this stage, memory conditions from {@link ExtendedBehaviour#getMemoryRequirements()} have already been checked.
@@ -137,7 +142,6 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * @param entity The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@Override
 	@APIOnly
 	protected void start(ServerWorld level, E entity, long gameTime) {
 		this.taskStartCallback.accept(entity);
@@ -161,8 +165,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * @param entity The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@Override
 	@APIOnly
+	@Override
 	protected void stop(ServerWorld level, E entity, long gameTime) {
 		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
 
@@ -200,8 +204,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * @param entity The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@Override
 	@APIOnly
+	@Override
 	protected void tick(ServerWorld level, E entity, long gameTime) {
 		tick(entity);
 	}
@@ -215,6 +219,12 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 */
 	protected void tick(E entity) {}
 
+	@Override
+	protected boolean timedOut(long gameTime) {
+		return super.timedOut(gameTime);
+	}
+
+	@APIOnly
 	@Override
 	public final boolean hasRequiredMemories(E entity) {
 		Brain<?> brain = entity.getBrain();

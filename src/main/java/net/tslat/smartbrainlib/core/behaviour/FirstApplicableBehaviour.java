@@ -9,23 +9,21 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 
 /**
- * Group behaviour that attempts to run sub-behaviours in a
+ * Group behaviour that attempts to run all sub-behaviours in order, until the first successful one.
  * @param <E> The entity
  */
-public final class OneRandomBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
-	public OneRandomBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
+public final class FirstApplicableBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
+	public FirstApplicableBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
 	}
 
-	public OneRandomBehaviour(ExtendedBehaviour<? super E>... behaviours) {
+	public FirstApplicableBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		super(behaviours);
 	}
 
 	@Nullable
 	@Override
 	protected ExtendedBehaviour<? super E> pickBehaviour(ServerWorld level, E entity, long gameTime, SBLShufflingList<ExtendedBehaviour<? super E>> extendedBehaviours) {
-		extendedBehaviours.shuffle();
-
 		for (ExtendedBehaviour<? super E> behaviour : extendedBehaviours) {
 			if (behaviour.tryStart(level, entity, gameTime))
 				return behaviour;
