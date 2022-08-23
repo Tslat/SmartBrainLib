@@ -15,6 +15,7 @@ import net.minecraft.world.entity.schedule.Activity;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import org.apache.logging.log4j.Level;
 
@@ -92,8 +93,11 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	}
 
 	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Behavior<?> behaviour) {
-		if (behaviour instanceof GateBehavior<?> gateBehavior) {
-			gateBehavior.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
+		if (behaviour instanceof GateBehavior<?> gateBehaviour) {
+			gateBehaviour.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
+		}
+		else if (behaviour instanceof GroupBehaviour<?> groupBehaviour) {
+			groupBehaviour.getBehaviours().forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
 		else {
 			memories.addAll(behaviour.entryCondition.keySet());
