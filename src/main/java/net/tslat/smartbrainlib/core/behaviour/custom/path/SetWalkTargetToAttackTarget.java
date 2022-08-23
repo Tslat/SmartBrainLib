@@ -1,4 +1,4 @@
-package net.tslat.smartbrainlib.core.behaviour.custom.target;
+package net.tslat.smartbrainlib.core.behaviour.custom.path;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
