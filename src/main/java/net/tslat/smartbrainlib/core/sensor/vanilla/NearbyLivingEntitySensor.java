@@ -7,11 +7,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import javax.annotation.Nullable;
@@ -31,30 +31,29 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	@Nullable
-	protected Vec3 radius = null;
+	protected SquareRadius radius = null;
 
 	public NearbyLivingEntitySensor() {
 		super((target, entity) -> target != entity && target.isAlive());
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius
+	 * Set the radius for the sensor to scan.
+	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
 	public NearbyLivingEntitySensor<E> setRadius(double radius) {
-		return setRadius(new Vec3(radius, radius, radius));
+		return setRadius(radius, radius);
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius triplet
+	 * Set the radius for the sensor to scan.
+	 * @param xz The X/Z coordinate radius, in blocks
+	 * @param y The Y coordinate radius, in blocks
 	 * @return this
 	 */
-	public NearbyLivingEntitySensor<E> setRadius(Vec3 radius) {
-		this.radius = radius;
+	public NearbyLivingEntitySensor<E> setRadius(double xz, double y) {
+		this.radius = new SquareRadius(xz, y);
 
 		return this;
 	}
@@ -71,15 +70,15 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		Vec3 radius = this.radius;
+		SquareRadius radius = this.radius;
 
 		if (radius == null) {
 			double dist = entity.getAttributeValue(Attributes.FOLLOW_RANGE);
 
-			radius = new Vec3(dist, dist, dist);
+			radius = new SquareRadius(dist, dist);
 		}
 
-		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.x(), radius.y(), radius.z()), obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
+		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()), obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
 
 		entities.sort(Comparator.comparingDouble(entity::distanceToSqr));
 

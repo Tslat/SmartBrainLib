@@ -7,11 +7,11 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.List;
  * <ul>
  *     <li>10x10x10 Radius</li>
  *     <li>No spectators</li>
- *     <li></li>
  * </ul>
  * @see net.minecraft.world.entity.ai.sensing.TemptingSensor
  * @param <E> The entity
@@ -31,7 +30,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.TEMPTING_PLAYER);
 
 	protected Ingredient temptingItems = Ingredient.EMPTY;
-	protected Vec3 radius = new Vec3(10, 10, 10);
+	protected SquareRadius radius = new SquareRadius(10, 10);
 
 	public ItemTemptingSensor() {
 		setPredicate((target, entity) -> {
@@ -66,28 +65,27 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 
 	/**
 	 * Set the radius for the player sensor to scan
-	 *
-	 * @param radius The radius
+	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
 	public ItemTemptingSensor<E> setRadius(double radius) {
-		return setRadius(new Vec3(radius, radius, radius));
+		return setRadius(radius);
 	}
 
 	/**
-	 * Set the radius for the player sensor to scan
-	 *
-	 * @param radius The radius triplet
+	 * Set the radius for the player sensor to scan.
+	 * @param xz The X/Z coordinate radius, in blocks
+	 * @param y The Y coordinate radius, in blocks
 	 * @return this
 	 */
-	public ItemTemptingSensor<E> setRadius(Vec3 radius) {
-		this.radius = radius;
+	public ItemTemptingSensor<E> setRadius(double xz, double y) {
+		this.radius = new SquareRadius(xz, y);
 
 		return this;
 	}
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, EntityRetrievalUtil.getNearestPlayer(entity, this.radius.x(), this.radius.y(), this.radius.z(), target -> predicate().test(target, entity)));
+		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity)));
 	}
 }

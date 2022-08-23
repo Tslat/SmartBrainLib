@@ -7,11 +7,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import javax.annotation.Nullable;
@@ -31,30 +31,29 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER);
 
 	@Nullable
-	protected Vec3 radius = null;
+	protected SquareRadius radius = null;
 
 	public NearbyPlayersSensor() {
 		super((player, entity) -> !player.isSpectator());
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius
+	 * Set the radius for the sensor to scan.
+	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
 	public NearbyPlayersSensor<E> setRadius(double radius) {
-		return setRadius(new Vec3(radius, radius, radius));
+		return setRadius(radius, radius);
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius triplet
+	 * Set the radius for the sensor to scan.
+	 * @param xz The X/Z coordinate radius, in blocks
+	 * @param y The Y coordinate radius, in blocks
 	 * @return this
 	 */
-	public NearbyPlayersSensor<E> setRadius(Vec3 radius) {
-		this.radius = radius;
+	public NearbyPlayersSensor<E> setRadius(double xz, double y) {
+		this.radius = new SquareRadius(xz, y);
 
 		return this;
 	}
@@ -71,15 +70,15 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		Vec3 radius = this.radius;
+		SquareRadius radius = this.radius;
 
 		if (radius == null) {
 			double dist = entity.getAttributeValue(Attributes.FOLLOW_RANGE);
 
-			radius = new Vec3(dist, dist, dist);
+			radius = new SquareRadius(dist, dist);
 		}
 
-		List<Player> players = EntityRetrievalUtil.getPlayers(level, entity.getBoundingBox().inflate(radius.x(), radius.y(), radius.z()), player -> predicate().test(player, entity));
+		List<Player> players = EntityRetrievalUtil.getPlayers(level, radius.inflateAABB(entity.getBoundingBox()), player -> predicate().test(player, entity));
 
 		players.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
