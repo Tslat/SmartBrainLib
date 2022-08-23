@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 
 public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> extends Brain.BrainCodec<T> {
@@ -104,6 +105,9 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Task<?> behaviour) {
 		if (behaviour instanceof MultiTask<?>) {
 			((MultiTask)behaviour).behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, (Task<?>) subBehaviour));
+		}
+		else if (behaviour instanceof GroupBehaviour<?>) {
+			((GroupBehaviour<?>) behaviour).getBehaviours().forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
 		else {
 			memories.addAll(behaviour.entryCondition.keySet());
