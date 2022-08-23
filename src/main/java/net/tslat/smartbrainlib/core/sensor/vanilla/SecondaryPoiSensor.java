@@ -12,11 +12,11 @@ import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
 /**
@@ -31,30 +31,29 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
 public class SecondaryPoiSensor<E extends VillagerEntity> extends ExtendedSensor<E> {
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.SECONDARY_JOB_SITE});
 
-	protected Vector3i radius = new Vector3i(8, 4, 8);
+	protected SquareRadius radius = new SquareRadius(8, 4);
 
 	public SecondaryPoiSensor() {
 		setScanRate(entity -> 40);
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius
+	 * Set the radius for the sensor to scan.
+	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
 	public SecondaryPoiSensor<E> setRadius(int radius) {
-		return setRadius(new Vector3i(radius, radius, radius));
+		return setRadius(radius, radius);
 	}
 
 	/**
-	 * Set the radius for the item sensor to scan
-	 *
-	 * @param radius The radius triplet
+	 * Set the radius for the sensor to scan
+	 * @param xz The X/Z coordinate radius, in blocks
+	 * @param y The Y coordinate radius, in blocks
 	 * @return this
 	 */
-	public SecondaryPoiSensor<E> setRadius(Vector3i radius) {
-		this.radius = radius;
+	public SecondaryPoiSensor<E> setRadius(double xz, double y) {
+		this.radius = new SquareRadius(xz, y);
 
 		return this;
 	}
@@ -79,7 +78,7 @@ public class SecondaryPoiSensor<E extends VillagerEntity> extends ExtendedSensor
 		if (testPoiBlocks.isEmpty())
 			return;
 
-		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - radius.getX() / 2, pos.getY() - radius.getY() / 2, pos.getZ() - radius.getZ() / 2, pos.getX() + radius.getX() / 2, pos.getY() + radius.getY() / 2, pos.getZ() + radius.getZ() / 2)) {
+		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - (int)this.radius.xzRadius() / 2, pos.getY() - (int)this.radius.yRadius() / 2, pos.getZ() - (int)this.radius.xzRadius() / 2, pos.getX() + (int)this.radius.xzRadius() / 2, pos.getY() + (int)this.radius.yRadius() / 2, pos.getZ() + (int)this.radius.xzRadius() / 2)) {
 			if (testPoiBlocks.contains(level.getBlockState(testPos).getBlock()))
 				poiPositions.add(GlobalPos.of(dimension, testPos.immutable()));
 		}
