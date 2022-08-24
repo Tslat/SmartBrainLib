@@ -58,7 +58,6 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 		double angle = Mth.TWO_PI * entity.getRandom().nextDouble();
 
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
-		doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
 	}
 
 	@Override
