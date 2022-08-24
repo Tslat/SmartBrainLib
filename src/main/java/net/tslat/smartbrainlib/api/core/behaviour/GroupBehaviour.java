@@ -68,6 +68,12 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 	@Override
 	protected void tick(ServerLevel level, E owner, long gameTime) {
 		this.runningBehaviour.tickOrStop(level, owner, gameTime);
+
+		if (this.runningBehaviour.getStatus() == Status.STOPPED) {
+			this.runningBehaviour = null;
+
+			doStop(level, owner, gameTime);
+		}
 	}
 
 	@Override
