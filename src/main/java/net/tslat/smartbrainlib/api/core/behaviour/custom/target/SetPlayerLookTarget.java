@@ -58,7 +58,6 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 	@Override
 	protected void start(E entity) {
 		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(this.target, true));
-		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 
 	@Override

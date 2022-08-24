@@ -82,7 +82,5 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 			BrainUtils.setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
 			BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 		}
-
-		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 }

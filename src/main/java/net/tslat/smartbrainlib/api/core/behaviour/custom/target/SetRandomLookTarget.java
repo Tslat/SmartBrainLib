@@ -11,8 +11,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.world.server.ServerWorld;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
 
 /**
@@ -57,7 +57,6 @@ public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehavio
 		double angle = 2 * Math.PI * entity.getRandom().nextDouble();
 
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition(1).add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
-		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 
 	@Override

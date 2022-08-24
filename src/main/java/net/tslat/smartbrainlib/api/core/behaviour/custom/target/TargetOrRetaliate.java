@@ -94,7 +94,5 @@ public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E>
 		BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		this.toTarget = null;
-
-		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 }
