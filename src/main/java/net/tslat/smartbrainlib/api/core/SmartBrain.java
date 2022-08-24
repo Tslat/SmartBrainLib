@@ -53,11 +53,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		if (taskList != null) {
 			for (BrainActivityGroup<E> group : taskList) {
-				int priority = group.getPriorityStart();
-
-				for (Task<? super E> behaviour : group.getBehaviours()) {
-					addBehaviour(priority++, group.getActivity(), behaviour);
-				}
+				addActivity(group);
 			}
 		}
 	}
@@ -248,6 +244,10 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		for(Pair<Integer, ? extends Task<? super E>> pair : tasks) {
 			addBehaviour(pair.getFirst(), activity, pair.getSecond());
 		}
+	}
+
+	public void addActivity(BrainActivityGroup<E> activityGroup) {
+		addActivityAndRemoveMemoriesWhenStopped(activityGroup.getActivity(), activityGroup.pairBehaviourPriorities(), activityGroup.getActivityStartMemoryConditions(), activityGroup.getWipedMemoriesOnFinish());
 	}
 
 	/**

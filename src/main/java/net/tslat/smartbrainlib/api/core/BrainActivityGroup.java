@@ -1,10 +1,12 @@
 package net.tslat.smartbrainlib.api.core;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -84,20 +86,19 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this.activityStartMemoryConditions;
 	}
 
-	@Nullable
 	public Set<MemoryModuleType<?>> getWipedMemoriesOnFinish() {
-		return this.wipedMemoriesOnFinish;
+		return this.wipedMemoriesOnFinish != null ? this.wipedMemoriesOnFinish : new HashSet<>();
 	}
 
-	public List<Pair<Integer, Task<? super T>>> pairBehaviourPriorities() {
+	public ImmutableList<Pair<Integer, Task<? super T>>> pairBehaviourPriorities() {
 		int priority = this.priorityStart;
-		List<Pair<Integer, Task<? super T>>> pairedBehaviours = new ObjectArrayList<>(this.behaviours.size());
+		ImmutableList.Builder<Pair<Integer, Task<? super T>>> pairedBehaviours = ImmutableList.builder();
 
 		for (Task<? super T> behaviour : this.behaviours) {
 			pairedBehaviours.add(Pair.of(priority++, behaviour));
 		}
 
-		return pairedBehaviours;
+		return pairedBehaviours.build();
 	}
 
 	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> empty() {

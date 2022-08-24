@@ -146,7 +146,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	private void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
 		brain.activityRequirements.put(activity, activityGroup.getActivityStartMemoryConditions());
 
-		if (activityGroup.getWipedMemoriesOnFinish() != null)
+		if (!activityGroup.getWipedMemoriesOnFinish().isEmpty())
 			brain.activityMemoriesToEraseWhenStopped.put(activity, activityGroup.getWipedMemoriesOnFinish());
 
 		for (Pair<Integer, ? extends Task<? super E>> pair : activityGroup.pairBehaviourPriorities()) {
