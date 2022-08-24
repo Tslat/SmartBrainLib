@@ -13,8 +13,8 @@ import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.schedule.Activity;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.APIOnly;
-import net.tslat.smartbrainlib.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
 /**
  * Implement this class for any entity you want to use the SmartBrain system. <br>
@@ -37,7 +37,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * <br><br>
 	 * Tasks returned in this category take up the {@link net.minecraft.world.entity.schedule.Activity#CORE} activity category
 	 *
-	 * @return a {@link net.tslat.smartbrainlib.core.BrainActivityGroup} containing the <i>core</i> tasks your entity should run.
+	 * @return a {@link BrainActivityGroup} containing the <i>core</i> tasks your entity should run.
 	 */
 	default BrainActivityGroup<T> getCoreTasks() {
 		return BrainActivityGroup.empty();
@@ -50,7 +50,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * <br><br>
 	 * Tasks returned in this category take up the {@link net.minecraft.world.entity.schedule.Activity#IDLE} activity category
 	 *
-	 * @return a {@link net.tslat.smartbrainlib.core.BrainActivityGroup} containing the <i>idle</i> tasks your entity should run.
+	 * @return a {@link BrainActivityGroup} containing the <i>idle</i> tasks your entity should run.
 	 */
 	default BrainActivityGroup<T> getIdleTasks() {
 		return BrainActivityGroup.empty();
@@ -63,7 +63,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * <br><br>
 	 * Tasks returned in this category take up the {@link net.minecraft.world.entity.schedule.Activity#FIGHT} activity category
 	 *
-	 * @return a {@link net.tslat.smartbrainlib.core.BrainActivityGroup} containing the <i>fight</i> tasks your entity should run.
+	 * @return a {@link BrainActivityGroup} containing the <i>fight</i> tasks your entity should run.
 	 */
 	default BrainActivityGroup<T> getFightTasks() {
 		return BrainActivityGroup.empty();

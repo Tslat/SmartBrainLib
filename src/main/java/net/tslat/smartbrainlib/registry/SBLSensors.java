@@ -7,28 +7,28 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tslat.smartbrainlib.SmartBrainLib;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.HoglinSpecificSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.InWaterSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.ItemTemptingSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyAdultSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyBabySensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyGolemSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyHostileSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyLivingEntitySensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearestHomeSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.NearestItemSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.PiglinBruteSpecificSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.PiglinSpecificSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.SecondaryPoiSensor;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HoglinSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.ItemTemptingSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyBabySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyGolemSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyHostileSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestHomeSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestItemSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinBruteSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.SecondaryPoiSensor;
 
 /**
- * Registry class for {@link net.tslat.smartbrainlib.core.sensor.ExtendedSensor} implementations
+ * Registry class for {@link ExtendedSensor} implementations
  */
 public final class SBLSensors {
 	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.SENSOR_TYPES, SmartBrainLib.MOD_ID);
