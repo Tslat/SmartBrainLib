@@ -5,16 +5,16 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.tslat.smartbrainlib.SmartBrainLib;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.*;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.*;
 
 import java.util.function.Supplier;
 
 /**
- * Registry class for {@link net.tslat.smartbrainlib.core.sensor.ExtendedSensor} implementations
+ * Registry class for {@link ExtendedSensor} implementations
  */
 public final class SBLSensors {
 	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.Keys.SENSOR_TYPES, SmartBrainLib.MOD_ID);
