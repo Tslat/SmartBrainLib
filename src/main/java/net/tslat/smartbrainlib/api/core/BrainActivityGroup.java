@@ -1,5 +1,6 @@
 package net.tslat.smartbrainlib.api.core;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -10,7 +11,6 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +20,6 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private int priorityStart = 0;
 	private final List<Behavior<? super T>> behaviours = new ObjectArrayList<>();
 	private final Set<Pair<MemoryModuleType<?>, MemoryStatus>> activityStartMemoryConditions = new ObjectOpenHashSet<>();
-	@Nullable
 	private Set<MemoryModuleType<?>> wipedMemoriesOnFinish = null;
 
 	public BrainActivityGroup(Activity activity) {
@@ -82,20 +81,19 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this.activityStartMemoryConditions;
 	}
 
-	@Nullable
 	public Set<MemoryModuleType<?>> getWipedMemoriesOnFinish() {
-		return this.wipedMemoriesOnFinish;
+		return this.wipedMemoriesOnFinish != null ? this.wipedMemoriesOnFinish : Set.of();
 	}
 
-	public List<Pair<Integer, Behavior<? super T>>> pairBehaviourPriorities() {
+	public ImmutableList<Pair<Integer, Behavior<? super T>>> pairBehaviourPriorities() {
 		int priority = this.priorityStart;
-		List<Pair<Integer, Behavior<? super T>>> pairedBehaviours = new ObjectArrayList<>(this.behaviours.size());
+		ImmutableList.Builder<Pair<Integer, Behavior<? super T>>> pairedBehaviours = ImmutableList.builder();
 
 		for (Behavior<? super T> behaviour : this.behaviours) {
 			pairedBehaviours.add(Pair.of(priority++, behaviour));
 		}
 
-		return pairedBehaviours;
+		return pairedBehaviours.build();
 	}
 
 	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> empty() {
