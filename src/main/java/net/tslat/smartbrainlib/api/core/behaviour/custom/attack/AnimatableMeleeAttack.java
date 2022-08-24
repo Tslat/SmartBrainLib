@@ -72,6 +72,8 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 
 	@Override
 	protected void doDelayedAction(E entity) {
+		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+
 		if (this.target == null)
 			return;
 
@@ -79,6 +81,5 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 			return;
 
 		entity.doHurtTarget(this.target);
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
 	}
 }
