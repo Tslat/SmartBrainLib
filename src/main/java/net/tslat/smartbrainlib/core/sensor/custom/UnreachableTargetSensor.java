@@ -1,17 +1,17 @@
 package net.tslat.smartbrainlib.core.sensor.custom;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor to attempt to track whether the entity's target is currently obstructed either by blocks or a wall/tower of blocks. <br>
@@ -25,7 +25,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType<?>[] {MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE.get()});
 
 	private long lastUnpathableTime = 0;
 
@@ -40,7 +40,7 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
+	protected void doTick(ServerWorld level, E entity) {
 		Brain<?> brain = entity.getBrain();
 		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
 

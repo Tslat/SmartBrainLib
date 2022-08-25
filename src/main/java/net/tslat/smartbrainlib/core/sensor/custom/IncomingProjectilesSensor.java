@@ -1,20 +1,20 @@
 package net.tslat.smartbrainlib.core.sensor.custom;
 
+import java.util.Comparator;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Custom sensor that detects incoming projectiles.
@@ -26,8 +26,8 @@ import java.util.List;
  * </ul>
  * @param <E>
  */
-public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<Projectile, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());
+public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<ProjectileEntity, E> {
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType<?>[] {SBLMemoryTypes.INCOMING_PROJECTILES.get()});
 
 	public IncomingProjectilesSensor() {
 		setScanRate(entity -> 3);
@@ -50,8 +50,8 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof Projectile projectile && predicate().test(projectile, entity));
+	protected void doTick(ServerWorld level, E entity) {
+		List<ProjectileEntity> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof ProjectileEntity && predicate().test((ProjectileEntity)target, entity));
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));
