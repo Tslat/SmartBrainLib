@@ -84,8 +84,12 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	
 	@Override
 	public <U> void setMemoryInternal(MemoryModuleType<U> memoryType, Optional<? extends Memory<?>> memory) {
-		if (memory.isPresent() && memory.get().getValue() instanceof Collection<?> collection && collection.isEmpty())
-			memory = Optional.empty();
+		if (memory.isPresent() && memory.get().getValue() instanceof Collection<?>) {
+			Collection<?> collection = (Collection<?>) memory.get().getValue();
+			if(collection.isEmpty()) {
+				memory = Optional.empty();
+			}
+		}
 
 		this.memories.put(memoryType, memory);
 

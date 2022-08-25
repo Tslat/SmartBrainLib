@@ -130,7 +130,21 @@ public final class BrainUtils {
 	 * @return The ticks until the memory expires, or 0 if the memory doesn't exist or doesn't expire
 	 */
 	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
-		return brain.getTimeUntilExpiry(memory);
+		long result = 0;
+		Optional<? extends Object> opt = brain.getMemory(memory);
+		if(opt.isPresent()) {
+			Object object = opt.get();
+			if(object instanceof Memory<?>) {
+				Memory<?> mem = (Memory<?>)object;
+				if(mem.canExpire()) {
+					result = mem.timeToLive;
+				}
+			} else {
+				//Not a memory
+			}
+		}
+		//return brain.getTimeUntilExpiry(memory);
+		return result;
 	}
 
 	/**

@@ -89,7 +89,7 @@ public class SmartBrainProvider<T extends LivingEntity & SmartBrainOwner<T>> ext
 
 		taskList.forEach((activity, behaviourGroup) -> behaviourGroup.getBehaviours().forEach(behaviour -> {
 			if (behaviour instanceof MultiTask<?>) {
-				((MultiTask)behaviour).behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
+				((MultiTask<?>)behaviour).behaviors.stream().forEach(subBehaviour -> memoryTypes.addAll(subBehaviour.entryCondition.keySet()));
 			}
 			else {
 				memoryTypes.addAll(behaviour.entryCondition.keySet());
