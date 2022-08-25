@@ -53,7 +53,7 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 	public final void reassessWeaponGoal() {}
 
 	@Override
-	protected Brain.Provider<?> brainProvider() {
+	protected Brain.BrainCodec<?> brainProvider() {
 		return new SmartBrainProvider<>(this);
 	}
 

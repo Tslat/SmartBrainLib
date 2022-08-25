@@ -1,21 +1,23 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.attack;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
-
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.util.Hand;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
 
 /**
  * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
@@ -26,8 +28,8 @@ import java.util.function.Function;
  * </ul>
  * @param <E>
  */
-public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> extends DelayedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+public class AnimatableRangedAttack<E extends LivingEntity & IRangedAttackMob> extends DelayedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT));
 
 	protected Function<E, Integer> attackIntervalSupplier = entity -> entity.level.getDifficulty() == Difficulty.HARD ? 20 : 40;
 	protected float attackRadius;
@@ -64,12 +66,12 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
 		return BehaviorUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
@@ -77,7 +79,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 
 	@Override
 	protected void start(E entity) {
-		entity.swing(InteractionHand.MAIN_HAND);
+		entity.swing(Hand.MAIN_HAND);
 		BehaviorUtils.lookAtEntity(entity, this.target);
 	}
 

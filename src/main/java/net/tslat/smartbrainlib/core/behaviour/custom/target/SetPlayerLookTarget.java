@@ -1,49 +1,50 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.target;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.EntityTracker;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
-
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.EntityPosWrapper;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
 /**
  * Set the {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#LOOK_TARGET} of the brain owner from {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_PLAYERS}
  * @param <E> The entity
  */
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleStatus.VALUE_PRESENT));
 
-	private Predicate<Player> predicate = pl -> true;
+	private Predicate<PlayerEntity> predicate = pl -> true;
 
-	private Player target = null;
+	private PlayerEntity target = null;
 
 	/**
 	 * Set the predicate for the player to look at.
 	 * @param predicate The predicate
 	 * @return this
 	 */
-	public SetPlayerLookTarget<E> predicate(Predicate<Player> predicate) {
+	public SetPlayerLookTarget<E> predicate(Predicate<PlayerEntity> predicate) {
 		this.predicate = predicate;
 
 		return this;
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		for (Player player : BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS)) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
+		for (PlayerEntity player : BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS)) {
 			if (this.predicate.test(player)) {
 				this.target = player;
 
@@ -56,7 +57,7 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
+		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(this.target, true));
 
 		this.target = null;
 	}

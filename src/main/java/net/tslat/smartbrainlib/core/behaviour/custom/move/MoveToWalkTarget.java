@@ -1,26 +1,27 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.move;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.memory.WalkTarget;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.PATH, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_PRESENT));
+public class MoveToWalkTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.PATH, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_PRESENT));
 
 	@Nullable
 	protected Path path;
@@ -34,12 +35,12 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		Brain<?> brain = entity.getBrain();
 		WalkTarget walkTarget = BrainUtils.getMemory(brain, MemoryModuleType.WALK_TARGET);
 
@@ -56,7 +57,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		if (this.path == null || this.lastTargetPos == null)
 			return false;
 
@@ -130,7 +131,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 		if (this.path != null)
 			return true;
 
-		Vec3 newTargetPos = DefaultRandomPos.getPosTowards(entity, 10, 7, Vec3.atBottomCenterOf(pos), Mth.HALF_PI);
+		Vector3d newTargetPos = DefaultRandomPos.getPosTowards(entity, 10, 7, Vector3d.atBottomCenterOf(pos), Math.PI / 2);
 
 		if (newTargetPos != null) {
 			this.path = entity.getNavigation().createPath(newTargetPos.x(), newTargetPos.y(), newTargetPos.z(), 0);

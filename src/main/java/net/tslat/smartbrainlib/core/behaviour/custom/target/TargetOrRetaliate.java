@@ -1,20 +1,21 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.target;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
-
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
 /**
  * Sets the attack target of the entity based, utilising a few sources of targets. <br>
@@ -30,10 +31,10 @@ import java.util.function.Predicate;
  * </ul>
  * @param <E> The entity
  */
-public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.REGISTERED));
+public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleStatus.REGISTERED));
 
-	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
+	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).isCreative());
 
 	private LivingEntity toTarget = null;
 	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
@@ -61,12 +62,12 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel pLevel, E owner) {
+	protected boolean checkExtraStartConditions(ServerWorld pLevel, E owner) {
 		Brain<?> brain = owner.getBrain();
 		this.toTarget = BrainUtils.getMemory(brain, this.priorityTargetMemory);
 
@@ -93,6 +94,6 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 		this.toTarget = null;
 
-		doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
+		doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 }

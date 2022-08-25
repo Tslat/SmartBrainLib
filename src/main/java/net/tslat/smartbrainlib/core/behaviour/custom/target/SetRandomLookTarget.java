@@ -1,27 +1,27 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.target;
 
+import java.util.List;
+import java.util.function.Function;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
-
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Set the look target to a random nearby position
  * @param <E> The entity
  */
-public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT));
+public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT));
 
 	private FloatProvider runChance = ConstantFloat.of(0.02f);
 	private Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
@@ -49,19 +49,19 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		return entity.getRandom().nextFloat() < this.runChance.sample(entity.getRandom());
 	}
 
 	@Override
 	protected void start(E entity) {
-		double angle = Mth.TWO_PI * entity.getRandom().nextDouble();
+		double angle = 2 * Math.PI * entity.getRandom().nextDouble();
 
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
+		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition(1).add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORIES;
 	}
 }

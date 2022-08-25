@@ -1,21 +1,22 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.move;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.pathfinding.Path;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
 /**
  * Try to move away from certain entities when they get too close. <br>
@@ -26,8 +27,8 @@ import java.util.function.Predicate;
  *     <li>1x move speed modifier</li>
  * </ul>
  */
-public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
+public class AvoidEntity<E extends MobEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleStatus.VALUE_PRESENT));
 
 	private Predicate<LivingEntity> avoidingPredicate = target -> false;
 	private float noCloserThanSqr = 9f;
@@ -37,7 +38,7 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private Path runPath = null;
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
@@ -86,10 +87,10 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		Optional<LivingEntity> target = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(this.avoidingPredicate);
 
-		if (target.isEmpty())
+		if (!target.isPresent())
 			return false;
 
 		LivingEntity avoidingEntity = target.get();
@@ -98,7 +99,7 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		if (distToTarget > this.noCloserThanSqr)
 			return false;
 
-		Vec3 runPos = DefaultRandomPos.getPosAway(entity, 16, 7, avoidingEntity.position());
+		Vector3d runPos = DefaultRandomPos.getPosAway(entity, 16, 7, avoidingEntity.position());
 
 		if (runPos == null || avoidingEntity.distanceToSqr(runPos.x, runPos.y, runPos.z) < distToTarget)
 			return false;
@@ -109,7 +110,7 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return !this.runPath.isDone();
 	}
 

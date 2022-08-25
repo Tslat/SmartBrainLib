@@ -1,38 +1,40 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.misc;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.pathfinding.GroundPathNavigator;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
 /** Avoid the sun if not wearing a hat
  * @param <E> The entity
  */
-public class AvoidSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
+public class AvoidSun<E extends MobEntity> extends ExtendedBehaviour<E> {
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
+		return new ArrayList<>();
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		return level.isDay() && entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty() && entity.getNavigation() instanceof GroundPathNavigation;
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
+		return level.isDay() && entity.getItemBySlot(EquipmentSlotType.HEAD).isEmpty() && entity.getNavigation() instanceof GroundPathNavigator;
 	}
 
 	@Override
 	protected void start(E entity) {
-		((GroundPathNavigation)entity.getNavigation()).setAvoidSun(true);
+		((GroundPathNavigator)entity.getNavigation()).setAvoidSun(true);
 	}
 
 	@Override
 	protected void stop(E entity) {
-		if (entity.getNavigation() instanceof GroundPathNavigation groundNavigation)
-			groundNavigation.setAvoidSun(true);
+		if (entity.getNavigation() instanceof GroundPathNavigator)
+			((GroundPathNavigator)entity.getNavigation()).setAvoidSun(true);
 	}
 }

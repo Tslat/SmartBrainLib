@@ -1,25 +1,26 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.misc;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Calls a callback when the entity has been obstructed for a given period of time.
  * @param <E> The entity
  */
 public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE.get(), MemoryModuleStatus.VALUE_PRESENT));
 
 	protected Function<E, Integer> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};
@@ -49,7 +50,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
@@ -59,7 +60,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return hasRequiredMemories(entity);
 	}
 
@@ -77,7 +78,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	protected void tick(E entity) {
 		if (entity.level.getGameTime() == this.reactAtTime) {
 			this.callback.accept(entity, BrainUtils.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE.get()));
-			doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
+			doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 		}
 	}
 }

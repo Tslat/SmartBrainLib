@@ -1,18 +1,18 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.attack;
 
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.item.BowItem;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.BowItem;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * Extended behaviour for charging and firing a {@link net.minecraft.world.item.BowItem bow}.
  * @param <E>
  */
-public class BowAttack<E extends LivingEntity & RangedAttackMob> extends AnimatableRangedAttack<E> {
+public class BowAttack<E extends LivingEntity & IRangedAttackMob> extends AnimatableRangedAttack<E> {
 	public BowAttack(int delayTicks) {
 		super(delayTicks);
 	}
@@ -20,7 +20,7 @@ public class BowAttack<E extends LivingEntity & RangedAttackMob> extends Animata
 	@Override
 	protected void start(E entity) {
 		BehaviorUtils.lookAtEntity(entity, this.target);
-		entity.startUsingItem(ProjectileUtil.getWeaponHoldingHand(entity, item -> item instanceof BowItem));
+		entity.startUsingItem(ProjectileHelper.getWeaponHoldingHand(entity, item -> item instanceof BowItem));
 	}
 
 	@Override

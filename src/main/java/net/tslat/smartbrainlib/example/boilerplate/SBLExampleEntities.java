@@ -2,9 +2,10 @@ package net.tslat.smartbrainlib.example.boilerplate;
 
 import java.rmi.server.Skeleton;
 
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntityType.IFactory;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -21,10 +22,10 @@ public final class SBLExampleEntities {
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, SmartBrainLib.MOD_ID);
 
 	// Example entities begin ---->
-	public static final RegistryObject<EntityType<SBLSkeleton>> SBL_SKELETON = register("sbl_skeleton", SBLSkeleton::new, MobCategory.MONSTER, 0.6F, 1.99F);
+	public static final RegistryObject<EntityType<SBLSkeleton>> SBL_SKELETON = register("sbl_skeleton", SBLSkeleton::new, EntityClassification.MONSTER, 0.6F, 1.99F);
 	// Example entities end ---->
 
-	private static <T extends LivingEntity> RegistryObject<EntityType<T>> register(String registryName, EntityType.EntityFactory<T> factory, MobCategory category, float width, float height) {
+	private static <T extends LivingEntity> RegistryObject<EntityType<T>> register(String registryName, IFactory<T> factory, EntityClassification category, float width, float height) {
 		return ENTITY_TYPES.register(registryName, () -> EntityType.Builder.of(factory, category).sized(width, height).build(registryName));
 	}
 
