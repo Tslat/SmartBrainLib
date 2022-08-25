@@ -2,10 +2,10 @@ package net.tslat.smartbrainlib.object;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.IPosWrapper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.entity.ai.behavior.PositionTracker;
 
-public class FreePositionTracker implements PositionTracker {
+public class FreePositionTracker implements IPosWrapper {
 	private final Vector3d pos;
 
 	public FreePositionTracker(Vector3d pos) {
