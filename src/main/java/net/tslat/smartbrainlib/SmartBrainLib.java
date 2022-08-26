@@ -1,16 +1,17 @@
 package net.tslat.smartbrainlib;
 
+import static net.tslat.smartbrainlib.SmartBrainLib.MOD_ID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.tslat.smartbrainlib.example.boilerplate.SBLExampleEntities;
-import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import static net.tslat.smartbrainlib.SmartBrainLib.MOD_ID;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 @Mod(MOD_ID)
 public class SmartBrainLib {

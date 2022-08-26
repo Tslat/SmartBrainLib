@@ -1,22 +1,23 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableSet;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that looks for a nearby {@link net.minecraft.world.entity.ai.village.poi.PoiTypes POI} block that matches a villager's secondary profession.<br>
@@ -27,10 +28,10 @@ import java.util.List;
  * </ul>
  * @param <E> The entity
  */
-public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.SECONDARY_JOB_SITE);
+public class SecondaryPoiSensor<E extends VillagerEntity> extends ExtendedSensor<E> {
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.SECONDARY_JOB_SITE});
 
-	protected Vec3i radius = new Vec3i(8, 4, 8);
+	protected Vector3i radius = new Vector3i(8, 4, 8);
 
 	public SecondaryPoiSensor() {
 		setScanRate(entity -> 40);
@@ -43,7 +44,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	 * @return this
 	 */
 	public SecondaryPoiSensor<E> setRadius(int radius) {
-		return setRadius(new Vec3i(radius, radius, radius));
+		return setRadius(new Vector3i(radius, radius, radius));
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	 * @param radius The radius triplet
 	 * @return this
 	 */
-	public SecondaryPoiSensor<E> setRadius(Vec3i radius) {
+	public SecondaryPoiSensor<E> setRadius(Vector3i radius) {
 		this.radius = radius;
 
 		return this;
@@ -69,10 +70,10 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		ResourceKey<Level> dimension = level.dimension();
+	protected void doTick(ServerWorld level, E entity) {
+		RegistryKey<World> dimension = level.dimension();
 		BlockPos pos = entity.blockPosition();
-		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().secondaryPoi();
+		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().getSecondaryPoi();
 		List<GlobalPos> poiPositions = new ObjectArrayList<>();
 
 		if (testPoiBlocks.isEmpty())

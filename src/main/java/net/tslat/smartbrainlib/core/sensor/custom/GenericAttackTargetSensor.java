@@ -7,9 +7,10 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
 /**
@@ -23,7 +24,7 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
 public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	@Override
 	protected MemoryModuleType<LivingEntity> getMemory() {
-		return MemoryModuleType.NEAREST_ATTACKABLE;
+		return SBLMemoryTypes.NEAREST_ATTACKABLE.get();
 	}
 
 	@Override

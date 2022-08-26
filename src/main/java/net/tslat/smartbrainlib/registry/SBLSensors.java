@@ -11,8 +11,6 @@ import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
 import net.tslat.smartbrainlib.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.AxolotlSpecificSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.FrogSpecificSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.HoglinSpecificSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.InWaterSensor;
@@ -28,7 +26,6 @@ import net.tslat.smartbrainlib.core.sensor.vanilla.NearestItemSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.PiglinBruteSpecificSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.PiglinSpecificSensor;
 import net.tslat.smartbrainlib.core.sensor.vanilla.SecondaryPoiSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.WardenSpecificSensor;
 
 /**
  * Registry class for {@link net.tslat.smartbrainlib.core.sensor.ExtendedSensor} implementations
@@ -51,12 +48,9 @@ public final class SBLSensors {
 	public static final RegistryObject<SensorType<InWaterSensor<?>>> IN_WATER = register("in_water", InWaterSensor::new);
 
 	// Entity Specific
-	public static final RegistryObject<SensorType<FrogSpecificSensor<?>>> FROG_SPECIFIC = register("frog_specific", FrogSpecificSensor::new);
-	public static final RegistryObject<SensorType<AxolotlSpecificSensor<?>>> AXOLOTL_SPECIFIC = register("axolotl_specific", AxolotlSpecificSensor::new);
 	public static final RegistryObject<SensorType<PiglinSpecificSensor<?>>> PIGLIN_SPECIFIC = register("piglin_specific", PiglinSpecificSensor::new);
 	public static final RegistryObject<SensorType<PiglinBruteSpecificSensor<?>>> PIGLIN_BRUTE_SPECIFIC = register("piglin_brute_specific", PiglinBruteSpecificSensor::new);
 	public static final RegistryObject<SensorType<HoglinSpecificSensor<?>>> HOGLIN_SPECIFIC = register("hoglin_specific", HoglinSpecificSensor::new);
-	public static final RegistryObject<SensorType<WardenSpecificSensor<?>>> WARDEN_SPECIFIC = register("warden_speciifc", WardenSpecificSensor::new);
 
 	// Custom
 	public static final RegistryObject<SensorType<IncomingProjectilesSensor<?>>> INCOMING_PROJECTILES = register("incoming_projectiles", IncomingProjectilesSensor::new);

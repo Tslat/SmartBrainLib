@@ -1,17 +1,18 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.util.Unit;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that sets or clears the {@link MemoryModuleType#IS_IN_WATER} memory depending on certain criteria. <br>
@@ -22,7 +23,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.IS_IN_WATER);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {SBLMemoryTypes.IS_IN_WATER.get()});
 
 	public InWaterSensor() {
 		super((entity2, entity) -> entity.isInWater());
@@ -39,12 +40,12 @@ public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E>
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
+	protected void doTick(ServerWorld level, E entity) {
 		if (predicate().test(entity, entity)) {
-			BrainUtils.setMemory(entity, MemoryModuleType.IS_IN_WATER, Unit.INSTANCE);
+			BrainUtils.setMemory(entity, SBLMemoryTypes.IS_IN_WATER.get(), Unit.INSTANCE);
 		}
 		else {
-			BrainUtils.clearMemory(entity, MemoryModuleType.IS_IN_WATER);
+			BrainUtils.clearMemory(entity, SBLMemoryTypes.IS_IN_WATER.get());
 		}
 	}
 }

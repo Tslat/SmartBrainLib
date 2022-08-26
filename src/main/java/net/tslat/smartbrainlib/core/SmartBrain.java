@@ -30,7 +30,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		super(memories, ImmutableList.of(), ImmutableList.of(), saveMemories ? () -> Brain.codec(memories, convertSensorsToTypes(sensors)) : SmartBrain::emptyBrainCodec);
 
 		for (ExtendedSensor<E> sensor : sensors) {
-			this.sensors.put((SensorType<? extends Sensor<E>>)sensor.type(), sensor);
+			this.sensors.put((SensorType<? extends Sensor<E>>)(Object)sensor.type(), sensor);
 		}
 	}
 
@@ -116,7 +116,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		List<SensorType<? extends Sensor<? super E>>> types = new ObjectArrayList<>(sensors.size());
 
 		for (ExtendedSensor<?> sensor : sensors) {
-			types.add((SensorType<? extends Sensor<? super E>>)sensor.type());
+			types.add((SensorType<? extends Sensor<? super E>>)(Object)sensor.type());
 		}
 
 		return types;

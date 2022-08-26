@@ -1,21 +1,21 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.WitherSkeleton;
-import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
-import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.monster.WitherSkeletonEntity;
+import net.minecraft.entity.monster.piglin.AbstractPiglinEntity;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinBruteSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br>
@@ -23,7 +23,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEARBY_ADULT_PIGLINS);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.NEARBY_ADULT_PIGLINS});
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
@@ -36,15 +36,15 @@ public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedS
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
+	protected void doTick(ServerWorld level, E entity) {
 		Brain<?> brain = entity.getBrain();
-		List<AbstractPiglin> nearbyPiglins = new ObjectArrayList<>();
+		List<AbstractPiglinEntity> nearbyPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (Mob)entities.findClosest(target -> target instanceof WitherSkeleton || target instanceof WitherBoss).orElse(null)));
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (MobEntity)entities.findClosest(target -> target instanceof WitherSkeletonEntity || target instanceof WitherEntity).orElse(null)));
+		BrainUtils.withMemory(brain, MemoryModuleType.LIVING_ENTITIES, entities -> {
 			for (LivingEntity target : entities) {
-				if (target instanceof AbstractPiglin piglin && piglin.isAdult())
-					nearbyPiglins.add(piglin);
+				if (target instanceof AbstractPiglinEntity && ((AbstractPiglinEntity)target).isAdult())
+					nearbyPiglins.add((AbstractPiglinEntity) target);
 			}
 		});
 

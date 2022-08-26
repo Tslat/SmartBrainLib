@@ -1,17 +1,17 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY} memory by checking if any of the detected nearby entities are {@link net.minecraft.world.entity.animal.IronGolem Iron Golems}. <br>
@@ -25,7 +25,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.GOLEM_DETECTED_RECENTLY});
 
 	private int timeToRemember = 600;
 
@@ -57,8 +57,8 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entityList -> {
+	protected void doTick(ServerWorld level, E entity) {
+		BrainUtils.withMemory(entity, MemoryModuleType.LIVING_ENTITIES, entityList -> {
 			if (entityList.isEmpty())
 				return;
 

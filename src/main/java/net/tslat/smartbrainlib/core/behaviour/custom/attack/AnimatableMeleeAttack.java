@@ -12,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.util.Hand;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.server.ServerWorld;
@@ -27,7 +28,7 @@ import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
  * @param <E> The entity
  */
 public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair<MemoryModuleType<?>, MemoryModuleStatus>[] {new Pair(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), new Pair(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT)});
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {new Pair(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), new Pair(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT)});
 
 	private Function<E, Integer> attackIntervalSupplier = entity -> 20;
 

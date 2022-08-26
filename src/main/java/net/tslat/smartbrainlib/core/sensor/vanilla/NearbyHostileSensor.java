@@ -1,19 +1,21 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.BiPredicate;
+
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.tslat.smartbrainlib.core.sensor.EntityFilteringSensor;
+import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by checking the existing visible entities for nearby hostiles. <br>

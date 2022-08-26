@@ -1,21 +1,21 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that looks for the nearest item entity in the surrounding area.<br>
@@ -27,13 +27,13 @@ import java.util.List;
  * </ul>
  * @param <E> The entity
  */
-public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+public class NearestItemSensor<E extends MobEntity> extends PredicateSensor<ItemEntity, E> {
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM});
 
-	protected Vec3 radius = new Vec3(32, 16, 32);
+	protected Vector3d radius = new Vector3d(32, 16, 32);
 
 	public NearestItemSensor() {
-		super((item, entity) -> entity.wantsToPickUp(item.getItem()) && entity.hasLineOfSight(item));
+		super((item, entity) -> entity.wantsToPickUp(item.getItem()) && entity.canSee(item));
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 	 * @return this
 	 */
 	public NearestItemSensor<E> setRadius(double radius) {
-		return setRadius(new Vec3(radius, radius, radius));
+		return setRadius(new Vector3d(radius, radius, radius));
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 	 * @param radius The radius triplet
 	 * @return this
 	 */
-	public NearestItemSensor<E> setRadius(Vec3 radius) {
+	public NearestItemSensor<E> setRadius(Vector3d radius) {
 		this.radius = radius;
 
 		return this;
@@ -69,7 +69,7 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, EntityRetrievalUtil.getNearestEntity(level, entity.getBoundingBox().inflate(this.radius.x(), this.radius.y(), this.radius.z()), entity.position(), obj -> obj instanceof ItemEntity item && predicate().test(item, entity)));
+	protected void doTick(ServerWorld level, E entity) {
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, EntityRetrievalUtil.getNearestEntity(level, entity.getBoundingBox().inflate(this.radius.x(), this.radius.y(), this.radius.z()), entity.position(), obj -> obj instanceof ItemEntity && predicate().test((ItemEntity)obj, entity)));
 	}
 }

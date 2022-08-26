@@ -1,27 +1,27 @@
 package net.tslat.smartbrainlib.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.util.DamageSource;
+import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that sets the memory state for the last damage source and attacker.
  *
  * @param <E> The entity
  */
-public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY);
+public class HurtBySensor<E extends MobEntity> extends PredicateSensor<DamageSource, E> {
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.wrap(new MemoryModuleType[] {MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY});
 
 	public HurtBySensor() {
 		super((damageSource, entity) -> true);
@@ -38,7 +38,7 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 	}
 
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
+	protected void doTick(ServerWorld level, E entity) {
 		Brain<?> brain = entity.getBrain();
 		DamageSource damageSource = entity.getLastDamageSource();
 
@@ -48,8 +48,8 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 		else if (predicate().test(damageSource, entity)) {
 			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
 
-			if (damageSource.getEntity() instanceof LivingEntity attacker && attacker.isAlive() && attacker.level == entity.level)
-				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
+			if (damageSource.getEntity() instanceof LivingEntity && ((LivingEntity)damageSource.getEntity()).isAlive() && ((LivingEntity)damageSource.getEntity()).level == entity.level)
+				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, ((LivingEntity)damageSource.getEntity()));
 		}
 		else {
 			BrainUtils.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {
