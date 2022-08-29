@@ -12,7 +12,6 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.memory.WalkTarget;
 import net.minecraft.util.math.EntityPosWrapper;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
@@ -21,7 +20,7 @@ import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
  * @param <E> The entity
  */
 public class SetWalkTargetToAttackTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT)});
 
 	private float speedModifier = 1;
 
@@ -46,7 +45,7 @@ public class SetWalkTargetToAttackTarget<E extends MobEntity> extends ExtendedBe
 		Brain<?> brain = entity.getBrain();
 		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
 
-		if (entity.getSensing().canSee(target) && BehaviorUtils.isWithinAttackRange(entity, target, 1)) {
+		if (entity.getSensing().canSee(target) && BrainUtils.isWithinAttackRange(entity, target, 1)) {
 			BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
 		}
 		else {

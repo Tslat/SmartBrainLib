@@ -13,6 +13,7 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Sets the attack target of the entity if one is available. <br>
@@ -23,12 +24,12 @@ import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
  * @see net.minecraft.world.entity.ai.behavior.StartAttacking
  */
 public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleStatus.VALUE_PRESENT));
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> CUSTOM_TARGETING_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(SBLMemoryTypes.NEAREST_ATTACKABLE.get(), MemoryModuleStatus.VALUE_PRESENT)});
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> CUSTOM_TARGETING_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
 	private final boolean usingNearestAttackable;
 	private Predicate<E> canAttackPredicate = entity -> true;
-	private Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
+	private Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_ATTACKABLE.get());
 
 	public SetAttackTarget() {
 		this(true);

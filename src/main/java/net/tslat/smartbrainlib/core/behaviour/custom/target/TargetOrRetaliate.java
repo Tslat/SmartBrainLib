@@ -16,6 +16,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Sets the attack target of the entity based, utilising a few sources of targets. <br>
@@ -32,12 +33,12 @@ import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
  * @param <E> The entity
  */
 public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleStatus.REGISTERED));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryModuleStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_ATTACKABLE.get(), MemoryModuleStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryModuleStatus.REGISTERED)});
 
 	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).isCreative());
 
 	private LivingEntity toTarget = null;
-	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
+	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = SBLMemoryTypes.NEAREST_ATTACKABLE.get();
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
@@ -75,7 +76,7 @@ public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E>
 			this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 
 		if (this.toTarget == null) {
-			NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+			NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 
 			if (nearbyEntities != null)
 				this.toTarget = nearbyEntities.findClosest(canAttackPredicate).orElse(null);

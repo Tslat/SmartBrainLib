@@ -20,7 +20,7 @@ import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
  * @param <E> The entity
  */
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleStatus.VALUE_PRESENT)});
 
 	private Predicate<PlayerEntity> predicate = pl -> true;
 

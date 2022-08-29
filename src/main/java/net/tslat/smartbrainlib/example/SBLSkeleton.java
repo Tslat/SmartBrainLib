@@ -59,14 +59,14 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 
 	@Override
 	public List<ExtendedSensor<SBLSkeleton>> getSensors() {
-		return ObjectArrayList.of(
+		return ObjectArrayList.wrap( new ExtendedSensor[] {
 				new NearbyPlayersSensor<>(), 							// Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>()
 						.setPredicate((target, entity) ->
 								target instanceof PlayerEntity ||
 								target instanceof IronGolemEntity ||
 								target instanceof WolfEntity ||
-								(target instanceof TurtleEntity turtle && turtle.isBaby() && !turtle.isInWater())));
+								(target instanceof TurtleEntity && target.isBaby() && !target.isInWater()))});
 	}																	// Keep track of nearby entities the Skeleton is interested in
 
 	@Override

@@ -7,16 +7,17 @@ import java.util.function.Predicate;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Try to move away from certain entities when they get too close. <br>
@@ -27,8 +28,8 @@ import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
  *     <li>1x move speed modifier</li>
  * </ul>
  */
-public class AvoidEntity<E extends MobEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleStatus.VALUE_PRESENT));
+public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryModuleStatus.VALUE_PRESENT)});
 
 	private Predicate<LivingEntity> avoidingPredicate = target -> false;
 	private float noCloserThanSqr = 9f;
@@ -88,7 +89,7 @@ public class AvoidEntity<E extends MobEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
-		Optional<LivingEntity> target = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(this.avoidingPredicate);
+		Optional<LivingEntity> target = BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).findClosest(this.avoidingPredicate);
 
 		if (!target.isPresent())
 			return false;
@@ -99,7 +100,7 @@ public class AvoidEntity<E extends MobEntity> extends ExtendedBehaviour<E> {
 		if (distToTarget > this.noCloserThanSqr)
 			return false;
 
-		Vector3d runPos = DefaultRandomPos.getPosAway(entity, 16, 7, avoidingEntity.position());
+		Vector3d runPos = RandomPositionGenerator.getPosAvoid(entity, 16, 7, avoidingEntity.position());
 
 		if (runPos == null || avoidingEntity.distanceToSqr(runPos.x, runPos.y, runPos.z) < distToTarget)
 			return false;

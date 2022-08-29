@@ -17,7 +17,7 @@ import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
  * @param <E> The entity
  */
 public class LookAtTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_PRESENT)});
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {

@@ -9,8 +9,13 @@ import javax.annotation.Nullable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.BrainUtil;
 import net.minecraft.entity.ai.brain.Memory;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ShootableItem;
+import net.minecraft.util.math.EntityPosWrapper;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -293,5 +298,33 @@ public final class BrainUtils {
 		else {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
 		}
+	}
+
+	public static void lookAtEntity(LivingEntity entity, LivingEntity target) {
+		entity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
+	}
+	
+	public static boolean canSee(LivingEntity pLivingEntity, LivingEntity pTarget) {
+		Brain<?> brain = pLivingEntity.getBrain();
+		if (!brain.hasMemoryValue(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get())) {
+			return false;
+		}
+		return brain.getMemory(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).get().contains(pTarget);
+	}
+
+	public static boolean isWithinAttackRange(MobEntity entity, LivingEntity target, int maxDistance) {
+		Item item = entity.getMainHandItem().getItem();
+		boolean entityInRange = BrainUtil.isWithinAttackRange(entity, target, maxDistance);
+		if(item == null) {
+			return entityInRange;
+		}
+		if (item instanceof ShootableItem) {
+			if (entity.canFireProjectileWeapon((ShootableItem) item)) {
+				int i = ((ShootableItem) item).getDefaultProjectileRange() - maxDistance;
+				return entity.closerThan(target, (double) i);
+			}
+		}
+
+		return entityInRange;
 	}
 }

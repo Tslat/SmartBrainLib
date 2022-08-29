@@ -14,7 +14,6 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
@@ -29,7 +28,7 @@ import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
  * @param <E>
  */
 public class AnimatableRangedAttack<E extends LivingEntity & IRangedAttackMob> extends DelayedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT)});
 
 	protected Function<E, Integer> attackIntervalSupplier = entity -> entity.level.getDifficulty() == Difficulty.HARD ? 20 : 40;
 	protected float attackRadius;
@@ -74,13 +73,13 @@ public class AnimatableRangedAttack<E extends LivingEntity & IRangedAttackMob> e
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return BehaviorUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
+		return BrainUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
 	}
 
 	@Override
 	protected void start(E entity) {
 		entity.swing(Hand.MAIN_HAND);
-		BehaviorUtils.lookAtEntity(entity, this.target);
+		BrainUtils.lookAtEntity(entity, this.target);
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & IRangedAttackMob> e
 		if (this.target == null)
 			return;
 
-		if (!BehaviorUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, 1);

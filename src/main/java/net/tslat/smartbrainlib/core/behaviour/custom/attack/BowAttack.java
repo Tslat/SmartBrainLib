@@ -5,7 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.item.BowItem;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
@@ -19,7 +18,7 @@ public class BowAttack<E extends LivingEntity & IRangedAttackMob> extends Animat
 
 	@Override
 	protected void start(E entity) {
-		BehaviorUtils.lookAtEntity(entity, this.target);
+		BrainUtils.lookAtEntity(entity, this.target);
 		entity.startUsingItem(ProjectileHelper.getWeaponHoldingHand(entity, item -> item instanceof BowItem));
 	}
 
@@ -28,7 +27,7 @@ public class BowAttack<E extends LivingEntity & IRangedAttackMob> extends Animat
 		if (this.target == null)
 			return;
 
-		if (!BehaviorUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, BowItem.getPowerForTime(entity.getTicksUsingItem()));

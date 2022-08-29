@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -15,13 +16,12 @@ import net.minecraft.entity.ai.brain.memory.WalkTarget;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
 
-public class MoveToWalkTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.PATH, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_PRESENT));
+public class MoveToWalkTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.PATH, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_PRESENT)});
 
 	@Nullable
 	protected Path path;
@@ -131,7 +131,7 @@ public class MoveToWalkTarget<E extends MobEntity> extends ExtendedBehaviour<E> 
 		if (this.path != null)
 			return true;
 
-		Vector3d newTargetPos = DefaultRandomPos.getPosTowards(entity, 10, 7, Vector3d.atBottomCenterOf(pos), Math.PI / 2);
+		Vector3d newTargetPos = RandomPositionGenerator.getPosTowards(entity, 10, 7, Vector3d.atBottomCenterOf(pos), Math.PI / 2);
 
 		if (newTargetPos != null) {
 			this.path = entity.getNavigation().createPath(newTargetPos.x(), newTargetPos.y(), newTargetPos.z(), 0);

@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.core.behaviour.custom.target;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
@@ -9,8 +10,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
-import net.minecraft.util.valueproviders.ConstantFloat;
-import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.ExtendedBehaviour;
@@ -21,9 +20,9 @@ import net.tslat.smartbrainlib.object.FreePositionTracker;
  * @param <E> The entity
  */
 public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORIES = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
-	private FloatProvider runChance = ConstantFloat.of(0.02f);
+	private Function<Random, Float> runChance = (rand) -> 0.02f;
 	private Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
 
 	/**
@@ -31,7 +30,7 @@ public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehavio
 	 * @param chance The float provider
 	 * @return this
 	 */
-	public SetRandomLookTarget<E> lookChance(FloatProvider chance) {
+	public SetRandomLookTarget<E> lookChance(Function<Random, Float> chance) {
 		this.runChance = chance;
 
 		return this;
@@ -50,7 +49,7 @@ public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehavio
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
-		return entity.getRandom().nextFloat() < this.runChance.sample(entity.getRandom());
+		return entity.getRandom().nextFloat() < this.runChance.apply(entity.getRandom());
 	}
 
 	@Override

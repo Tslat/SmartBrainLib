@@ -20,7 +20,7 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
  * @param <E> The entity
  */
 public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE.get(), MemoryModuleStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE.get(), MemoryModuleStatus.VALUE_PRESENT)});
 
 	protected Function<E, Integer> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};

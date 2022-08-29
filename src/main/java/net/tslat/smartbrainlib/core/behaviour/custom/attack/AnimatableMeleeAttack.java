@@ -10,11 +10,10 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.BrainUtil;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.util.Hand;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.core.behaviour.DelayedBehaviour;
@@ -59,13 +58,13 @@ public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return BehaviorUtils.canSee(entity, this.target) && entity.isWithinMeleeAttackRange(this.target);
+		return BrainUtils.canSee(entity, this.target) && BrainUtil.isWithinMeleeAttackRange(entity, this.target);
 	}
 
 	@Override
 	protected void start(E entity) {
 		entity.swing(Hand.MAIN_HAND);
-		BehaviorUtils.lookAtEntity(entity, this.target);
+		BrainUtils.lookAtEntity(entity, this.target);
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour
 		if (this.target == null)
 			return;
 
-		if (!entity.getSensing().canSee(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+		if (!entity.getSensing().canSee(this.target) || !BrainUtil.isWithinMeleeAttackRange(entity, this.target))
 			return;
 
 		entity.doHurtTarget(this.target);
