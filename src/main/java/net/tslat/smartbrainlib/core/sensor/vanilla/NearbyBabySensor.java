@@ -39,6 +39,6 @@ public class NearbyBabySensor<E extends LivingEntity> extends EntityFilteringSen
 	@Nullable
 	@Override
 	protected List<LivingEntity> findMatches(E entity, NearestVisibleLivingEntities matcher) {
-		return ImmutableList.copyOf(matcher.findAll(target -> predicate().test(target, entity)));
+		return ImmutableList.copyOf(matcher.findAllMatchingEntries(target -> predicate().test(target, entity)));
 	}
 }

@@ -37,6 +37,6 @@ public class NearbyAdultSensor<E extends AgeableEntity> extends EntityFilteringS
 	@Nullable
 	@Override
 	protected AgeableEntity findMatches(E entity, NearestVisibleLivingEntities matcher) {
-		return (AgeableEntity)matcher.findClosest(target -> predicate().test(target, entity)).orElse(null);
+		return (AgeableEntity)matcher.findFirstMatchingEntry(target -> predicate().test(target, entity)).orElse(null);
 	}
 }

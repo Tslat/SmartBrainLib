@@ -91,6 +91,6 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 	@Nullable
 	@Override
 	protected LivingEntity findMatches(E entity, NearestVisibleLivingEntities matcher) {
-		return matcher.findClosest(target -> predicate().test(target, entity)).orElse(null);
+		return matcher.findFirstMatchingEntry(target -> predicate().test(target, entity)).orElse(null);
 	}
 }

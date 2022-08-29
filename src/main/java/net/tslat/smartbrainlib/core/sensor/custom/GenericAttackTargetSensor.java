@@ -35,7 +35,7 @@ public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFil
 	@Nullable
 	@Override
 	protected LivingEntity findMatches(E entity, NearestVisibleLivingEntities matcher) {
-		return matcher.findClosest(target -> predicate().test(target, entity)).orElse(null);
+		return matcher.findFirstMatchingEntry(target -> predicate().test(target, entity)).orElse(null);
 	}
 
 	@Override

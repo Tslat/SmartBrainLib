@@ -60,7 +60,7 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 			List<AbstractPiglinEntity> visibleAdultPiglins = new ObjectArrayList<>();
 			int adultHoglinCount = 0;
 
-			for (LivingEntity target : entities.findAll(obj -> true)) {
+			for (LivingEntity target : entities.findAllMatchingEntries(obj -> true)) {
 				if (target instanceof HoglinEntity) {
 					HoglinEntity hoglin = (HoglinEntity)target;
 					if (hoglin.isBaby() && nearestBabyHoglin == null) {

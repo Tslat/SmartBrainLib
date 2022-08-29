@@ -79,7 +79,7 @@ public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E>
 			NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 
 			if (nearbyEntities != null)
-				this.toTarget = nearbyEntities.findClosest(canAttackPredicate).orElse(null);
+				this.toTarget = nearbyEntities.findFirstMatchingEntry(canAttackPredicate).orElse(null);
 
 			if (this.toTarget != null)
 				return true;

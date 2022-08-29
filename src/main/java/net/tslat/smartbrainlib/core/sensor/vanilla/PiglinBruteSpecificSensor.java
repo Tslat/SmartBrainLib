@@ -40,7 +40,7 @@ public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedS
 		Brain<?> brain = entity.getBrain();
 		List<AbstractPiglinEntity> nearbyPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (MobEntity)entities.findClosest(target -> target instanceof WitherSkeletonEntity || target instanceof WitherEntity).orElse(null)));
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (MobEntity)entities.findFirstMatchingEntry(target -> target instanceof WitherSkeletonEntity || target instanceof WitherEntity).orElse(null)));
 		BrainUtils.withMemory(brain, MemoryModuleType.LIVING_ENTITIES, entities -> {
 			for (LivingEntity target : entities) {
 				if (target instanceof AbstractPiglinEntity && ((AbstractPiglinEntity)target).isAdult())

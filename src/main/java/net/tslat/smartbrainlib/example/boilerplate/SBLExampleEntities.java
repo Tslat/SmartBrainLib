@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.IFactory;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -36,6 +37,6 @@ public final class SBLExampleEntities {
 	}
 
 	private static void registerStats(final EntityAttributeCreationEvent ev) {
-		ev.put(SBL_SKELETON.get(), Skeleton.createAttributes().build());
+		ev.put(SBL_SKELETON.get(), SkeletonEntity.createAttributes().build());
 	}
 }

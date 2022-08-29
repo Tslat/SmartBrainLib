@@ -89,7 +89,7 @@ public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> 
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
-		Optional<LivingEntity> target = BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).findClosest(this.avoidingPredicate);
+		Optional<LivingEntity> target = BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).findFirstMatchingEntry(this.avoidingPredicate);
 
 		if (!target.isPresent())
 			return false;
