@@ -20,6 +20,7 @@ public final class SBLMemoryTypes {
 
 	public static final RegistryObject<MemoryModuleType<List<Projectile>>> INCOMING_PROJECTILES = register("incoming_projectiles");
 	public static final RegistryObject<MemoryModuleType<Boolean>> TARGET_UNREACHABLE = register("target_unreachable");
+	public static final RegistryObject<MemoryModuleType<Boolean>> SPECIAL_ATTACK_COOLDOWN = register("special_attack_cooldown");
 
 	private static <T> RegistryObject<MemoryModuleType<T>> register(String id) {
 		return register(id, null);
