@@ -1,21 +1,25 @@
 package net.tslat.smartbrainlib.object;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectIterators;
-import net.minecraft.util.RandomSource;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class SBLShufflingList<T> implements Iterable<T> {
 	private final List<WeightedEntry<T>> entries;
-	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
+	private final ThreadLocal<Random> random = ThreadLocal.withInitial(Random::new);
 
 	public SBLShufflingList() {
 		this.entries = new ObjectArrayList<>();
@@ -34,7 +38,7 @@ public class SBLShufflingList<T> implements Iterable<T> {
 	}
 
 	public SBLShufflingList<T> shuffle() {
-		this.entries.forEach(entry -> entry.setShuffledWeight(this.random.nextFloat()));
+		this.entries.forEach(entry -> entry.setShuffledWeight(this.random.get().nextFloat()));
 		this.entries.sort(Comparator.comparingDouble(WeightedEntry::getShuffledWeight));
 
 		return this;
@@ -49,10 +53,77 @@ public class SBLShufflingList<T> implements Iterable<T> {
 		return this.entries.get(index).get();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Iterator<T> iterator() {
-		return new ObjectIterators.AbstractIndexBasedIterator<>(0, 0) {
+		final ArrayList<T> al = new ArrayList<>();
+		this.entries.forEach(we -> al.add(we.get()));
+		return new ListIterator<T>() {
+			
+			protected int currentIndex = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.currentIndex < SBLShufflingList.this.entries.size();
+			}
+
+			@Override
+			public T next() {
+				this.currentIndex++;
+				if(this.hasNext()) {
+					return (T) SBLShufflingList.this.entries.get(currentIndex);
+				}
+				throw new NoSuchElementException();
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.currentIndex > 0;
+			}
+
+			@Override
+			public T previous() {
+				this.currentIndex--;
+				if(this.hasPrevious()) {
+					return (T) SBLShufflingList.this.entries.get(currentIndex);
+				}
+				throw new NoSuchElementException();
+			}
+
+			@Override
+			public int nextIndex() {
+				if(this.hasNext()) {
+					this.currentIndex++;
+				}
+				return this.currentIndex;
+			}
+
+			@Override
+			public int previousIndex() {
+				if(this.hasPrevious()) {
+					this.currentIndex--;
+				}
+				return this.currentIndex;
+			}
+
+			@Override
+			public void remove() {
+				SBLShufflingList.this.entries.remove(currentIndex);
+			}
+
+			@Override
+			public void set(T e) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public void add(T e) {
+				throw new UnsupportedOperationException();
+			}
+			
+		};
+		/*return new ObjectArrayIterator<T>((T[]) al.toArray(), 0, al.size()) {
+			
 			@Override
 			protected T get(int location) {
 				return SBLShufflingList.this.entries.get(location).get();
@@ -67,7 +138,7 @@ public class SBLShufflingList<T> implements Iterable<T> {
 			protected int getMaxPos() {
 				return SBLShufflingList.this.entries.size();
 			}
-		};
+		};*/
 	}
 
 	@Override
