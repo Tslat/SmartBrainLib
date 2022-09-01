@@ -1,19 +1,21 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.ai.util.LandRandomPos;
-import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.SquareRadius;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.memory.WalkTarget;
+import net.minecraft.util.math.vector.Vector3d;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.object.SquareRadius;
 
 /**
  * Set a random position to walk to. <br>
@@ -25,14 +27,14 @@ import java.util.List;
  * </ul>
  * @param <E>
  */
-public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+public class SetRandomWalkTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
 	protected float speedMod = 1;
 	protected SquareRadius radius = new SquareRadius(10, 7);
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
@@ -70,7 +72,7 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 
 	@Override
 	protected void start(E entity) {
-		Vec3 targetPos = getTargetPos(entity);
+		Vector3d targetPos = getTargetPos(entity);
 
 		if (targetPos == null) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
@@ -81,7 +83,7 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	}
 
 	@Nullable
-	protected Vec3 getTargetPos(E entity) {
-		return LandRandomPos.getPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
+	protected Vector3d getTargetPos(E entity) {
+		return RandomPositionGenerator.getLandPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
 	}
 }
