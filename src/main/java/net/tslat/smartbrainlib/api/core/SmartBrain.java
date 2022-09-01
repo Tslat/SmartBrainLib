@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -201,7 +202,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public Brain<E> copyWithoutBehaviors() {
-		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>)pair.getSecond()).toList(), null, false);
+		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().collect(Collectors.toList()), this.sensors.stream().map(pair -> (ExtendedSensor<E>)pair.getSecond()).collect(Collectors.toList()), null, false);
 
 		for(Entry<MemoryModuleType<?>, Optional<? extends Memory<?>>> entry : this.memories.entrySet()) {
 			MemoryModuleType<?> memoryType = entry.getKey();
@@ -229,11 +230,11 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return runningBehaviours;
 	}
 
-	@Override
+	//@Override
 	public void removeAllBehaviors() {
 		this.behaviours.clear();
 	}
-
+	
 	@Override
 	public void addActivityAndRemoveMemoriesWhenStopped(Activity activity, ImmutableList<? extends Pair<Integer, ? extends Task<? super E>>> tasks, Set<Pair<MemoryModuleType<?>, MemoryModuleStatus>> memorieStatuses, Set<MemoryModuleType<?>> memoryTypes) {
 		this.activityRequirements.put(activity, memorieStatuses);
