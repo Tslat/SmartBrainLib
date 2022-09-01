@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -15,11 +14,12 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
+import io.netty.util.internal.ThreadLocalRandom;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SBLShufflingList<T> implements Iterable<T> {
 	private final List<WeightedEntry<T>> entries;
-	private final ThreadLocal<Random> random = ThreadLocal.withInitial(Random::new);
+	private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
 	public SBLShufflingList() {
 		this.entries = new ObjectArrayList<>();
@@ -38,7 +38,7 @@ public class SBLShufflingList<T> implements Iterable<T> {
 	}
 
 	public SBLShufflingList<T> shuffle() {
-		this.entries.forEach(entry -> entry.setShuffledWeight(this.random.get().nextFloat()));
+		this.entries.forEach(entry -> entry.setShuffledWeight(this.random.nextFloat()));
 		this.entries.sort(Comparator.comparingDouble(WeightedEntry::getShuffledWeight));
 
 		return this;
