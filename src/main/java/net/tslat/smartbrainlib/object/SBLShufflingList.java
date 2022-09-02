@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -16,6 +15,7 @@ import com.mojang.datafixers.util.Pair;
 
 import io.netty.util.internal.ThreadLocalRandom;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 
 public class SBLShufflingList<T> implements Iterable<T> {
 	private final List<WeightedEntry<T>> entries;
@@ -58,87 +58,107 @@ public class SBLShufflingList<T> implements Iterable<T> {
 	public Iterator<T> iterator() {
 		final ArrayList<T> al = new ArrayList<>();
 		this.entries.forEach(we -> al.add(we.get()));
-		return new ListIterator<T>() {
-			
-			protected int currentIndex = 0;
+		
+		return new ObjectListIterator<T>() {
+			int pointer = 0;
+            int last = -1;
 
-			@Override
-			public boolean hasNext() {
-				return this.currentIndex < SBLShufflingList.this.entries.size();
-			}
+            @Override
+            public boolean hasNext() {
+                return this.pointer < SBLShufflingList.this.entries.size();
+            }
 
-			@Override
-			public T next() {
-				this.currentIndex++;
-				if(this.hasNext()) {
-					return (T) SBLShufflingList.this.entries.get(currentIndex);
-				}
-				throw new NoSuchElementException();
-			}
+            @Override
+            public boolean hasPrevious() {
+                return this.pointer > 0;
+            }
 
-			@Override
-			public boolean hasPrevious() {
-				return this.currentIndex > 0;
-			}
+            @Override
+            public T next() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
 
-			@Override
-			public T previous() {
-				this.currentIndex--;
-				if(this.hasPrevious()) {
-					return (T) SBLShufflingList.this.entries.get(currentIndex);
-				}
-				throw new NoSuchElementException();
-			}
+                return SBLShufflingList.this.entries.get(this.last = this.pointer++).object;
+            }
 
-			@Override
-			public int nextIndex() {
-				if(this.hasNext()) {
-					this.currentIndex++;
-				}
-				return this.currentIndex;
-			}
+            @Override
+            public T previous() {
+                if (!hasPrevious())
+                    throw new NoSuchElementException();
 
-			@Override
-			public int previousIndex() {
-				if(this.hasPrevious()) {
-					this.currentIndex--;
-				}
-				return this.currentIndex;
-			}
+                return SBLShufflingList.this.entries.get(this.last = --this.pointer).object;
+            }
 
-			@Override
-			public void remove() {
-				SBLShufflingList.this.entries.remove(currentIndex);
-			}
+            @Override
+            public int nextIndex() {
+                return this.pointer;
+            }
 
-			@Override
-			public void set(T e) {
-				throw new UnsupportedOperationException();
-			}
+            @Override
+            public int previousIndex() {
+                return this.pointer - 1;
+            }
 
-			@Override
-			public void add(T e) {
-				throw new UnsupportedOperationException();
-			}
-			
+            @Override
+            public void remove() {
+                if (this.last == -1)
+                    throw new IllegalStateException();
+
+                SBLShufflingList.this.entries.remove(this.last);
+
+                if (this.last < this.pointer)
+                    --this.pointer;
+
+                this.last = -1;
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super T> consumer) {
+                while(this.pointer < SBLShufflingList.this.entries.size()) {
+                    consumer.accept(SBLShufflingList.this.entries.get(this.last = this.pointer++).object);
+                }
+            }
+
+            @Override
+            public int back(int positions) {
+                if (positions < 0)
+                    throw new IllegalArgumentException("Argument must not be negative: " + positions);
+
+                int remaining = SBLShufflingList.this.entries.size() - this.pointer;
+
+                if (positions < remaining) {
+                    this.pointer -= positions;
+                }
+                else {
+                    positions = remaining;
+                    this.pointer = 0;
+                }
+
+                this.last = this.pointer;
+
+                return positions;
+            }
+
+            @Override
+            public int skip(int positions) {
+                if (positions < 0)
+                    throw new IllegalArgumentException("Argument must not be negative: " + positions);
+
+                int remaining = SBLShufflingList.this.entries.size() - this.pointer;
+
+                if (positions < remaining) {
+                    this.pointer += positions;
+                }
+                else {
+                    positions = remaining;
+                    this.pointer = SBLShufflingList.this.entries.size();
+                }
+
+                this.last = this.pointer - 1;
+
+                return positions;
+            }
 		};
-		/*return new ObjectArrayIterator<T>((T[]) al.toArray(), 0, al.size()) {
-			
-			@Override
-			protected T get(int location) {
-				return SBLShufflingList.this.entries.get(location).get();
-			}
-
-			@Override
-			protected void remove(int location) {
-				SBLShufflingList.this.entries.remove(location);
-			}
-
-			@Override
-			protected int getMaxPos() {
-				return SBLShufflingList.this.entries.size();
-			}
-		};*/
 	}
 
 	@Override
