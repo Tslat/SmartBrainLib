@@ -322,6 +322,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		private List<Pair<Activity, List<Task<? super T>>>> behaviours;
 		
+		@SuppressWarnings("unused")
 		public List<Pair<Activity, List<Task<? super T>>>> behaviours() {
 			return behaviours;
 		}

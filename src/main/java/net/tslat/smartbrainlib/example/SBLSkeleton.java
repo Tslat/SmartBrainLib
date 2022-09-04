@@ -88,7 +88,7 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 						new SetRandomLookTarget<>()), 					// Set the look target to a random nearby location
 				new OneRandomBehaviour<>( 								// Run only one of the below behaviours, picked at random
 						new SetRandomWalkTarget<>().speedModifier(1), 				// Set the walk target to a nearby random pathable location
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60)))); // Don't walk anywhere
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(60)))); // Don't walk anywhere
 	}
 
 	@Override
