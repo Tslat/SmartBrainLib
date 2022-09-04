@@ -145,7 +145,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		}
 	}
 
-	private void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
+	protected void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
 		brain.activityRequirements.put(activity, activityGroup.getActivityStartMemoryConditions());
 
 		if (!activityGroup.getWipedMemoriesOnFinish().isEmpty())
