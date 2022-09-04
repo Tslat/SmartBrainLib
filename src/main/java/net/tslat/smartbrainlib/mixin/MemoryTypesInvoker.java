@@ -7,8 +7,8 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 
 @Mixin(MemoryModuleType.class)
 public interface MemoryTypesInvoker {
-	@Invoker("register")
-	static <U> MemoryModuleType<U> register(String id) {
+	@Invoker
+	static <U> MemoryModuleType<U> invokeRegister(String id) {
 		throw new AssertionError();
 	}
 }

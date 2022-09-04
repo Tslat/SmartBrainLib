@@ -7,6 +7,8 @@ import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 
 import net.tslat.smartbrainlib.example.boilerplate.SBLExampleEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 public class SmartBrainLib implements ModInitializer {
 	public static SBLExampleEntities MOBS;
@@ -16,6 +18,8 @@ public class SmartBrainLib implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
+		SBLMemoryTypes.init();
+		SBLSensors.init();
 		if (QuiltLoader.isDevelopmentEnvironment()) {
 			MOBS = new SBLExampleEntities();
 			SBLExampleEntities.initStats();
