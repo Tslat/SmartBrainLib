@@ -1,17 +1,20 @@
 package net.tslat.smartbrainlib.object;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectIterators;
-import net.minecraft.util.RandomSource;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectIterators;
+import net.minecraft.util.RandomSource;
 
 public class SBLShufflingList<T> implements Iterable<T> {
 	private final List<WeightedEntry<T>> entries;

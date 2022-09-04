@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.VALUE_PRESENT), Pair.of(SBLMemoryTypes.TARGET_UNREACHABLE, MemoryStatus.VALUE_PRESENT));
 
 	protected Function<E, Integer> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};
@@ -76,6 +76,6 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	@Override
 	protected void tick(E entity) {
 		if (entity.level.getGameTime() == this.reactAtTime)
-			this.callback.accept(entity, BrainUtils.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE.get()));
+			this.callback.accept(entity, BrainUtils.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE));
 	}
 }

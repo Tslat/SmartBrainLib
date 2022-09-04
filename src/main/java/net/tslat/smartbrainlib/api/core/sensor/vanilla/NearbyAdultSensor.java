@@ -1,5 +1,9 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.function.BiPredicate;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -9,11 +13,11 @@ import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import javax.annotation.Nullable;
-import java.util.function.BiPredicate;
-
 /**
- * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory by checking the existing visible entities for nearby adults of the same entity type. <br>
+ * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory
+ * by checking the existing visible entities for nearby adults of the same
+ * entity type. <br>
+ * 
  * @see net.minecraft.world.entity.ai.sensing.AdultSensor
  * @param <E> The entity
  */
@@ -25,7 +29,7 @@ public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSens
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_ADULT.get();
+		return SBLSensors.NEARBY_ADULT;
 	}
 
 	@Override
@@ -36,6 +40,6 @@ public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSens
 	@Nullable
 	@Override
 	protected AgeableMob findMatches(E entity, NearestVisibleLivingEntities matcher) {
-		return (AgeableMob)matcher.findClosest(target -> predicate().test(target, entity)).orElse(null);
+		return (AgeableMob) matcher.findClosest(target -> predicate().test(target, entity)).orElse(null);
 	}
 }

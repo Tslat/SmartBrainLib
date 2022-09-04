@@ -1,23 +1,27 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.List;
+import java.util.function.BiPredicate;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.BiPredicate;
-
 /**
- * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.AxolotlAttackablesSensor}. Not really useful, but included for completeness' sake and legibility. <br>
+ * A replication of vanilla's
+ * {@link net.minecraft.world.entity.ai.sensing.AxolotlAttackablesSensor}. Not
+ * really useful, but included for completeness' sake and legibility. <br>
  * Handles the Axolotl's hostility and targets
+ * 
  * @param <E> The entity
  */
 public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
@@ -33,7 +37,7 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.AXOLOTL_SPECIFIC.get();
+		return SBLSensors.AXOLOTL_SPECIFIC;
 	}
 
 	@Override
@@ -45,7 +49,9 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 			if (!target.isInWaterOrBubble())
 				return false;
 
-			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) && (BrainUtils.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN) || !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))
+			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES)
+					&& (BrainUtils.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN)
+							|| !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))
 				return false;
 
 			return Sensor.isEntityAttackable(entity, target);

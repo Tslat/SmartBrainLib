@@ -1,5 +1,7 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -13,15 +15,14 @@ import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import java.util.List;
-
 /**
  * A sensor that sets the memory state for the last damage source and attacker.
  *
  * @param <E> The entity
  */
 public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.HURT_BY,
+			MemoryModuleType.HURT_BY_ENTITY);
 
 	public HurtBySensor() {
 		super((damageSource, entity) -> true);
@@ -34,7 +35,7 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.HURT_BY.get();
+		return SBLSensors.HURT_BY;
 	}
 
 	@Override
@@ -44,14 +45,13 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 
 		if (damageSource == null) {
 			BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY);
-		}
-		else if (predicate().test(damageSource, entity)) {
+		} else if (predicate().test(damageSource, entity)) {
 			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
 
-			if (damageSource.getEntity() instanceof LivingEntity attacker && attacker.isAlive() && attacker.level == entity.level)
+			if (damageSource.getEntity()instanceof LivingEntity attacker && attacker.isAlive()
+					&& attacker.level == entity.level)
 				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
-		}
-		else {
+		} else {
 			BrainUtils.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {
 				if (!attacker.isAlive() || attacker.level != entity.level)
 					BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);

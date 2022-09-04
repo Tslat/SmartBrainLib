@@ -25,7 +25,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE);
 
 	private long lastUnpathableTime = 0;
 
@@ -36,7 +36,7 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.UNREACHABLE_TARGET.get();
+		return SBLSensors.UNREACHABLE_TARGET;
 	}
 
 	@Override
@@ -62,18 +62,18 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 			this.lastUnpathableTime = unpathableTime;
 		}
 		else if (this.lastUnpathableTime == unpathableTime) {
-			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE);
 		}
 		else if (this.lastUnpathableTime < unpathableTime) {
 			this.lastUnpathableTime = unpathableTime;
 
-			BrainUtils.setMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get(), target.getY() > entity.getEyeY());
+			BrainUtils.setMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE, target.getY() > entity.getEyeY());
 		}
 	}
 
 	private void resetState(Brain<?> brain) {
 		if (this.lastUnpathableTime > 0)
-			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE);
 
 		this.lastUnpathableTime = 0;
 	}

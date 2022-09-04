@@ -1,6 +1,9 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableSet;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -11,20 +14,21 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import java.util.List;
-
 /**
- * A sensor that looks for a nearby {@link net.minecraft.world.entity.ai.village.poi.PoiTypes POI} block that matches a villager's secondary profession.<br>
+ * A sensor that looks for a nearby
+ * {@link net.minecraft.world.entity.ai.village.poi.PoiTypes POI} block that
+ * matches a villager's secondary profession.<br>
  * Defaults:
  * <ul>
- *     <li>40-tick scan rate</li>
- *     <li>8x4x8 radius</li>
+ * <li>40-tick scan rate</li>
+ * <li>8x4x8 radius</li>
  * </ul>
+ * 
  * @param <E> The entity
  */
 public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
@@ -38,6 +42,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 
 	/**
 	 * Set the radius for the sensor to scan.
+	 * 
 	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
@@ -47,8 +52,9 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 
 	/**
 	 * Set the radius for the sensor to scan
+	 * 
 	 * @param xz The X/Z coordinate radius, in blocks
-	 * @param y The Y coordinate radius, in blocks
+	 * @param y  The Y coordinate radius, in blocks
 	 * @return this
 	 */
 	public SecondaryPoiSensor<E> setRadius(double xz, double y) {
@@ -64,7 +70,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.SECONDARY_POI.get();
+		return SBLSensors.SECONDARY_POI;
 	}
 
 	@Override
@@ -77,15 +83,17 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 		if (testPoiBlocks.isEmpty())
 			return;
 
-		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - (int)this.radius.xzRadius() / 2, pos.getY() - (int)this.radius.yRadius() / 2, pos.getZ() - (int)this.radius.xzRadius() / 2, pos.getX() + (int)this.radius.xzRadius() / 2, pos.getY() + (int)this.radius.yRadius() / 2, pos.getZ() + (int)this.radius.xzRadius() / 2)) {
+		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - (int) this.radius.xzRadius() / 2,
+				pos.getY() - (int) this.radius.yRadius() / 2, pos.getZ() - (int) this.radius.xzRadius() / 2,
+				pos.getX() + (int) this.radius.xzRadius() / 2, pos.getY() + (int) this.radius.yRadius() / 2,
+				pos.getZ() + (int) this.radius.xzRadius() / 2)) {
 			if (testPoiBlocks.contains(level.getBlockState(testPos).getBlock()))
 				poiPositions.add(GlobalPos.of(dimension, testPos.immutable()));
 		}
 
 		if (poiPositions.isEmpty()) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE);
-		}
-		else {
+		} else {
 			BrainUtils.setMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE, poiPositions);
 		}
 	}

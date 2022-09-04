@@ -1,5 +1,10 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.Comparator;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,28 +12,29 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.List;
-
 /**
- * A sensor that looks for nearby living entities in the surrounding area, sorted by proximity to the brain owner.<br>
+ * A sensor that looks for nearby living entities in the surrounding area,
+ * sorted by proximity to the brain owner.<br>
  * Defaults:
  * <ul>
- *     <li>Radius is equivalent to the entity's {@link net.minecraft.world.entity.ai.attributes.Attributes#FOLLOW_RANGE} attribute</li>
- *     <li>Only alive entities</li>
+ * <li>Radius is equivalent to the entity's
+ * {@link net.minecraft.world.entity.ai.attributes.Attributes#FOLLOW_RANGE}
+ * attribute</li>
+ * <li>Only alive entities</li>
  * </ul>
+ * 
  * @param <E> The entity
  */
 public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList
+			.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	@Nullable
 	protected SquareRadius radius = null;
@@ -39,6 +45,7 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 
 	/**
 	 * Set the radius for the sensor to scan.
+	 * 
 	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
@@ -48,8 +55,9 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 
 	/**
 	 * Set the radius for the sensor to scan.
+	 * 
 	 * @param xz The X/Z coordinate radius, in blocks
-	 * @param y The Y coordinate radius, in blocks
+	 * @param y  The Y coordinate radius, in blocks
 	 * @return this
 	 */
 	public NearbyLivingEntitySensor<E> setRadius(double xz, double y) {
@@ -65,7 +73,7 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_LIVING_ENTITY.get();
+		return SBLSensors.NEARBY_LIVING_ENTITY;
 	}
 
 	@Override
@@ -78,11 +86,14 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 			radius = new SquareRadius(dist, dist);
 		}
 
-		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()), obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
+		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level,
+				entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()),
+				obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
 
 		entities.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities);
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, new NearestVisibleLivingEntities(entity, entities));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+				new NearestVisibleLivingEntities(entity, entities));
 	}
 }

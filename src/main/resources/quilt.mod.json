@@ -1,0 +1,43 @@
+{
+	"schema_version": 1,
+	"quilt_loader": {
+		"group": "net.tslat",
+		"id": "smartbrainlib",
+		"version": "${version}",
+		"metadata": {
+			"name": "Mod Name",
+			"description": "A short description of your mod.",
+			"contributors": {
+				"tslat": "Owner",
+				"AuzreDoom": "Quilt Port"
+			},
+			"contact": {
+				"homepage": "https://www.curseforge.com/minecraft/mc-mods/smartbrainlib/",
+				"issues": "https://github.com/Tslat/SmartBrainLib/issues",
+				"sources": "https://github.com/Tslat/SmartBrainLib"
+			},
+			"icon": "assets/logo.png"
+		},
+		"intermediate_mappings": "net.fabricmc:intermediary",
+		"entrypoints": {
+			"init": "net.tslat.smartbrainlib.SmartBrainLib",
+			"client_init": "net.tslat.smartbrainlib.SmartBrainLibClient"
+		},
+		"depends": [
+			{
+				"id": "quilt_loader",
+				"versions": ">=0.17.0-"
+			},
+			{
+				"id": "quilted_fabric_api",
+				"versions": ">=4.0.0-"
+			},
+			{
+				"id": "minecraft",
+				"versions": ">=1.19.2"
+			}
+		]
+	},
+	"mixin": "smartbrainlib.mixins.json",
+	"accessWidener": "smartbrainlib.accesswidener"
+}

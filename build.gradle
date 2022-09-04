@@ -1,122 +1,55 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
-	id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+	id 'maven-publish'
+	alias libs.plugins.quilt.loom
 }
 
-version = mod_version
-group = 'net.tslat.smartbrainlib'
-archivesBaseName = 'SmartBrainLib-Forge'
+archivesBaseName = project.archives_base_name
+version = project.version
+group = project.maven_group
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-minecraft {
-    mappings channel: mappings_channel, version: mappings_version
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-			
-            taskName 'Client'
-			
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-			
-            taskName 'Server'
-			
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-
-        gameTestServer {
-            workingDirectory project.file('run')
-			
-            taskName 'Game Tests'
-
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-			
-			taskName 'Datagen'
-
-            args '--mod', 'smartbrainlib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+repositories {
+    maven { url = 'https://maven.parchmentmc.org' }
 }
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {}
 
 dependencies {
-    minecraft "net.minecraftforge:forge:$project.minecraft_version-$project.forge_version"
+	minecraft libs.minecraft
+	mappings loom.layered {
 	
-	if (System.getProperty("idea.sync.active") != "true") {
-        annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
-    }
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-1.19.2:2022.08.28@zip")
+	}
+	modImplementation libs.quilt.loader
+	modImplementation libs.quilted.fabric.api
+}
+
+processResources {
+	inputs.property "version", version
+
+	filesMatching('quilt.mod.json') {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	it.options.release = 17
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+	
+	withSourcesJar()
+	withJavadocJar()
 }
 
 jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "smartbrainlib",
-                "Specification-Vendor"    : "Tslat",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Tslat",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+	from("LICENSE") {
+		rename { "${it}_${archivesBaseName}" }
+	}
 }
 
-jar.finalizedBy('reobfJar')
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+loom {
+	accessWidenerPath = file("src/main/resources/smartbrainlib.accesswidener")
 }
