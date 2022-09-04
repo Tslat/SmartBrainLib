@@ -194,7 +194,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		List<SensorType<? extends Sensor<? super E>>> types = new ObjectArrayList<>(sensors.size());
 
 		for (ExtendedSensor<?> sensor : sensors) {
-			types.add((SensorType<? extends Sensor<? super E>>)(Object)sensor.type());
+			types.add((SensorType) sensor.type());
 		}
 
 		return types;

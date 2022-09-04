@@ -28,6 +28,6 @@ public class SmartBrainLib {
 		SBLMemoryTypes.MEMORY_TYPES.register(modEventBus);
 
 		if (!FMLLoader.isProduction())
-			SBLExampleEntities.init(modEventBus);
+			SBLExampleEntities.ENTITY_TYPES.register(modEventBus);
 	}
 }
