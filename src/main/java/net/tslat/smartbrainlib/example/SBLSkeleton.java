@@ -1,5 +1,7 @@
 package net.tslat.smartbrainlib.example;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,8 +35,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-
-import java.util.List;
 
 /**
  * Example Skeleton using the SBL brain system
@@ -96,7 +96,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 		return BrainActivityGroup.fightTasks(
 				new StopAttackingIfTargetInvalid<>(target -> !target.isAlive() || target instanceof Player && ((Player)target).isCreative()), 	 // Invalidate the attack target if it's no longer applicable
 				new FirstApplicableBehaviour<>( 																							  	 // Run only one of the below behaviours, trying each one in order
-						new BowAttack<>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
+						new BowAttack<SBLSkeleton>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
 						new AnimatableMeleeAttack<>(0).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)))// Melee attack
 		);
 	}

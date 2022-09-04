@@ -27,7 +27,7 @@ import java.util.List;
  * @param <E>
  */
 public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<Projectile, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES);
 
 	public IncomingProjectilesSensor() {
 		setScanRate(entity -> 3);
@@ -46,7 +46,7 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.INCOMING_PROJECTILES.get();
+		return SBLSensors.INCOMING_PROJECTILES;
 	}
 
 	@Override
@@ -55,10 +55,10 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));
-			BrainUtils.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get(), projectiles);
+			BrainUtils.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES, projectiles);
 		}
 		else {
-			BrainUtils.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get());
+			BrainUtils.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES);
 		}
 	}
 }

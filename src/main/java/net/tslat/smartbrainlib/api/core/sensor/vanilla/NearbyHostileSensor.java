@@ -1,6 +1,12 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.Map;
+import java.util.function.BiPredicate;
+
+import javax.annotation.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,13 +17,12 @@ import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.function.BiPredicate;
-
 /**
- * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by checking the existing visible entities for nearby hostiles. <br>
- * By default, this is used for villager hostile detection, but it can be configured at instantiation for any types.
+ * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by
+ * checking the existing visible entities for nearby hostiles. <br>
+ * By default, this is used for villager hostile detection, but it can be
+ * configured at instantiation for any types.
+ * 
  * @see net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor
  * @param <E> The entity
  */
@@ -26,23 +31,18 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 	private final Map<EntityType<?>, Float> hostileDistanceMap = new Object2FloatOpenHashMap<>(11);
 
 	public NearbyHostileSensor() {
-		setHostiles(
-				Pair.of(EntityType.DROWNED, 8f),
-				Pair.of(EntityType.HUSK, 8f),
-				Pair.of(EntityType.VEX, 8f),
-				Pair.of(EntityType.ZOMBIE, 8f),
-				Pair.of(EntityType.ZOMBIE_VILLAGER, 8f),
-				Pair.of(EntityType.VINDICATOR, 10f),
-				Pair.of(EntityType.ZOGLIN, 10f),
-				Pair.of(EntityType.EVOKER, 12f),
-				Pair.of(EntityType.ILLUSIONER, 12f),
-				Pair.of(EntityType.RAVAGER, 12f),
+		setHostiles(Pair.of(EntityType.DROWNED, 8f), Pair.of(EntityType.HUSK, 8f), Pair.of(EntityType.VEX, 8f),
+				Pair.of(EntityType.ZOMBIE, 8f), Pair.of(EntityType.ZOMBIE_VILLAGER, 8f),
+				Pair.of(EntityType.VINDICATOR, 10f), Pair.of(EntityType.ZOGLIN, 10f), Pair.of(EntityType.EVOKER, 12f),
+				Pair.of(EntityType.ILLUSIONER, 12f), Pair.of(EntityType.RAVAGER, 12f),
 				Pair.of(EntityType.PILLAGER, 15f));
 	}
 
 	/**
 	 * Clear the hostile types map, and add all of the given entries.
-	 * @param entries The collection of entity types and distances to set the hostile types map to
+	 * 
+	 * @param entries The collection of entity types and distances to set the
+	 *                hostile types map to
 	 * @return this
 	 */
 	public NearbyHostileSensor<E> setHostiles(Pair<EntityType<?>, Float>... entries) {
@@ -74,7 +74,7 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
-		return SBLSensors.NEARBY_HOSTILE.get();
+		return SBLSensors.NEARBY_HOSTILE;
 	}
 
 	@Override

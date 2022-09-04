@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "net.tslat.smartbrainlib.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"MemoryTypesInvoker",
+		"SensorTypeInvoker"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
