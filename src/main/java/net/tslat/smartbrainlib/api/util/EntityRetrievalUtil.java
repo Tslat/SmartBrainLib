@@ -21,7 +21,6 @@ import net.minecraft.world.phys.Vec3;
  * Ultimately this leaves casting up to the end-user, and streamlines the actual
  * retrieval functions to their most optimised form.
  */
-@SuppressWarnings("unchecked")
 public final class EntityRetrievalUtil {
 	/**
 	 * Get the nearest entity from an existing list of entities.

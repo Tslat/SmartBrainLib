@@ -26,7 +26,6 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
  * @see net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor
  * @param <E> The entity
  */
-@SuppressWarnings("unchecked")
 public class NearbyHostileSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	private final Map<EntityType<?>, Float> hostileDistanceMap = new Object2FloatOpenHashMap<>(11);
 

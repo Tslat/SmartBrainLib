@@ -14,7 +14,6 @@ import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unchecked")
 public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private final Activity activity;
 	private int priorityStart = 0;
