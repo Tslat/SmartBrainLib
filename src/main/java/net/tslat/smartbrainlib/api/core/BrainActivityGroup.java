@@ -18,7 +18,6 @@ import net.minecraft.entity.ai.brain.schedule.Activity;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 
-@SuppressWarnings("unchecked")
 public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private final Activity activity;
 	private int priorityStart = 0;
