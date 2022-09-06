@@ -1,10 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +13,10 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A sensor that looks for nearby players in the surrounding area, sorted by
@@ -33,8 +32,7 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
  * @param <E> The entity
  */
 public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_PLAYERS,
-			MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER);
 
 	@Nullable
 	protected SquareRadius radius = null;
@@ -86,8 +84,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 			radius = new SquareRadius(dist, dist);
 		}
 
-		List<Player> players = EntityRetrievalUtil.getPlayers(level, radius.inflateAABB(entity.getBoundingBox()),
-				player -> predicate().test(player, entity));
+		List<Player> players = EntityRetrievalUtil.getPlayers(level, radius.inflateAABB(entity.getBoundingBox()), player -> predicate().test(player, entity));
 
 		players.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
@@ -100,9 +97,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 		attackablePlayers.removeIf(pl -> !isEntityAttackable(entity, pl));
 
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_PLAYERS, players);
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER,
-				targetablePlayers.isEmpty() ? null : targetablePlayers.get(0));
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER,
-				attackablePlayers.isEmpty() ? null : attackablePlayers.get(0));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER, targetablePlayers.isEmpty() ? null : targetablePlayers.get(0));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, attackablePlayers.isEmpty() ? null : attackablePlayers.get(0));
 	}
 }

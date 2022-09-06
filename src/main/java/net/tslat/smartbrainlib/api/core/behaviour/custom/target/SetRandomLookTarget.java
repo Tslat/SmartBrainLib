@@ -23,8 +23,8 @@ import java.util.function.Function;
 public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	private FloatProvider runChance = ConstantFloat.of(0.02f);
-	private Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
+	protected FloatProvider runChance = ConstantFloat.of(0.02f);
+	protected Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
 
 	/**
 	 * Set the value provider for the chance of the look target being set.

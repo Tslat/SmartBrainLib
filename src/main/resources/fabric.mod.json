@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "smartbrainlib",
-  "version": "${version}",
+  "version": "1.2",
 
   "name": "SmartBrainLib",
   "description": "A library mod for smarter Brains and easier usage of the Brain system.",
@@ -23,7 +23,7 @@
       "net.tslat.smartbrainlib.SmartBrainLib"
     ],
     "client": [
-      "net.tslat.smartbrainlib.SmartBrainLibClient"
+      "net.tslat.smartbrainlib.example.boilerplate.SmartBrainLibClient"
     ]
   },
   "mixins": [

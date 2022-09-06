@@ -35,3 +35,6 @@ accessible field net/minecraft/world/entity/ai/sensing/Sensor RANDOM Lnet/minecr
 # World
 accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
 accessible method net/minecraft/client/multiplayer/ClientLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+
+# Entities
+accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V

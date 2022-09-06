@@ -36,7 +36,6 @@ public class BowAttack<E extends LivingEntity & RangedAttackMob> extends Animata
 
 		entity.performRangedAttack(this.target, BowItem.getPowerForTime(entity.getTicksUsingItem()));
 		entity.stopUsingItem();
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true,
-				this.attackIntervalSupplier.apply(entity));
+		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
 	}
 }

@@ -29,10 +29,10 @@ import java.util.function.Predicate;
 public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
 
-	private Predicate<LivingEntity> avoidingPredicate = target -> false;
-	private float noCloserThanSqr = 9f;
+	protected Predicate<LivingEntity> avoidingPredicate = target -> false;
+	protected float noCloserThanSqr = 9f;
 	protected float stopAvoidingAfterSqr = 49f;
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
 	private Path runPath = null;
 

@@ -1,15 +1,8 @@
 package net.tslat.smartbrainlib.api.core;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.logging.log4j.Level;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -25,6 +18,11 @@ import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import org.apache.logging.log4j.Level;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The provider of {@link SmartBrain SmartBrains}. All entities intending to
@@ -81,7 +79,8 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 
 		if (!this.nonStaticMemories && BRAIN_MEMORY_CACHE.containsKey(owner.getType())) {
 			memories = BRAIN_MEMORY_CACHE.get(owner.getType());
-		} else {
+		}
+		else {
 			memories = createMemoryList(taskList, sensors);
 
 			if (!this.nonStaticMemories)
@@ -96,12 +95,10 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		return brain;
 	}
 
-	private ImmutableList<MemoryModuleType<?>> createMemoryList(List<BrainActivityGroup<E>> taskList,
-			List<? extends ExtendedSensor<?>> sensors) {
+	private ImmutableList<MemoryModuleType<?>> createMemoryList(List<BrainActivityGroup<E>> taskList, List<? extends ExtendedSensor<?>> sensors) {
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
-		taskList.forEach(activityGroup -> activityGroup.getBehaviours()
-				.forEach(behavior -> collectMemoriesFromTask(memoryTypes, behavior)));
+		taskList.forEach(activityGroup -> activityGroup.getBehaviours().forEach(behavior -> collectMemoriesFromTask(memoryTypes, behavior)));
 		sensors.forEach(sensor -> memoryTypes.addAll(sensor.memoriesUsed()));
 
 		return ImmutableList.copyOf(memoryTypes);
@@ -110,10 +107,11 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Behavior<?> behaviour) {
 		if (behaviour instanceof GateBehavior<?> gateBehaviour) {
 			gateBehaviour.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
-		} else if (behaviour instanceof GroupBehaviour<?> groupBehaviour) {
-			groupBehaviour.getBehaviours()
-					.forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
-		} else {
+		}
+		else if (behaviour instanceof GroupBehaviour<?> groupBehaviour) {
+			groupBehaviour.getBehaviours().forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
+		}
+		else {
 			memories.addAll(behaviour.entryCondition.keySet());
 		}
 	}
@@ -145,14 +143,11 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 
 	private void sanityCheckBrainState(SmartBrain<E> brain) {
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			SmartBrainLib.LOGGER.log(Level.INFO, "SmartBrainLib checking brain state for " + this.owner.toString()
-					+ ". This will only occur while in debug mode");
+			SmartBrainLib.LOGGER.log(Level.INFO, "SmartBrainLib checking brain state for " + this.owner.toString() + ". This will only occur while in debug mode");
 
 			for (Activity activity : brain.coreActivities) {
 				if (!brain.activityRequirements.containsKey(activity))
-					SmartBrainLib.LOGGER.log(Level.WARN, "Entity " + this.owner.toString() + " has "
-							+ activity.toString()
-							+ " listed as a core activity, but no behaviours for this activity have been registered.");
+					SmartBrainLib.LOGGER.log(Level.WARN, "Entity " + this.owner.toString() + " has " + activity.toString() + " listed as a core activity, but no behaviours for this activity have been registered.");
 			}
 		}
 	}

@@ -17,7 +17,7 @@ public final class SBLExampleEntities {
 	public static final EntityType<SBLSkeleton> SBL_SKELETON = Registry.register(Registry.ENTITY_TYPE,
 			new ResourceLocation(SmartBrainLib.MOD_ID, "sbl_skeleton"),
 			FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new)
-					.dimensions(EntityDimensions.fixed(0.6f, 1.99F)).trackRangeBlocks(90).trackedUpdateRate(4).build());
+					.dimensions(EntityDimensions.fixed(0.6f, 1.99F)).trackRangeChunks(8).trackedUpdateRate(3).build());
 	// Example entities end ---->
 
 	public static void initStats() {

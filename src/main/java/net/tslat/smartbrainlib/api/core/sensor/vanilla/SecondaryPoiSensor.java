@@ -1,9 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableSet;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -18,6 +15,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor that looks for a nearby
@@ -83,17 +82,15 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 		if (testPoiBlocks.isEmpty())
 			return;
 
-		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - (int) this.radius.xzRadius() / 2,
-				pos.getY() - (int) this.radius.yRadius() / 2, pos.getZ() - (int) this.radius.xzRadius() / 2,
-				pos.getX() + (int) this.radius.xzRadius() / 2, pos.getY() + (int) this.radius.yRadius() / 2,
-				pos.getZ() + (int) this.radius.xzRadius() / 2)) {
+		for (BlockPos testPos : BlockPos.betweenClosed(pos.getX() - (int) this.radius.xzRadius() / 2, pos.getY() - (int) this.radius.yRadius() / 2, pos.getZ() - (int) this.radius.xzRadius() / 2, pos.getX() + (int) this.radius.xzRadius() / 2, pos.getY() + (int) this.radius.yRadius() / 2, pos.getZ() + (int) this.radius.xzRadius() / 2)) {
 			if (testPoiBlocks.contains(level.getBlockState(testPos).getBlock()))
 				poiPositions.add(GlobalPos.of(dimension, testPos.immutable()));
 		}
 
 		if (poiPositions.isEmpty()) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE);
-		} else {
+		}
+		else {
 			BrainUtils.setMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE, poiPositions);
 		}
 	}
