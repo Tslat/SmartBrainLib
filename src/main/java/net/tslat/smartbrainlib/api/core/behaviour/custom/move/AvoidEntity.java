@@ -31,7 +31,7 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	private Predicate<LivingEntity> avoidingPredicate = target -> false;
 	private float noCloserThanSqr = 9f;
-	private float stopAvoidingAfterSqr = 49f;
+	protected float stopAvoidingAfterSqr = 49f;
 	private float speedModifier = 1;
 
 	private Path runPath = null;

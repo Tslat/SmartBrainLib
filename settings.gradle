@@ -5,3 +5,4 @@ pluginManagement {
         maven { url = 'https://maven.parchmentmc.org' }
     }
 }
+rootProject.name = 'smartbrainlib-forge-1.19'
