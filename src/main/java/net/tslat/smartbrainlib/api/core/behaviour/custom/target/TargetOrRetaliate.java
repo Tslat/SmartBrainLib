@@ -35,10 +35,10 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 public class TargetOrRetaliate<E extends MobEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryModuleStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_ATTACKABLE.get(), MemoryModuleStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryModuleStatus.REGISTERED)});
 
-	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).isCreative());
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).isCreative());
 
-	private LivingEntity toTarget = null;
-	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = SBLMemoryTypes.NEAREST_ATTACKABLE.get();
+	protected LivingEntity toTarget = null;
+	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = SBLMemoryTypes.NEAREST_ATTACKABLE.get();
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.

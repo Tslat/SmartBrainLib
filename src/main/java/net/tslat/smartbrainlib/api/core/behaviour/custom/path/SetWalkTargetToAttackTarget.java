@@ -22,7 +22,7 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 public class SetWalkTargetToAttackTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT)});
 
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
 	/**
 	 * Set the movespeed modifier for the entity when moving to the target.

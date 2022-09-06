@@ -31,12 +31,12 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryModuleStatus.VALUE_PRESENT)});
 
-	private Predicate<LivingEntity> avoidingPredicate = target -> false;
-	private float noCloserThanSqr = 9f;
+	protected Predicate<LivingEntity> avoidingPredicate = target -> false;
+	protected float noCloserThanSqr = 9f;
 	protected float stopAvoidingAfterSqr = 49f;
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
-	private Path runPath = null;
+	protected Path runPath = null;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {

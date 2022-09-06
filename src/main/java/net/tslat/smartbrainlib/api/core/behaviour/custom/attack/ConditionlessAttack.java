@@ -27,9 +27,9 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleStatus.VALUE_ABSENT)});
 
-	private Function<E, Integer> attackIntervalSupplier = entity -> 20;
-	private boolean requireTarget = false;
-	private Consumer<E> effect = entity -> {};
+	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+	protected boolean requireTarget = false;
+	protected Consumer<E> effect = entity -> {};
 
 	@Nullable
 	protected LivingEntity target = null;

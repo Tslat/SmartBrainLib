@@ -31,9 +31,9 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 public class EscapeSun<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.REGISTERED)});
 
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
-	private Vector3d hidePos = null;
+	protected Vector3d hidePos = null;
 
 	/**
 	 * Set the movespeed modifier for when the entity tries to escape the sun

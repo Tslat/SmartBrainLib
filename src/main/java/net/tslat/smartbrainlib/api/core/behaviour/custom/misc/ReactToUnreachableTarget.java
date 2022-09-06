@@ -25,7 +25,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	protected Function<E, Integer> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};
 
-	private long reactAtTime = 0;
+	protected long reactAtTime = 0;
 
 	/**
 	 * Set the amount of ticks that the target should be unreachable before reacting.

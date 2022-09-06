@@ -22,8 +22,8 @@ import net.tslat.smartbrainlib.object.FreePositionTracker;
 public class SetRandomLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORIES = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
-	private Function<Random, Float> runChance = (rand) -> 0.02f;
-	private Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
+	protected Function<Random, Float> runChance = (rand) -> 0.02f;
+	protected Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
 
 	/**
 	 * Set the value provider for the chance of the look target being set.

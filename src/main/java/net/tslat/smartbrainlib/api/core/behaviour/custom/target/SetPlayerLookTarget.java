@@ -22,9 +22,9 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.LOOK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleStatus.VALUE_PRESENT)});
 
-	private Predicate<PlayerEntity> predicate = pl -> true;
+	protected Predicate<PlayerEntity> predicate = pl -> true;
 
-	private PlayerEntity target = null;
+	protected PlayerEntity target = null;
 
 	/**
 	 * Set the predicate for the player to look at.

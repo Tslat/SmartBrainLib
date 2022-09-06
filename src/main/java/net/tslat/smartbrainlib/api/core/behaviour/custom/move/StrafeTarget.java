@@ -25,13 +25,13 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 public class StrafeTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
-	private boolean strafingLaterally = false;
-	private boolean strafingBack = false;
-	private int strafeCounter = -1;
+	protected boolean strafingLaterally = false;
+	protected boolean strafingBack = false;
+	protected int strafeCounter = -1;
 
-	private float strafeDistanceSqr = 244;
-	private Predicate<E> stopStrafingWhen = entity -> false;
-	private float speedMod = 1;
+	protected float strafeDistanceSqr = 244;
+	protected Predicate<E> stopStrafingWhen = entity -> false;
+	protected float speedMod = 1;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
