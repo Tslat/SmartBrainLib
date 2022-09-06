@@ -3,7 +3,7 @@
 	"quilt_loader": {
 		"group": "net.tslat",
 		"id": "smartbrainlib",
-		"version": "${version}",
+		"version": "1.2",
 		"metadata": {
 			"name": "Mod Name",
 			"description": "A short description of your mod.",
@@ -21,7 +21,7 @@
 		"intermediate_mappings": "net.fabricmc:intermediary",
 		"entrypoints": {
 			"init": "net.tslat.smartbrainlib.SmartBrainLib",
-			"client_init": "net.tslat.smartbrainlib.SmartBrainLibClient"
+			"client_init": "net.tslat.smartbrainlib.example.boilerplate.SmartBrainLibClient"
 		},
 		"depends": [
 			{

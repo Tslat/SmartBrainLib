@@ -1,19 +1,17 @@
 package net.tslat.smartbrainlib.api.util;
 
-import java.util.List;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.mutable.MutableDouble;
-import org.apache.commons.lang3.mutable.MutableObject;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.mutable.MutableDouble;
+import org.apache.commons.lang3.mutable.MutableObject;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A helper class for retrieving entities from a given world. This removes a lot
@@ -66,8 +64,7 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	@Nullable
-	public static <T extends Entity> T getNearestEntity(Entity origin, double radius,
-			Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> T getNearestEntity(Entity origin, double radius, Predicate<? extends Entity> predicate) {
 		return getNearestEntity(origin, radius, radius, radius, predicate);
 	}
 
@@ -88,8 +85,7 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	@Nullable
-	public static <T extends Entity> T getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ,
-			Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> T getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
 		return getNearestEntity(origin.level,
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
@@ -112,8 +108,7 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	@Nullable
-	public static <T extends Entity> T getNearestEntity(Level level, AABB area, Vec3 origin,
-			Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> T getNearestEntity(Level level, AABB area, Vec3 origin, Predicate<? extends Entity> predicate) {
 		final Predicate<Entity> typeSafePredicate = (Predicate<Entity>) predicate;
 		final MutableDouble dist = new MutableDouble(Double.MAX_VALUE);
 		final MutableObject<Entity> closest = new MutableObject<>(null);
@@ -160,8 +155,7 @@ public final class EntityRetrievalUtil {
 	 *         none found
 	 */
 	@Nullable
-	public static Player getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ,
-			Predicate<Player> predicate) {
+	public static Player getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
 		return getNearestPlayer(origin.level,
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
@@ -235,8 +229,7 @@ public final class EntityRetrievalUtil {
 	 * @return A list of players that are within the given region that meet the
 	 *         criteria in the predicate
 	 */
-	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ,
-			Predicate<Player> predicate) {
+	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
 		return getPlayers(origin.level, new AABB(origin.getX() - radiusX, origin.getY() - radiusY,
 				origin.getZ() - radiusZ, origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
 				predicate);
@@ -297,8 +290,7 @@ public final class EntityRetrievalUtil {
 	 *         criteria of the predicate, or an empty list if none match
 	 * @param <T> The output entity subtype
 	 */
-	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ,
-			Predicate<? extends Entity> predicate) {
+	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
 		return getEntities(origin.level,
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),

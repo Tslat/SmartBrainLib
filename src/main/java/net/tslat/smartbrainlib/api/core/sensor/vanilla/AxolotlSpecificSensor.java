@@ -1,10 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-import java.util.function.BiPredicate;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -15,6 +10,10 @@ import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * A replication of vanilla's
@@ -49,9 +48,7 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 			if (!target.isInWaterOrBubble())
 				return false;
 
-			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES)
-					&& (BrainUtils.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN)
-							|| !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))
+			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) && (BrainUtils.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN) || !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))
 				return false;
 
 			return Sensor.isEntityAttackable(entity, target);

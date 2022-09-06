@@ -4,9 +4,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
@@ -26,6 +29,11 @@ public class WardenSpecificSensor<E extends Warden> extends NearbyLivingEntitySe
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
 		return MEMORIES;
+	}
+
+	@Override
+	public SensorType<? extends ExtendedSensor<?>> type() {
+		return SBLSensors.WARDEN_SPECIFIC;
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -15,6 +13,8 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A replication of vanilla's
@@ -55,7 +55,8 @@ public class HoglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 
 					if (nearestPiglin == null)
 						nearestPiglin = piglin;
-				} else if (target instanceof Hoglin hoglin) {
+				}
+				else if (target instanceof Hoglin hoglin) {
 					hoglins.add(hoglin);
 				}
 			}
@@ -64,12 +65,7 @@ public class HoglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT_HOGLINS, hoglins);
 			BrainUtils.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, piglinCount);
 			BrainUtils.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, hoglins.size());
-			BrainUtils
-					.setMemory(
-							brain, MemoryModuleType.NEAREST_REPELLENT, BlockPos
-									.findClosestMatch(entity.blockPosition(), 8, 4,
-											pos -> level.getBlockState(pos).is(BlockTags.HOGLIN_REPELLENTS))
-									.orElse(null));
+			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_REPELLENT, BlockPos.findClosestMatch(entity.blockPosition(), 8, 4, pos -> level.getBlockState(pos).is(BlockTags.HOGLIN_REPELLENTS)).orElse(null));
 		});
 	}
 }

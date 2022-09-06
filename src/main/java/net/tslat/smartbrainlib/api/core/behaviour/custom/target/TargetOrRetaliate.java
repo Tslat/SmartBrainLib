@@ -33,10 +33,10 @@ import java.util.function.Predicate;
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.REGISTERED));
 
-	private Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
 
-	private LivingEntity toTarget = null;
-	private MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
+	protected LivingEntity toTarget = null;
+	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.

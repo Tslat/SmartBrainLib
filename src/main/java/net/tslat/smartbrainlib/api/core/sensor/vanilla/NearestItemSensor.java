@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +15,8 @@ import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
+import java.util.List;
+
 /**
  * A sensor that looks for the nearest item entity in the surrounding area.<br>
  * Defaults:
@@ -30,8 +30,7 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
  * @param <E> The entity
  */
 public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList
-			.of(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM);
 
 	protected SquareRadius radius = new SquareRadius(32, 16);
 
@@ -74,8 +73,6 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
-				EntityRetrievalUtil.getNearestEntity(level, this.radius.inflateAABB(entity.getBoundingBox()),
-						entity.position(), obj -> obj instanceof ItemEntity item && predicate().test(item, entity)));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, EntityRetrievalUtil.getNearestEntity(level, this.radius.inflateAABB(entity.getBoundingBox()), entity.position(), obj -> obj instanceof ItemEntity item && predicate().test(item, entity)));
 	}
 }

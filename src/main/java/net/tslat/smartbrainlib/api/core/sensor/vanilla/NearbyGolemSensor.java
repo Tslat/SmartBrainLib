@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -12,6 +10,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY}
@@ -28,8 +28,7 @@ import net.tslat.smartbrainlib.registry.SBLSensors;
  * @param <E> The entity
  */
 public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList
-			.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
 
 	private int timeToRemember = 600;
 
@@ -68,8 +67,7 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 
 			for (LivingEntity target : entityList) {
 				if (predicate().test(target, entity)) {
-					BrainUtils.setForgettableMemory(entity, MemoryModuleType.GOLEM_DETECTED_RECENTLY, true,
-							this.timeToRemember);
+					BrainUtils.setForgettableMemory(entity, MemoryModuleType.GOLEM_DETECTED_RECENTLY, true, this.timeToRemember);
 
 					return;
 				}

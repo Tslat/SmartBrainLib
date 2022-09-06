@@ -29,9 +29,9 @@ import java.util.List;
 public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
 
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
-	private Vec3 hidePos = null;
+	protected Vec3 hidePos = null;
 
 	/**
 	 * Set the movespeed modifier for when the entity tries to escape the sun

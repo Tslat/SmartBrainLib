@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +13,8 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * Find the nearest player that is holding out a tempting item for the entity.
@@ -38,8 +38,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 			if (target.isSpectator() || !target.isAlive())
 				return false;
 
-			return this.temptingItems.test(target.getMainHandItem())
-					|| this.temptingItems.test(target.getOffhandItem());
+			return this.temptingItems.test(target.getMainHandItem()) || this.temptingItems.test(target.getOffhandItem());
 		});
 	}
 
@@ -91,8 +90,6 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER,
-				EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(),
-						this.radius.xzRadius(), target -> predicate().test(target, entity)));
+		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity)));
 	}
 }
