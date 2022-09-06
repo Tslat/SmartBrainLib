@@ -21,9 +21,9 @@ import java.util.function.Predicate;
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_PLAYERS, MemoryStatus.VALUE_PRESENT));
 
-	private Predicate<Player> predicate = pl -> true;
+	protected Predicate<Player> predicate = pl -> true;
 
-	private Player target = null;
+	protected Player target = null;
 
 	/**
 	 * Set the predicate for the player to look at.

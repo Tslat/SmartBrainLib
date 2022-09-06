@@ -24,13 +24,13 @@ import java.util.function.Predicate;
 public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	private boolean strafingLaterally = false;
-	private boolean strafingBack = false;
-	private int strafeCounter = -1;
+	protected boolean strafingLaterally = false;
+	protected boolean strafingBack = false;
+	protected int strafeCounter = -1;
 
-	private float strafeDistanceSqr = 244;
-	private Predicate<E> stopStrafingWhen = entity -> false;
-	private float speedMod = 1;
+	protected float strafeDistanceSqr = 244;
+	protected Predicate<E> stopStrafingWhen = entity -> false;
+	protected float speedMod = 1;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

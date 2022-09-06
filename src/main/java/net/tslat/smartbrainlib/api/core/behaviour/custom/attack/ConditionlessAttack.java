@@ -26,9 +26,9 @@ import java.util.function.Predicate;
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
 
-	private Function<E, Integer> attackIntervalSupplier = entity -> 20;
-	private boolean requireTarget = false;
-	private Consumer<E> effect = entity -> {};
+	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+	protected boolean requireTarget = false;
+	protected Consumer<E> effect = entity -> {};
 
 	@Nullable
 	protected LivingEntity target = null;

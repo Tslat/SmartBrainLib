@@ -25,9 +25,9 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryStatus.VALUE_PRESENT));
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> CUSTOM_TARGETING_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	private final boolean usingNearestAttackable;
-	private Predicate<E> canAttackPredicate = entity -> true;
-	private Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
+	protected final boolean usingNearestAttackable;
+	protected Predicate<E> canAttackPredicate = entity -> true;
+	protected Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
 
 	public SetAttackTarget() {
 		this(true);
