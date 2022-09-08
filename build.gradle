@@ -1,14 +1,13 @@
 plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
-	id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 version = mod_version
 group = 'net.tslat.smartbrainlib'
-archivesBaseName = 'SmartBrainLib-Forge'
+archivesBaseName = 'SmartBrainLib-Forge-1.16.5'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
     mappings channel: mappings_channel, version: mappings_version
@@ -17,13 +16,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-			
             taskName 'Client'
-			
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
 
             mods {
                 smartbrainlib {
@@ -34,28 +28,8 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-			
             taskName 'Server'
-			
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-
-        gameTestServer {
-            workingDirectory project.file('run')
-			
-            taskName 'Game Tests'
-
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
 
             mods {
                 smartbrainlib {
@@ -66,9 +40,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-			
 			taskName 'Datagen'
-
             args '--mod', 'smartbrainlib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
@@ -95,10 +67,6 @@ repositories {}
 
 dependencies {
     minecraft "net.minecraftforge:forge:$project.minecraft_version-$project.forge_version"
-	
-	if (System.getProperty("idea.sync.active") != "true") {
-        annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
-    }
 }
 
 jar {

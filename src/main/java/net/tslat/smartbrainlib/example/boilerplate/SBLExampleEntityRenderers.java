@@ -1,10 +1,18 @@
 package net.tslat.smartbrainlib.example.boilerplate;
 
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.tslat.smartbrainlib.SmartBrainLib;
 
+@EventBusSubscriber(modid = SmartBrainLib.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 final class SBLExampleEntityRenderers {
-	static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers ev) {
-		ev.registerEntityRenderer(SBLExampleEntities.SBL_SKELETON.get(), SkeletonRenderer::new);
+	
+	@SubscribeEvent
+	public static void onClientSetup(final FMLClientSetupEvent event) {
+		RenderingRegistry.registerEntityRenderingHandler(SBLExampleEntities.SBL_SKELETON.get(), SkeletonRenderer::new);
 	}
 }

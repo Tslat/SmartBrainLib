@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.task.FindNewAttackTargetTask;
+import net.minecraft.entity.ai.brain.task.ShootTargetTask;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TurtleEntity;
@@ -13,9 +15,6 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.world.World;
-import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
-import net.minecraft.world.entity.ai.behavior.StopAttackingIfTargetInvalid;
-import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -75,7 +74,7 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
 				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
 				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity),												// Run away from wolves
-				new LookAtTargetSink(40, 300), 														// Look at the look target
+				new ShootTargetTask(), 														// Look at the look target
 				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
 				new MoveToWalkTarget<>());																					// Move to the current walk target
 	}
@@ -89,15 +88,15 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 						new SetRandomLookTarget<>()), 					// Set the look target to a random nearby location
 				new OneRandomBehaviour<>( 								// Run only one of the below behaviours, picked at random
 						new SetRandomWalkTarget<>().speedModifier(1), 				// Set the walk target to a nearby random pathable location
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60)))); // Don't walk anywhere
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(60)))); // Don't walk anywhere
 	}
 
 	@Override
 	public BrainActivityGroup<SBLSkeleton> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
-				new StopAttackingIfTargetInvalid<>(target -> !target.isAlive() || target instanceof Player && ((Player)target).isCreative()), 	 // Invalidate the attack target if it's no longer applicable
+				new FindNewAttackTargetTask<>(target -> !target.isAlive() || target instanceof PlayerEntity && ((PlayerEntity)target).isCreative()), 	 // Invalidate the attack target if it's no longer applicable
 				new FirstApplicableBehaviour<>( 																							  	 // Run only one of the below behaviours, trying each one in order
-						new BowAttack<>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
+						new BowAttack<SBLSkeleton>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
 						new AnimatableMeleeAttack<>(0).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)))// Melee attack
 		);
 	}
