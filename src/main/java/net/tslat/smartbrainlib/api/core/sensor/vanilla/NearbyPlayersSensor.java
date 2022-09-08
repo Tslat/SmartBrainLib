@@ -12,10 +12,10 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.server.ServerWorld;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 

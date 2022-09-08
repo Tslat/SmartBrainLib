@@ -14,8 +14,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 

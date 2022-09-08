@@ -15,8 +15,8 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.server.ServerWorld;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
