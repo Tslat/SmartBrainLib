@@ -16,7 +16,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            taskName 'Client'
+            taskName 'Client-SBL'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -28,7 +28,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-            taskName 'Server'
+            taskName 'Server-SBL'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -40,7 +40,7 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
-			taskName 'Datagen'
+			taskName 'Datagen-SBL'
             args '--mod', 'smartbrainlib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
