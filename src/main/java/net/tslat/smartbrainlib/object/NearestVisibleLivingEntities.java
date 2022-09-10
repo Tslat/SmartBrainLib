@@ -58,7 +58,7 @@ public class NearestVisibleLivingEntities extends ArrayList<LivingEntity> {
 	}
 
 	public boolean contains(LivingEntity entityToTest) {
-		return this.contains(entityToTest) && this.lineOfSightTest.test(entityToTest);
+		return super.contains(entityToTest) && this.lineOfSightTest.test(entityToTest);
 	}
 
 	public boolean containsEntryMatching(Predicate<LivingEntity> condition) {
