@@ -1,13 +1,11 @@
 package net.tslat.smartbrainlib.example;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.task.FindNewAttackTargetTask;
-import net.minecraft.entity.ai.brain.task.ShootTargetTask;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TurtleEntity;
@@ -22,6 +20,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.BowAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.AvoidSun;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.AvoidEntity;
@@ -35,6 +34,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+
+import java.util.List;
 
 /**
  * Example Skeleton using the SBL brain system
@@ -72,9 +73,9 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
-				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
-				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity),												// Run away from wolves
-				new ShootTargetTask(), 														// Look at the look target
+				new EscapeSun<>().speedModifier(1.5F).cooldownFor(entity -> 20),													// Escape the sun
+				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity).speedModifier(1.5F),												// Run away from wolves
+				new LookAtTarget<>(), 														// Look at the look target
 				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
 				new MoveToWalkTarget<>());																					// Move to the current walk target
 	}
@@ -86,9 +87,9 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 						new TargetOrRetaliate<>(),						// Set the attack target
 						new SetPlayerLookTarget<>(),					// Set the look target to a nearby player if available
 						new SetRandomLookTarget<>()), 					// Set the look target to a random nearby location
-				new OneRandomBehaviour<>( 								// Run only one of the below behaviours, picked at random
+				new OneRandomBehaviour<SBLSkeleton>( 								// Run only one of the below behaviours, picked at random
 						new SetRandomWalkTarget<>().speedModifier(1), 				// Set the walk target to a nearby random pathable location
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(60)))); // Don't walk anywhere
+						new Idle<>().runFor(entity -> 60 + entity.getRandom().nextInt(60)))); // Don't walk anywhere
 	}
 
 	@Override
