@@ -105,7 +105,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 
 	@Override
 	public final boolean tryStart(ServerWorld level, E entity, long gameTime) {
-		if (cooldownFinishedAt > gameTime || !hasRequiredMemories(entity) || !this.startCondition.test(entity) || !checkExtraStartConditions(level, entity))
+		if (!doStartCheck(level, entity, gameTime))
 			return false;
 
 		this.status = Status.RUNNING;
@@ -151,7 +151,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	/**
 	 * Override this for custom behaviour implementations. This is a safe endpoint for behaviours so that all required auto-handling is safely contained without super calls.<br>
 	 * This is called when the behaviour is to start. Set up any instance variables needed or perform the required actions.<br>
-	 * By this stage any memory requirements set in {@link ExtendedBehaviour#getMemoryRequirements()} are true, so any memories paired with {@link MemoryStatus#VALUE_PRESENT} are safe to retrieve.
+	 * By this stage any memory requirements set in {@link ExtendedBehaviour#getMemoryRequirements()} are true, so any memories paired with {@link MemoryModuleStatus#VALUE_PRESENT} are safe to retrieve.
 	 *
 	 * @param entity The entity being handled (I.E. the owner of the brain)
 	 */
@@ -241,7 +241,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	 * The list of memory requirements this task has prior to starting. This outlines the approximate state the brain should be in, in order to allow this behaviour to run. <br>
 	 * Bonus points if it's a statically-initialised list.
 	 *
-	 * @return The {@link List} of {@link MemoryModuleType Memories} and their associated required {@link MemoryStatus status}
+	 * @return The {@link List} of {@link MemoryModuleType Memories} and their associated required {@link MemoryModuleStatus status}
 	 */
 	protected abstract List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements();
 }
