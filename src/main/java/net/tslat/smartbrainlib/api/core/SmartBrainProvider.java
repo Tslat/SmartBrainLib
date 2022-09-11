@@ -58,7 +58,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 
 	/**
 	 * @param owner             The owner of the brain
-	 * @param saveMemories      Whether memory states should be saved & loaded when
+	 * @param saveMemories      Whether memory states should be saved and loaded when
 	 *                          the entity is saved or loaded.
 	 * @param nonStaticMemories Whether the entity has different behaviours or
 	 *                          sensors depending on the entity instance
