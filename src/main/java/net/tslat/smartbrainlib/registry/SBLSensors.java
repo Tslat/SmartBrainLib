@@ -1,23 +1,37 @@
 package net.tslat.smartbrainlib.registry;
 
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import net.tslat.smartbrainlib.SmartBrainLib;
-import net.tslat.smartbrainlib.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.GenericAttackTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.IncomingProjectilesSensor;
-import net.tslat.smartbrainlib.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.core.sensor.vanilla.*;
-
 import java.util.function.Supplier;
 
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.tslat.smartbrainlib.SmartBrainLib;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HoglinSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.ItemTemptingSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyBabySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyGolemSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyHostileSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestHomeSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestItemSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinBruteSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinSpecificSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.SecondaryPoiSensor;
+
 /**
- * Registry class for {@link net.tslat.smartbrainlib.core.sensor.ExtendedSensor} implementations
+ * Registry class for {@link ExtendedSensor} implementations
  */
 public final class SBLSensors {
-	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.Keys.SENSOR_TYPES, SmartBrainLib.MOD_ID);
+	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.SENSOR_TYPES, SmartBrainLib.MOD_ID);
 
 	// Vanilla sensors
 	public static final RegistryObject<SensorType<NearestItemSensor<?>>> NEAREST_ITEM = register("nearest_item", NearestItemSensor::new);
@@ -34,12 +48,9 @@ public final class SBLSensors {
 	public static final RegistryObject<SensorType<InWaterSensor<?>>> IN_WATER = register("in_water", InWaterSensor::new);
 
 	// Entity Specific
-	public static final RegistryObject<SensorType<FrogSpecificSensor<?>>> FROG_SPECIFIC = register("frog_specific", FrogSpecificSensor::new);
-	public static final RegistryObject<SensorType<AxolotlSpecificSensor<?>>> AXOLOTL_SPECIFIC = register("axolotl_specific", AxolotlSpecificSensor::new);
 	public static final RegistryObject<SensorType<PiglinSpecificSensor<?>>> PIGLIN_SPECIFIC = register("piglin_specific", PiglinSpecificSensor::new);
 	public static final RegistryObject<SensorType<PiglinBruteSpecificSensor<?>>> PIGLIN_BRUTE_SPECIFIC = register("piglin_brute_specific", PiglinBruteSpecificSensor::new);
 	public static final RegistryObject<SensorType<HoglinSpecificSensor<?>>> HOGLIN_SPECIFIC = register("hoglin_specific", HoglinSpecificSensor::new);
-	public static final RegistryObject<SensorType<WardenSpecificSensor<?>>> WARDEN_SPECIFIC = register("warden_speciifc", WardenSpecificSensor::new);
 
 	// Custom
 	public static final RegistryObject<SensorType<IncomingProjectilesSensor<?>>> INCOMING_PROJECTILES = register("incoming_projectiles", IncomingProjectilesSensor::new);

@@ -1,19 +1,19 @@
 package net.tslat.smartbrainlib.object;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.behavior.PositionTracker;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.IPosWrapper;
+import net.minecraft.util.math.vector.Vector3d;
 
-public class FreePositionTracker implements PositionTracker {
-	private final Vec3 pos;
+public class FreePositionTracker implements IPosWrapper {
+	private final Vector3d pos;
 
-	public FreePositionTracker(Vec3 pos) {
+	public FreePositionTracker(Vector3d pos) {
 		this.pos = pos;
 	}
 
 	@Override
-	public Vec3 currentPosition() {
+	public Vector3d currentPosition() {
 		return pos;
 	}
 

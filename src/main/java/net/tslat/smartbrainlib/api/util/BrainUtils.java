@@ -1,13 +1,21 @@
 package net.tslat.smartbrainlib.api.util;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-
-import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.BrainUtil;
+import net.minecraft.entity.ai.brain.Memory;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ShootableItem;
+import net.minecraft.util.math.EntityPosWrapper;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -127,7 +135,21 @@ public final class BrainUtils {
 	 * @return The ticks until the memory expires, or 0 if the memory doesn't exist or doesn't expire
 	 */
 	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
-		return brain.getTimeUntilExpiry(memory);
+		long result = 0;
+		Optional<? extends Object> opt = brain.getMemory(memory);
+		if(opt.isPresent()) {
+			Object object = opt.get();
+			if(object instanceof Memory<?>) {
+				Memory<?> mem = (Memory<?>)object;
+				if(mem.canExpire()) {
+					result = mem.timeToLive;
+				}
+			} else {
+				//Not a memory
+			}
+		}
+		//return brain.getTimeUntilExpiry(memory);
+		return result;
 	}
 
 	/**
@@ -267,8 +289,8 @@ public final class BrainUtils {
 	 * @param target The entity to target
 	 */
 	public static void setTargetOfEntity(LivingEntity entity, @Nullable LivingEntity target) {
-		if (entity instanceof Mob mob)
-			mob.setTarget(target);
+		if (entity instanceof MobEntity)
+			((MobEntity)entity).setTarget(target);
 
 		if (target == null) {
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
@@ -276,5 +298,33 @@ public final class BrainUtils {
 		else {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
 		}
+	}
+
+	public static void lookAtEntity(LivingEntity entity, LivingEntity target) {
+		entity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
+	}
+	
+	public static boolean canSee(LivingEntity pLivingEntity, LivingEntity pTarget) {
+		Brain<?> brain = pLivingEntity.getBrain();
+		if (!brain.hasMemoryValue(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get())) {
+			return false;
+		}
+		return brain.getMemory(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).get().contains(pTarget);
+	}
+
+	public static boolean isWithinAttackRange(MobEntity entity, LivingEntity target, int maxDistance) {
+		Item item = entity.getMainHandItem().getItem();
+		boolean entityInRange = BrainUtil.isWithinAttackRange(entity, target, maxDistance);
+		if(item == null) {
+			return entityInRange;
+		}
+		if (item instanceof ShootableItem) {
+			if (entity.canFireProjectileWeapon((ShootableItem) item)) {
+				int i = ((ShootableItem) item).getDefaultProjectileRange() - maxDistance;
+				return entity.closerThan(target, (double) i);
+			}
+		}
+
+		return entityInRange;
 	}
 }
