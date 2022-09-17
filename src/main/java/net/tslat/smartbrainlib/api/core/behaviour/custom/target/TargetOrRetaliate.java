@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Sets the attack target of the entity based, utilising a few sources of targets. <br>
+ * Sets the attack target of the entity, utilising a few sources of targets. <br>
  * In order:
  * <ol>
  *     <li>The {@link MemoryModuleType#NEAREST_ATTACKABLE} memory value</li>
