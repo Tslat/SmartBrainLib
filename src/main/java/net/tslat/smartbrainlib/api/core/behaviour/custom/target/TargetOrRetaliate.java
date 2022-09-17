@@ -19,7 +19,7 @@ import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 
 /**
- * Sets the attack target of the entity based, utilising a few sources of targets. <br>
+ * Sets the attack target of the entity, utilising a few sources of targets. <br>
  * In order:
  * <ol>
  *     <li>The {@link MemoryModuleType#NEAREST_ATTACKABLE} memory value</li>

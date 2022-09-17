@@ -25,6 +25,7 @@ import net.tslat.smartbrainlib.object.SquareRadius;
  *     <li>1x movespeed modifier</li>
  *     <li>10-block lateral radius</li>
  *     <li>7-block vertical radius</li>
+ *     <li>Avoids walk targets with fluid</li>
  * </ul>
  * @param <E>
  */
