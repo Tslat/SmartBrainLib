@@ -15,7 +15,9 @@ import net.tslat.smartbrainlib.object.SquareRadius;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * Set a random position to walk to. <br>
@@ -31,8 +33,8 @@ import java.util.function.BiPredicate;
 public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	protected float speedMod = 1;
-	protected boolean avoidsWater = true;
+	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
+	protected Predicate<E> avoidWaterPredicate = entity -> true;
 	protected SquareRadius radius = new SquareRadius(10, 7);
 	protected BiPredicate<E, Vec3> positionPredicate = (entity, pos) -> true;
 
@@ -68,7 +70,16 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	 * @return this
 	 */
 	public SetRandomWalkTarget<E> speedModifier(float modifier) {
-		this.speedMod = modifier;
+		return speedModifier((entity, targetPos) -> modifier);
+	}
+
+	/**
+	 * Set the movespeed modifier for the path when chosen.
+	 * @param function The movespeed modifier/multiplier function
+	 * @return this
+	 */
+	public SetRandomWalkTarget<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+		this.speedModifier = function;
 
 		return this;
 	}
@@ -90,7 +101,16 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	 * @return this
 	 */
 	public SetRandomWalkTarget<E> dontAvoidWater() {
-		this.avoidsWater = false;
+		return avoidWaterWhen(entity -> false);
+	}
+
+	/**
+	 * Set the predicate to determine when the entity should avoid water walk targets;
+	 * @param predicate The predicate
+	 * @return this
+	 */
+	public SetRandomWalkTarget<E> avoidWaterWhen(Predicate<E> predicate) {
+		this.avoidWaterPredicate = predicate;
 
 		return this;
 	}
@@ -106,13 +126,13 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}
 		else {
-			BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, this.speedMod, 0));
+			BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, this.speedModifier.apply(entity, targetPos), 0));
 		}
 	}
 
 	@Nullable
 	protected Vec3 getTargetPos(E entity) {
-		if (this.avoidsWater) {
+		if (this.avoidWaterPredicate.test(entity)) {
 			return LandRandomPos.getPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
 		}
 		else {

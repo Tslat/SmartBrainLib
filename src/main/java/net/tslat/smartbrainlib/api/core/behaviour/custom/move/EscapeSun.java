@@ -16,6 +16,7 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Sets the {@link MemoryModuleType#WALK_TARGET walk target} to a safe position if caught in the sun. <br>
@@ -29,17 +30,26 @@ import java.util.List;
 public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
 
-	protected float speedModifier = 1;
+	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
 
 	protected Vec3 hidePos = null;
 
 	/**
 	 * Set the movespeed modifier for when the entity tries to escape the sun
-	 * @param speedMod The speed modifier
+	 * @param modifier The speed modifier/multiplier
 	 * @return this
 	 */
-	public EscapeSun<E> speedModifier(float speedMod) {
-		this.speedModifier = speedMod;
+	public EscapeSun<E> speedModifier(float modifier) {
+		return speedModifier((entity, targetPos) -> modifier);
+	}
+
+	/**
+	 * Set the movespeed modifier for when the entity tries to escape the sun
+	 * @param function The speed modifier/multiplier function
+	 * @return this
+	 */
+	public EscapeSun<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+		this.speedModifier = function;
 
 		return this;
 	}
@@ -64,7 +74,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier, 0));
+		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier.apply(entity, this.hidePos), 0));
 	}
 
 	@Override
