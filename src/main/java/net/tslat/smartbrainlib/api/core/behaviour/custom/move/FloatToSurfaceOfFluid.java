@@ -1,13 +1,15 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 /**
  * Replacement for {@link net.minecraft.world.entity.ai.goal.FloatGoal} or {@link net.minecraft.world.entity.ai.behavior.Swim}. <br>
@@ -18,12 +20,12 @@ import java.util.List;
  *     <li>Applies to water</li>
  * </ul>
  */
-public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
+public class FloatToSurfaceOfFluid<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	private float riseChance = 0.8f;
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
+		return new ArrayList<>();
 	}
 
 	/**
@@ -38,12 +40,12 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		return entity.isInFluidType((fluidType, height) -> entity.canSwimInFluidType(fluidType) && height > entity.getFluidJumpThreshold());
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return checkExtraStartConditions(level, entity);
 	}
 

@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import com.mojang.datafixers.util.Pair;
@@ -34,7 +35,7 @@ public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> 
 	protected Predicate<LivingEntity> avoidingPredicate = target -> false;
 	protected float noCloserThanSqr = 9f;
 	protected float stopAvoidingAfterSqr = 49f;
-	protected float speedModifier = 1;
+	protected BiFunction<E, Vector3d, Float> speedModifier = (entity, targetPos) -> 1f;
 
 	protected Path runPath = null;
 
@@ -78,11 +79,20 @@ public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> 
 
 	/**
 	 * Set the movespeed modifier for when the entity is running away.
-	 * @param mod The speed multiplier modifier
+	 * @param modifier The speed multiplier modifier
 	 * @return this
 	 */
-	public AvoidEntity<E> speedModifier(float mod) {
-		this.speedModifier = mod;
+	public AvoidEntity<E> speedModifier(float modifier) {
+		return speedModifier((entity, targetPos) -> modifier);
+	}
+
+	/**
+	 * Set the movespeed modifier for when the entity is running away.
+	 * @param function The speed multiplier modifier function
+	 * @return this
+	 */
+	public AvoidEntity<E> speedModifier(BiFunction<E, Vector3d, Float> function) {
+		this.speedModifier = function;
 
 		return this;
 	}
@@ -122,7 +132,7 @@ public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> 
 
 	@Override
 	protected void start(E entity) {
-		entity.getNavigation().moveTo(this.runPath, this.speedModifier);
+		entity.getNavigation().moveTo(this.runPath, this.speedModifier.apply(entity, this.runPath.getEntityPosAtNode(entity, this.runPath.getNodeCount() - 1)));
 	}
 
 	@Override
