@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import javax.annotation.Nullable;
 
@@ -31,7 +32,9 @@ public class SetRandomWalkTarget<E extends CreatureEntity> extends ExtendedBehav
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
 	protected float speedMod = 1;
+	protected boolean avoidsWater = true;
 	protected SquareRadius radius = new SquareRadius(10, 7);
+	protected BiPredicate<E, Vector3d> positionPredicate = (entity, pos) -> true;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
@@ -70,9 +73,34 @@ public class SetRandomWalkTarget<E extends CreatureEntity> extends ExtendedBehav
 		return this;
 	}
 
+	/**
+	 * Sets a predicate to check whether the target movement position is valid or not
+	 * @param predicate The predicate
+	 * @return this
+	 */
+	public SetRandomWalkTarget<E> walkTargetPredicate(BiPredicate<E, Vector3d> predicate) {
+		this.positionPredicate = predicate;
+
+		return this;
+	}
+
+	/**
+	 * Sets the behaviour to allow finding of positions that might be in water. <br>
+	 * Useful for hybrid or water-based entities.
+	 * @return this
+	 */
+	public SetRandomWalkTarget<E> dontAvoidWater() {
+		this.avoidsWater = false;
+
+		return this;
+	}
+
 	@Override
 	protected void start(E entity) {
 		Vector3d targetPos = getTargetPos(entity);
+
+		if (!this.positionPredicate.test(entity, targetPos))
+			targetPos = null;
 
 		if (targetPos == null) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
@@ -84,6 +112,13 @@ public class SetRandomWalkTarget<E extends CreatureEntity> extends ExtendedBehav
 
 	@Nullable
 	protected Vector3d getTargetPos(E entity) {
-		return RandomPositionGenerator.getLandPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
+		if (this.avoidsWater) {
+			return RandomPositionGenerator.getLandPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
+		}
+		else {
+			//Not sure here
+			return RandomPositionGenerator.getLandPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
+			//return DefaultRandomPos.getPos(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius());
+		}
 	}
 }
