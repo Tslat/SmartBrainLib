@@ -5,13 +5,16 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -26,6 +29,8 @@ public final class SBLMemoryTypes {
 
 	public static final RegistryObject<MemoryModuleType<List<ProjectileEntity>>> INCOMING_PROJECTILES = register("incoming_projectiles");
 	public static final RegistryObject<MemoryModuleType<Boolean>> TARGET_UNREACHABLE = register("target_unreachable");
+	public static final RegistryObject<MemoryModuleType<Boolean>> SPECIAL_ATTACK_COOLDOWN = register("special_attack_cooldown");
+	public static final RegistryObject<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_BLOCKS = register("nearby_blocks");
 	
 	//Not present in 1.16 vanilla
 	public static final RegistryObject<MemoryModuleType<LivingEntity>> NEAREST_ATTACKABLE = register("nearest_attackable");
