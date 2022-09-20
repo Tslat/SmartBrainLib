@@ -57,7 +57,7 @@ public final class SBLSensors {
 	public static final RegistryObject<SensorType<IncomingProjectilesSensor<?>>> INCOMING_PROJECTILES = register("incoming_projectiles", IncomingProjectilesSensor::new);
 	public static final RegistryObject<SensorType<GenericAttackTargetSensor<?>>> GENERIC_ATTACK_TARGET = register("generic_attack_target", GenericAttackTargetSensor::new);
 	public static final RegistryObject<SensorType<UnreachableTargetSensor<?>>> UNREACHABLE_TARGET = register("unreachable_target", UnreachableTargetSensor::new);
-	public static final RegistryObject<SensorType<NearbyBlocksSensor<?>>> NEARBY_BLOCKS = register("unreachable_target", NearbyBlocksSensor::new);
+	public static final RegistryObject<SensorType<NearbyBlocksSensor<?>>> NEARBY_BLOCKS = register("nearby_blocks", NearbyBlocksSensor::new);
 
 	private static <T extends ExtendedSensor<?>> RegistryObject<SensorType<T>> register(String id, Supplier<T> sensor) {
 		return SENSORS.register(id, () -> new SensorType<>(sensor));
