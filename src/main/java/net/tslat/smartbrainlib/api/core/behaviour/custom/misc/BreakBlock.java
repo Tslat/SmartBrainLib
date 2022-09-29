@@ -1,24 +1,25 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
+import java.util.List;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.api.util.TriFunction;
 import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-import org.apache.commons.lang3.function.TriFunction;
-
-import java.util.List;
 
 /**
  * Gradually breaks then destroys a block. <br>
@@ -30,7 +31,7 @@ import java.util.List;
  * </ul>
  */
 public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryModuleStatus.VALUE_PRESENT)});
 
 	protected TriPredicate<E, BlockPos, BlockState> targetBlockPredicate = (entity, pos, state) -> state.is(BlockTags.DOORS);
 	protected TriPredicate<E, BlockPos, BlockState> stopPredicate = (entity, pos, state) -> false;
@@ -76,7 +77,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
@@ -97,7 +98,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		for (Pair<BlockPos, BlockState> pair : BrainUtils.getMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get())) {
 			if (this.targetBlockPredicate.test(entity, pair.getFirst(), pair.getSecond()) && ForgeHooks.canEntityDestroy(level, pair.getFirst(), entity)) {
 				this.pos = pair.getFirst();
@@ -112,7 +113,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		return gameTime <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
 	}
 
@@ -129,9 +130,9 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 
 		if (this.breakTime >= this.timeToBreak) {
 			entity.level.removeBlock(this.pos, false);
-			entity.level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, this.pos, Block.getId(entity.level.getBlockState(this.pos)));
+			entity.level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, this.pos, Block.getId(entity.level.getBlockState(this.pos)));
 
-			doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
+			doStop((ServerWorld)entity.level, entity, entity.level.getGameTime());
 		}
 	}
 }

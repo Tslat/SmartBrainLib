@@ -1,25 +1,27 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.api.util.RandomUtil;
-import net.tslat.smartbrainlib.object.SquareRadius;
-
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.memory.WalkTarget;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.api.util.RandomUtil;
+import net.tslat.smartbrainlib.object.SquareRadius;
 
 /**
  * Walk target class that finds a random position nearby and sets it as the walk target if applicable. <br>
@@ -33,14 +35,14 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORIES = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
 	protected BiPredicate<E, BlockState> validPosition = (entity, state) -> false;
-	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
+	protected BiFunction<E, Vector3d, Float> speedModifier = (entity, targetPos) -> 1f;
 	protected SquareRadius radius = new SquareRadius(10, 6);
 	protected Function<E, Integer> tries = entity -> 10;
 
-	protected Vec3 targetPos = null;
+	protected Vector3d targetPos = null;
 
 	/**
 	 * Set the radius in which to look for walk positions.
@@ -77,7 +79,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	 * @param function The movespeed modifier/multiplier function
 	 * @return this
 	 */
-	public SeekRandomNearbyPosition<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+	public SeekRandomNearbyPosition<E> speedModifier(BiFunction<E, Vector3d, Float> function) {
 		this.speedModifier = function;
 
 		return this;
@@ -115,12 +117,12 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORIES;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		this.targetPos = getTargetPos(entity);
 
 		return this.targetPos != null;
@@ -132,10 +134,10 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Nullable
-	protected Vec3 getTargetPos(E entity) {
+	protected Vector3d getTargetPos(E entity) {
 		BlockPos entityPos = entity.blockPosition();
 		BlockPos targetPos = RandomUtil.getRandomPositionWithinRange(entityPos, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), (int)this.radius.xzRadius(), 0, 0, 0, false, entity.level, 10, state -> this.validPosition.test(entity, state));
 
-		return targetPos == entityPos ? null : Vec3.atBottomCenterOf(targetPos);
+		return targetPos == entityPos ? null : Vector3d.atBottomCenterOf(targetPos);
 	}
 }

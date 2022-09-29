@@ -1,16 +1,18 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.item.ItemStack;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 /**
  * Equips the entity with an item in its {@link net.minecraft.world.InteractionHand hand}. <br>
@@ -23,7 +25,7 @@ import java.util.function.Function;
  */
 public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected Function<E, ItemStack> stackFunction = entity -> ItemStack.EMPTY;
-	protected Function<E, InteractionHand> handDecider = entity -> InteractionHand.MAIN_HAND;
+	protected Function<E, Hand> handDecider = entity -> Hand.MAIN_HAND;
 	protected BiPredicate<E, ItemStack> dropItemOnUnequip = (entity, stack) -> false;
 
 	/**
@@ -31,7 +33,7 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	 * @param function The function
 	 * @return this
 	 */
-	public HoldItem<E> toHand(Function<E, InteractionHand> function) {
+	public HoldItem<E> toHand(Function<E, Hand> function) {
 		this.handDecider = function;
 
 		return this;
@@ -68,13 +70,13 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
+		return new ArrayList<>();
 	}
 
 	@Override
 	protected void start(E entity) {
-		InteractionHand hand = this.handDecider.apply(entity);
+		Hand hand = this.handDecider.apply(entity);
 		ItemStack previousStack = entity.getItemInHand(hand);
 
 		if (this.dropItemOnUnequip.test(entity, previousStack))

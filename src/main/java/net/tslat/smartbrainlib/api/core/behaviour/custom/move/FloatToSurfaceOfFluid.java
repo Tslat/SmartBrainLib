@@ -8,6 +8,8 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.tags.ITag;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
@@ -41,7 +43,15 @@ public class FloatToSurfaceOfFluid<E extends CreatureEntity> extends ExtendedBeh
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
-		return entity.isInFluidType((fluidType, height) -> entity.canSwimInFluidType(fluidType) && height > entity.getFluidJumpThreshold());
+		FluidState fluidIn = level.getFluidState(entity.blockPosition());
+		if(fluidIn == null) {
+			return false;
+		}
+		
+		if(!entity.canStandOnFluid(fluidIn.getType())) {
+			return false;
+		}
+		return fluidIn.getHeight(level, entity.blockPosition()) > entity.getFluidJumpThreshold();
 	}
 
 	@Override

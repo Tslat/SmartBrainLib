@@ -1,22 +1,24 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraftforge.common.ToolActions;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.item.UseAction;
+import net.minecraft.util.Hand;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 /**
  * Makes the entity use (block) using a shield if it's currently in the entity's hands
  */
 public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	protected InteractionHand hand = InteractionHand.MAIN_HAND;
+	protected Hand hand = Hand.MAIN_HAND;
 
 	protected Predicate<E> stopCondition = entity -> false;
 
@@ -32,19 +34,19 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
+		return new ArrayList<>();
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		if (entity.getMainHandItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
-			this.hand = InteractionHand.MAIN_HAND;
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
+		if (entity.getMainHandItem().getUseAnimation() == UseAction.BLOCK) {
+			this.hand = Hand.MAIN_HAND;
 
 			return true;
 		}
-		else if (entity.getOffhandItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
-			this.hand = InteractionHand.OFF_HAND;
+		else if (entity.getOffhandItem().getUseAnimation() == UseAction.BLOCK) {
+			this.hand = Hand.OFF_HAND;
 
 			return true;
 		}
@@ -58,11 +60,11 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
 		if (!entity.isUsingItem())
 			return false;
 
-		if (!entity.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK))
+		if (entity.getUseItem().getUseAnimation() != UseAction.BLOCK)
 			return false;
 
 		return !this.stopCondition.test(entity);
@@ -70,7 +72,7 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 
 	@Override
 	protected void stop(E entity) {
-		if (entity.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK))
+		if (entity.getUseItem().getUseAnimation() == UseAction.BLOCK)
 			entity.stopUsingItem();
 	}
 }

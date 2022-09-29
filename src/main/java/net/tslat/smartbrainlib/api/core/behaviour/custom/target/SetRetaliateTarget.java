@@ -1,18 +1,19 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * Sets the attack target of the entity based on the last entity to hurt it if a target isn't already set. <br>
@@ -23,9 +24,9 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
-	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof PlayerEntity) || !((PlayerEntity) entity).isCreative());
 
 	protected LivingEntity toTarget = null;
 
@@ -41,12 +42,12 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel pLevel, E owner) {
+	protected boolean checkExtraStartConditions(ServerWorld pLevel, E owner) {
 		Brain<?> brain = owner.getBrain();
 		this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 

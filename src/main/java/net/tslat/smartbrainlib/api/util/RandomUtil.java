@@ -1,23 +1,23 @@
 package net.tslat.smartbrainlib.api.util;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.PositionalRandomFactory;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
 
 /**
  * Utility class for easy and legible random functionality.
  */
 public final class RandomUtil {
-	public static final EasyRandom RANDOM = new EasyRandom(RandomSource.createThreadSafe());
+	public static final EasyRandom RANDOM = new EasyRandom(ThreadLocalRandom.current());
 
 	public static ThreadLocalRandom getRandomInstance() {
 		return ThreadLocalRandom.current();
@@ -79,27 +79,27 @@ public final class RandomUtil {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius);
 	}
 
-	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
+	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, World world) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, safeSurfacePlacement, world);
 	}
 
-	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
+	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, World world, int tries, @Nullable Predicate<BlockState> statePredicate) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
 
-	public static final class EasyRandom implements RandomSource  {
-		private final RandomSource random;
+	public static final class EasyRandom extends Random  {
+		private final Random random;
 
 		public EasyRandom() {
-			this(RandomSource.create());
+			this(new Random());
 		}
 
-		public EasyRandom(@Nonnull RandomSource rand) {
+		public EasyRandom(@Nonnull Random rand) {
 			this.random = rand;
 		}
 
-		public RandomSource getSource() {
-			return RandomSource.create();
+		public Random getSource() {
+			return new Random();
 		}
 
 		public boolean fiftyFifty() {
@@ -173,12 +173,12 @@ public final class RandomUtil {
 			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, false, null);
 		}
 
-		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
+		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, World world) {
 			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, 0, 0, 0, safeSurfacePlacement, world, 1, null);
 		}
 
-		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
-			BlockPos.MutableBlockPos mutablePos = centerPos.mutable();
+		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, World world, int tries, @Nullable Predicate<BlockState> statePredicate) {
+			BlockPos.Mutable mutablePos = centerPos.mutable();
 			xRadius = Math.max(xRadius - minSpreadX, 0);
 			yRadius = Math.max(yRadius - minSpreadY, 0);
 			zRadius = Math.max(zRadius - minSpreadZ, 0);
@@ -194,7 +194,7 @@ public final class RandomUtil {
 				mutablePos.set(newX, newY, newZ);
 
 				if (safeSurfacePlacement && world != null)
-					mutablePos.set(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos));
+					mutablePos.set(world.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, mutablePos));
 
 				if (statePredicate == null || statePredicate.test(world.getBlockState(mutablePos)))
 					return mutablePos.immutable();
@@ -203,15 +203,15 @@ public final class RandomUtil {
 			return centerPos;
 		}
 
-		@Override
+		/*@Override
 		public EasyRandom fork() {
 			return new EasyRandom(this.random.fork());
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public PositionalRandomFactory forkPositional() {
 			return this.random.forkPositional();
-		}
+		}*/
 
 		@Override
 		public void setSeed(long seed) {
