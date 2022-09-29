@@ -1,5 +1,7 @@
 package net.tslat.smartbrainlib.api.core;
 
+import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,8 +64,17 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		this.nonStaticMemories = nonStaticMemories;
 	}
 
+	/**
+	 * Creates a new brain instance based on the provider conditions.
+	 * @param codecLoader Codec loader instance for serialized data loading of a pre-existing brain
+	 * @return The new brain instance, or null if on client
+	 */
+	@Nullable
 	@Override
 	public final SmartBrain<E> makeBrain(Dynamic<?> codecLoader) {
+		if (owner.level.isClientSide())
+			return null;
+
 		List<ExtendedSensor<E>> sensors = owner.getSensors();
 		List<BrainActivityGroup<E>> taskList = compileTasks();
 		ImmutableList<MemoryModuleType<?>> memories;

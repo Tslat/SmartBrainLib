@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 
@@ -31,17 +32,26 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 public class EscapeSun<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.REGISTERED)});
 
-	protected float speedModifier = 1;
+	protected BiFunction<E, Vector3d, Float> speedModifier = (entity, targetPos) -> 1f;
 
 	protected Vector3d hidePos = null;
 
 	/**
 	 * Set the movespeed modifier for when the entity tries to escape the sun
-	 * @param speedMod The speed modifier
+	 * @param modifier The speed modifier/multiplier
 	 * @return this
 	 */
-	public EscapeSun<E> speedModifier(float speedMod) {
-		this.speedModifier = speedMod;
+	public EscapeSun<E> speedModifier(float modifier) {
+		return speedModifier((entity, targetPos) -> modifier);
+	}
+
+	/**
+	 * Set the movespeed modifier for when the entity tries to escape the sun
+	 * @param function The speed modifier/multiplier function
+	 * @return this
+	 */
+	public EscapeSun<E> speedModifier(BiFunction<E, Vector3d, Float> function) {
+		this.speedModifier = function;
 
 		return this;
 	}
@@ -66,7 +76,7 @@ public class EscapeSun<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier, 0));
+		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier.apply(entity, this.hidePos), 0));
 	}
 
 	@Override
