@@ -22,7 +22,7 @@ import java.util.List;
 public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
 
-	private float speedModifier = 1;
+	protected float speedModifier = 1;
 
 	/**
 	 * Set the movespeed modifier for the entity when moving to the target.
