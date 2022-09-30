@@ -7,6 +7,7 @@ import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.AxolotlSpecificSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.FrogSpecificSensor;
@@ -60,6 +61,7 @@ public final class SBLSensors {
 	public static final SensorType<IncomingProjectilesSensor<?>> INCOMING_PROJECTILES = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "incoming_projectiles"), SensorTypeInvoker.createSensorType(IncomingProjectilesSensor::new));
 	public static final SensorType<GenericAttackTargetSensor<?>> GENERIC_ATTACK_TARGET = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "generic_attack_target"), SensorTypeInvoker.createSensorType(GenericAttackTargetSensor::new));
 	public static final SensorType<UnreachableTargetSensor<?>> UNREACHABLE_TARGET = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "unreachable_target"), SensorTypeInvoker.createSensorType(UnreachableTargetSensor::new));
+	public static final SensorType<NearbyBlocksSensor<?>> NEARBY_BLOCKS = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "nearby_blocks"), SensorTypeInvoker.createSensorType(NearbyBlocksSensor::new));
 	
 	public static void init(){}
 }
