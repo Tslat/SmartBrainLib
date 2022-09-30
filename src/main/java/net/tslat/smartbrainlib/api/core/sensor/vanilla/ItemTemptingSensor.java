@@ -72,7 +72,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	 * @return this
 	 */
 	public ItemTemptingSensor<E> setRadius(double radius) {
-		return setRadius(radius);
+		return setRadius(radius, radius);
 	}
 
 	/**
