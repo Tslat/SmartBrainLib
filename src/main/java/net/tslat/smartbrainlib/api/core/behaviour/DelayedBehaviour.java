@@ -18,6 +18,8 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 
 	public DelayedBehaviour(int delayTicks) {
 		this.delayTime = delayTicks;
+		
+		runFor(entity -> Math.max(delayTicks, 60));
 	}
 
 	/**
