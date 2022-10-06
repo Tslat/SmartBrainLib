@@ -3,7 +3,6 @@ package net.tslat.smartbrainlib.registry;
 import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Unit;
@@ -23,7 +22,7 @@ public final class SBLMemoryTypes {
 	public static final MemoryModuleType<Boolean> TARGET_UNREACHABLE = MemoryTypesInvoker.invokeRegister(SmartBrainLib.MOD_ID + ":target_unreachable");
 	public static final MemoryModuleType<Boolean> SPECIAL_ATTACK_COOLDOWN = MemoryTypesInvoker.invokeRegister(SmartBrainLib.MOD_ID + ":special_attack_cooldown");
 	public static final MemoryModuleType<List<Pair<BlockPos, BlockState>>> NEARBY_BLOCKS = MemoryTypesInvoker.invokeRegister(SmartBrainLib.MOD_ID + ":nearby_blocks");
-    public static final MemoryModuleType<Unit> IS_IN_WATER = MemoryTypesInvoker.invokeRegister(SmartBrainLib.MOD_ID + "is_in_water", Codec.unit(Unit.INSTANCE));
+    public static final MemoryModuleType<Unit> IS_IN_WATER = MemoryTypesInvoker.invokeRegister(SmartBrainLib.MOD_ID + "is_in_water");
 
 	public static void init(){}
 }
