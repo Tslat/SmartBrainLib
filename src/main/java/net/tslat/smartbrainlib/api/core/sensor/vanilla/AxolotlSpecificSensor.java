@@ -1,5 +1,10 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.List;
+import java.util.function.BiPredicate;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -10,10 +15,6 @@ import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.BiPredicate;
 
 /**
  * A replication of vanilla's

@@ -33,7 +33,7 @@
   "depends": {
     "fabricloader": ">=0.14.6",
     "fabric": "*",
-    "minecraft": "~1.19",
+    "minecraft": "~1.18.2",
     "java": ">=17"
   },
   "accessWidener": "smartbrainlib.accesswidener"

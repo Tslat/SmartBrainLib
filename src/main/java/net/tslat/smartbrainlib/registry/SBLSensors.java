@@ -10,7 +10,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.AxolotlSpecificSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.FrogSpecificSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HoglinSpecificSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
@@ -26,7 +25,6 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestItemSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinBruteSpecificSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinSpecificSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.SecondaryPoiSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.WardenSpecificSensor;
 import net.tslat.smartbrainlib.mixin.SensorTypeInvoker;
 
 /**
@@ -50,12 +48,10 @@ public final class SBLSensors {
 	public static final SensorType<InWaterSensor<?>> IN_WATER = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "in_water"), SensorTypeInvoker.createSensorType(InWaterSensor::new));
 
 	// Entity Specific
-	public static final SensorType<FrogSpecificSensor<?>> FROG_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "frog_specific"), SensorTypeInvoker.createSensorType(FrogSpecificSensor::new));
 	public static final SensorType<AxolotlSpecificSensor<?>> AXOLOTL_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "axolotl_specific"), SensorTypeInvoker.createSensorType(AxolotlSpecificSensor::new));
 	public static final SensorType<PiglinSpecificSensor<?>> PIGLIN_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "piglin_specific"), SensorTypeInvoker.createSensorType(PiglinSpecificSensor::new));
 	public static final SensorType<PiglinBruteSpecificSensor<?>> PIGLIN_BRUTE_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "piglin_brute_specific"), SensorTypeInvoker.createSensorType(PiglinBruteSpecificSensor::new));
 	public static final SensorType<HoglinSpecificSensor<?>> HOGLIN_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "hoglin_specific"), SensorTypeInvoker.createSensorType(HoglinSpecificSensor::new));
-	public static final SensorType<WardenSpecificSensor<?>> WARDEN_SPECIFIC = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "warden_speciifc"), SensorTypeInvoker.createSensorType(WardenSpecificSensor::new));
 
 	// Custom
 	public static final SensorType<IncomingProjectilesSensor<?>> INCOMING_PROJECTILES = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SmartBrainLib.MOD_ID, "incoming_projectiles"), SensorTypeInvoker.createSensorType(IncomingProjectilesSensor::new));

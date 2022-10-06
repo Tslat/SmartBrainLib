@@ -76,7 +76,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	protected void doTick(ServerLevel level, E entity) {
 		ResourceKey<Level> dimension = level.dimension();
 		BlockPos pos = entity.blockPosition();
-		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().secondaryPoi();
+		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().getSecondaryPoi();
 		List<GlobalPos> poiPositions = new ObjectArrayList<>();
 
 		if (testPoiBlocks.isEmpty())

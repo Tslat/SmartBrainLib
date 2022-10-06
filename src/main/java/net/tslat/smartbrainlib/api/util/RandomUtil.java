@@ -1,23 +1,23 @@
 package net.tslat.smartbrainlib.api.util;
 
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
 
 /**
  * Utility class for easy and legible random functionality.
  */
 public final class RandomUtil {
-	public static final EasyRandom RANDOM = new EasyRandom(RandomSource.createThreadSafe());
+	public static final EasyRandom RANDOM = new EasyRandom(ThreadLocalRandom.current());
 
 	public static ThreadLocalRandom getRandomInstance() {
 		return ThreadLocalRandom.current();
@@ -67,11 +67,11 @@ public final class RandomUtil {
 		return RANDOM.randomValueBetween(min, max);
 	}
 
-	public static <T> T getRandomSelection(@Nonnull T... options) {
+	public static <T> T getRandomSelection(@NotNull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
 
-	public static <T> T getRandomSelection(@Nonnull List<T> options) {
+	public static <T> T getRandomSelection(@NotNull List<T> options) {
 		return RANDOM.getRandomSelection(options);
 	}
 
@@ -87,19 +87,22 @@ public final class RandomUtil {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
 
-	public static final class EasyRandom implements RandomSource  {
-		private final RandomSource random;
+	public static final class EasyRandom extends Random  {
+
+		private static final long serialVersionUID = 1L;
+		
+		private final Random random;
 
 		public EasyRandom() {
-			this(RandomSource.create());
+			this(new Random());
 		}
 
-		public EasyRandom(@Nonnull RandomSource rand) {
-			this.random = rand;
+		public EasyRandom(@NotNull Random random2) {
+			this.random = random2;
 		}
 
-		public RandomSource getSource() {
-			return RandomSource.create();
+		public Random getSource() {
+			return new Random();
 		}
 
 		public boolean fiftyFifty() {
@@ -161,11 +164,11 @@ public final class RandomUtil {
 			return min + random.nextDouble() * (max - min);
 		}
 
-		public <T> T getRandomSelection(@Nonnull T... options) {
+		public <T> T getRandomSelection(@NotNull T... options) {
 			return options[random.nextInt(options.length)];
 		}
 
-		public <T> T getRandomSelection(@Nonnull List<T> options) {
+		public <T> T getRandomSelection(@NotNull List<T> options) {
 			return options.get(random.nextInt(options.size()));
 		}
 
@@ -201,16 +204,6 @@ public final class RandomUtil {
 			}
 
 			return centerPos;
-		}
-
-		@Override
-		public EasyRandom fork() {
-			return new EasyRandom(this.random.fork());
-		}
-
-		@Override
-		public PositionalRandomFactory forkPositional() {
-			return this.random.forkPositional();
 		}
 
 		@Override

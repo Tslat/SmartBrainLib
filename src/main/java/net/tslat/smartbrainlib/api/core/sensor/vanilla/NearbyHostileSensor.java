@@ -1,6 +1,12 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.Map;
+import java.util.function.BiPredicate;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,10 +16,6 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.function.BiPredicate;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#NEAREST_HOSTILE} memory by

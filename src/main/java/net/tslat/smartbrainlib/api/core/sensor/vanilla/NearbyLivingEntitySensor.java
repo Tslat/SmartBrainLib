@@ -1,5 +1,10 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.Comparator;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,10 +18,6 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * A sensor that looks for nearby living entities in the surrounding area,

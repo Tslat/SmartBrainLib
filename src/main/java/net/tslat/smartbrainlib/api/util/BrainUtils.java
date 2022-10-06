@@ -1,13 +1,14 @@
 package net.tslat.smartbrainlib.api.util;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.

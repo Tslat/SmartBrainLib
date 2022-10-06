@@ -1,6 +1,12 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
+import java.util.List;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -11,10 +17,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Extended behaviour for melee attacking. Natively supports animation hit delays or other delays. <br>
@@ -56,8 +58,13 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
+		return entity.getSensing().hasLineOfSight(this.target) && this.isWithinMeleeAttackRange(entity, this.target);
 	}
+
+    public boolean isWithinMeleeAttackRange(E entity, LivingEntity livingEntity) {
+        double d = entity.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+        return d <= entity.getMeleeAttackRangeSqr(livingEntity);
+    }
 
 	@Override
 	protected void start(E entity) {
@@ -77,7 +84,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 		if (this.target == null)
 			return;
 
-		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+		if (!entity.getSensing().hasLineOfSight(this.target) || !this.isWithinMeleeAttackRange(entity, this.target))
 			return;
 
 		entity.doHurtTarget(this.target);

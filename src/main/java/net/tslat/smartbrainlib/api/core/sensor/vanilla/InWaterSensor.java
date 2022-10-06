@@ -1,5 +1,7 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
@@ -9,9 +11,8 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-
-import java.util.List;
 
 /**
  * A sensor that sets or clears the {@link MemoryModuleType#IS_IN_WATER} memory
@@ -24,7 +25,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.IS_IN_WATER);
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.IS_IN_WATER);
 
 	public InWaterSensor() {
 		super((entity2, entity) -> entity.isInWater());
@@ -43,10 +44,10 @@ public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E>
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
 		if (predicate().test(entity, entity)) {
-			BrainUtils.setMemory(entity, MemoryModuleType.IS_IN_WATER, Unit.INSTANCE);
+			BrainUtils.setMemory(entity, SBLMemoryTypes.IS_IN_WATER, Unit.INSTANCE);
 		}
 		else {
-			BrainUtils.clearMemory(entity, MemoryModuleType.IS_IN_WATER);
+			BrainUtils.clearMemory(entity, SBLMemoryTypes.IS_IN_WATER);
 		}
 	}
 }
