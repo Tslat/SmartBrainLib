@@ -72,7 +72,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return BehaviorUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
+		return BrainUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 		if (this.target == null)
 			return;
 
-		if (!BehaviorUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, 1);
