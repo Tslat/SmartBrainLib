@@ -73,10 +73,10 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
-				new EscapeSun<>().speedModifier(1.5F).cooldownFor(entity -> 20),													// Escape the sun
-				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity).speedModifier(1.5F),												// Run away from wolves
-				new LookAtTarget<>(), 														// Look at the look target
-				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
+				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
+				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity),												// Run away from wolves
+				new LookAtTarget(40, 300), 														// Look at the look target
+				new StrafeTarget<>().stopStrafingWhen(entity -> !isHoldingBow(entity)).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
 				new MoveToWalkTarget<>());																					// Move to the current walk target
 	}
 

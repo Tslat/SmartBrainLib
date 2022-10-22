@@ -73,7 +73,7 @@ public class StrafeTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
-		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && this.stopStrafingWhen.test(entity);
+		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
 	}
 
 	@Override
