@@ -304,12 +304,19 @@ public final class BrainUtils {
 		entity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
 	}
 	
+	/**
+	 * Replacement of {@link net.minecraft.world.entity.ai.behavior.BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
+	 * @param entity The entity to check the brain of
+	 * @param target The target entity
+	 * @return Whether the target entity is known to be visible or not
+	 */
 	public static boolean canSee(LivingEntity pLivingEntity, LivingEntity pTarget) {
-		Brain<?> brain = pLivingEntity.getBrain();
-		if (!brain.hasMemoryValue(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get())) {
-			return false;
-		}
-		return brain.getMemory(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).get().contains(pTarget);
+		Brain<?> brain = entity.getBrain();
+
+		if (BehaviorUtils.entityIsVisible(brain, target))
+			return true;
+
+		return entity.hasLineOfSight(target);
 	}
 
 	public static boolean isWithinAttackRange(MobEntity entity, LivingEntity target, int maxDistance) {
