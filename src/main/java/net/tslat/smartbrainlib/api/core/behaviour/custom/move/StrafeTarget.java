@@ -72,7 +72,7 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 
 	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && this.stopStrafingWhen.test(entity);
+		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
 	}
 
 	@Override
