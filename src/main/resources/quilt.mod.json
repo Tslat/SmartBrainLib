@@ -3,10 +3,10 @@
 	"quilt_loader": {
 		"group": "net.tslat",
 		"id": "smartbrainlib",
-		"version": "1.2",
+		"version": "${version}",
 		"metadata": {
-			"name": "Mod Name",
-			"description": "A short description of your mod.",
+			"name": "SmartBrainLib",
+			"description": "A library mod for smarter Brains and easier usage of the Brain system.",
 			"contributors": {
 				"tslat": "Owner",
 				"AuzreDoom": "Quilt Port"
@@ -39,5 +39,5 @@
 		]
 	},
 	"mixin": "smartbrainlib.mixins.json",
-	"accessWidener": "smartbrainlib.accesswidener"
+	"access_widener": "smartbrainlib.accesswidener"
 }
