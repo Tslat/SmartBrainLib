@@ -47,9 +47,11 @@ public class StayWithinDistanceOfAttackTarget<E extends CreatureEntity> extends 
 
 	/**
 	 * Set a custom condition for when the strafing should end.
+	 * Deprecated, use {@link ExtendedBehaviour#stopIf}
 	 * @param predicate The predicate
 	 * @return this
 	 */
+	@Deprecated(forRemoval = true)
 	public StayWithinDistanceOfAttackTarget<E> stopStrafingWhen(Predicate<E> predicate) {
 		this.stopWhen = predicate;
 
