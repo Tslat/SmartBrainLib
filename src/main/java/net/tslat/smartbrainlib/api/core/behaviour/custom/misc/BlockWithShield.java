@@ -21,10 +21,12 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	protected Predicate<E> stopCondition = entity -> false;
 
 	/**
-	 * Sets the condition for when the entity should stop blocking. <br>
+	 * Sets the condition for when the entity should stop blocking.<br>
+	 * Deprecated, use {@link ExtendedBehaviour#stopIf}
 	 * @param predicate The predicate
 	 * @return this
 	 */
+	@Deprecated(forRemoval = true)
 	public BlockWithShield<E> stopWhen(Predicate<E> predicate) {
 		this.stopCondition = predicate;
 
