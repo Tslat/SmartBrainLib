@@ -80,7 +80,7 @@ public class EscapeSun<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (this.hidePos == null)
 			return false;
 

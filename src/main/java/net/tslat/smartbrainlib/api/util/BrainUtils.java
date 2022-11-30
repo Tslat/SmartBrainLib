@@ -311,12 +311,12 @@ public final class BrainUtils {
 	 * @return Whether the target entity is known to be visible or not
 	 */
 	public static boolean canSee(LivingEntity pLivingEntity, LivingEntity pTarget) {
-		Brain<?> brain = entity.getBrain();
+		Brain<?> brain = pLivingEntity.getBrain();
 
-		if (BehaviorUtils.entityIsVisible(brain, target))
+		if (BrainUtil.entityIsVisible(brain, pTarget))
 			return true;
 
-		return entity.hasLineOfSight(target);
+		return pLivingEntity.canSee(pTarget);
 	}
 
 	public static boolean isWithinAttackRange(MobEntity entity, LivingEntity target, int maxDistance) {

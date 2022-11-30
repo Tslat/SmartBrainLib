@@ -10,7 +10,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
-import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 
@@ -72,7 +71,7 @@ public class StrafeTarget<E extends MobEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
 	}
 

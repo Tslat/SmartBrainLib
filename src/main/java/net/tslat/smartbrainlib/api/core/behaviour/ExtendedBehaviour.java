@@ -29,12 +29,13 @@ import net.tslat.smartbrainlib.APIOnly;
  * @param <E> Your entity
  */
 public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> {
-	private Predicate<E> startCondition = entity -> true;
-	private Consumer<E> taskStartCallback = entity -> {};
-	private Consumer<E> taskStopCallback = entity -> {};
+	protected Predicate<E> startCondition = entity -> true;
+	protected Predicate<E> stopCondition = entity -> true;
+	protected Consumer<E> taskStartCallback = entity -> {};
+	protected Consumer<E> taskStopCallback = entity -> {};
 
-	private Function<E, Integer> runtimeProvider = entity -> 60;
-	private Function<E, Integer> cooldownProvider = entity -> 0;
+	protected Function<E, Integer> runtimeProvider = entity -> 60;
+	protected Function<E, Integer> cooldownProvider = entity -> 0;
 	protected long cooldownFinishedAt = 0;
 
 	public ExtendedBehaviour() {
@@ -93,12 +94,26 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	}
 
 	/**
-	 * Set an additional condition for the behaviour to be able to start. Useful for dynamically predicating behaviours.
+	 * Set an additional condition for the behaviour to be able to start. Useful for dynamically predicating behaviours.<br>
+	 * Prevents this behaviour starting unless this predicate returns true.
 	 * @param predicate The predicate
 	 * @return this
 	 */
 	public final ExtendedBehaviour<E> startCondition(Predicate<E> predicate) {
 		this.startCondition = predicate;
+
+		return this;
+	}
+
+	/**
+	 * Set an automatic condition for the behavior to stop. Useful for dynamically stopping behaviours.
+	 * Has no effect on one-shot behaviours that don't have a runtime.<br>
+	 * Stops the behaviour if it is active and this predicate returns true.
+	 * @param predicate The predicate
+	 * @return this
+	 */
+	public final ExtendedBehaviour<E> stopCondition(Predicate<E> predicate) {
+		this.stopCondition = predicate;
 
 		return this;
 	}
@@ -183,16 +198,25 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Task<E> 
 	protected void stop(E entity) {}
 
 	/**
-	 * Check whether the behaviour can continue running. This is checked before {@link ExtendedBehaviour#tick(E)}. <br>
-	 * Memories are not guaranteed to be in their required state here, so if you have required memories, it might be worth checking them here.
-	 *
+	 * The root method to check if this behaviour should continue running. This method should only be overridden by other abstract subclasses.<br>
+	 * If overriding, ensure you either call super or manually call the {@link ExtendedBehaviour#stopCondition} check yourself.
 	 * @param level The level the entity is in
-	 * @param entity The owner of the brain
-	 * @param gameTime The current time (in ticks) of the level
+	 * @param entity The entity the brain belongs to
+	 * @param gameTime The current gameTime (in ticks) of the level
 	 * @return Whether the behaviour should continue ticking
 	 */
 	@Override
 	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+		return shouldKeepRunning(entity) && this.stopCondition.test(entity);
+	}
+
+	/**
+	 * Check whether the behaviour should continue running. This is checked before {@link ExtendedBehaviour#tick(E)}. <br>
+	 * Memories are not guaranteed to be in their required state here, so if you have required memories, it might be worth checking them here.
+	 * @param entity The owner of the brain
+	 * @return Whether the behaviour should continue ticking
+	 */
+	protected boolean shouldKeepRunning(E entity) {
 		return false;
 	}
 

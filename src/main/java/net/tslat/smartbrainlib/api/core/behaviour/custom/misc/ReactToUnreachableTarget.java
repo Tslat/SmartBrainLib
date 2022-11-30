@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
-import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
@@ -60,7 +59,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return hasRequiredMemories(entity);
 	}
 

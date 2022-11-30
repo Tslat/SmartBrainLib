@@ -1,23 +1,23 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.behavior.EntityTracker;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+
+import com.mojang.datafixers.util.Pair;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityPosWrapper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * Movement behaviour to handle proximal strafing. Will run away if too close, or run towards if too far. <br>
@@ -31,8 +31,8 @@ import java.util.function.Predicate;
  * </ul>
  * @param <E> The entity
  */
-public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+public class StayWithinDistanceOfAttackTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
+	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_ABSENT)});
 
 	protected BiFunction<E, LivingEntity, Float> distMax = (entity, target) -> 20f;
 	protected BiFunction<E, LivingEntity, Float> distMin = (entity, target) -> 5f;
@@ -41,7 +41,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	protected float repositionSpeedMod = 1.3f;
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
@@ -119,7 +119,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopWhen.test(entity);
 	}
 
@@ -130,9 +130,9 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 		float maxDist = this.distMax.apply(entity, target);
 		double maxDistSq = Math.pow(maxDist, 2);
 		double minDistSq = Math.pow(this.distMin.apply(entity, target), 2);
-		PathNavigation navigation = entity.getNavigation();
+		PathNavigator navigation = entity.getNavigation();
 
-		if (distanceToTarget > maxDistSq || !entity.hasLineOfSight(target)) {
+		if (distanceToTarget > maxDistSq || !entity.canSee(target)) {
 			if (navigation.isDone())
 				navigation.moveTo(target, this.repositionSpeedMod);
 
@@ -141,7 +141,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 
 		if (distanceToTarget < minDistSq) {
 			if (navigation.isDone()) {
-				Vec3 runPos = DefaultRandomPos.getPosAway(entity, (int)maxDist, 5, target.position());
+				Vector3d runPos = RandomPositionGenerator.getLandPosTowards(entity, (int)maxDist, 5, target.position());//Correct replacement method?
 
 				if (runPos != null)
 					navigation.moveTo(navigation.createPath(new BlockPos(runPos), 1), this.repositionSpeedMod);
@@ -151,7 +151,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 		}
 
 		navigation.stop();
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
+		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
 
 		if (distanceToTarget > maxDistSq * 0.5f) {
 			entity.lookAt(target, 30, 30);

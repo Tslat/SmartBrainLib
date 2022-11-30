@@ -59,8 +59,8 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
-		return this.runningBehaviour != null && this.runningBehaviour.canStillUse(level, entity, gameTime);
+	protected boolean shouldKeepRunning(E entity) {
+		return this.runningBehaviour != null && this.runningBehaviour.canStillUse((ServerWorld)entity.level, entity, entity.level.getGameTime());
 	}
 
 	@Override

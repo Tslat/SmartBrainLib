@@ -95,7 +95,7 @@ public class FleeTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return entity.getNavigation().getPath() == this.runPath && !entity.getNavigation().isDone();
 	}
 

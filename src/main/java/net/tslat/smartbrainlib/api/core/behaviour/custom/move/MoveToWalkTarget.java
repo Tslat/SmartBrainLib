@@ -57,7 +57,7 @@ public class MoveToWalkTarget<E extends CreatureEntity> extends ExtendedBehaviou
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (this.path == null || this.lastTargetPos == null)
 			return false;
 

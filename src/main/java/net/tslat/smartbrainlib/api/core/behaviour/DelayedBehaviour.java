@@ -54,8 +54,8 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
-		return this.delayFinishedAt >= gameTime;
+	protected boolean shouldKeepRunning(E entity) {
+		return this.delayFinishedAt >= entity.level.getGameTime();
 	}
 
 	@Override
