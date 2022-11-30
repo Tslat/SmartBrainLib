@@ -111,7 +111,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param predicate The predicate
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> stopCondition(Predicate<E> predicate) {
+	public final ExtendedBehaviour<E> stopIf(Predicate<E> predicate) {
 		this.stopCondition = predicate;
 
 		return this;
