@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
@@ -75,15 +76,25 @@ public final class RandomUtil {
 		return RANDOM.getRandomSelection(options);
 	}
 
+	@Nonnull
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius);
 	}
 
+	@Nonnull
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, safeSurfacePlacement, world);
 	}
 
+	// Deprecated, use the BiPredicate variant below
+	@Nonnull
+	@Deprecated(forRemoval = true)
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
+		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
+	}
+
+	@Nonnull
+	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable BiPredicate<BlockState, BlockPos> statePredicate) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
 
@@ -169,15 +180,25 @@ public final class RandomUtil {
 			return options.get(random.nextInt(options.size()));
 		}
 
+		@Nonnull
 		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius) {
 			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, false, null);
 		}
 
+		@Nonnull
 		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
-			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, 0, 0, 0, safeSurfacePlacement, world, 1, null);
+			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, 0, 0, 0, safeSurfacePlacement, world, 1, (Predicate<BlockState>)null);
 		}
 
+		@Nonnull
+		// Deprecated, use the BiPredicate variant below
+		@Deprecated(forRemoval = true)
 		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
+			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, (state, pos) -> statePredicate == null || statePredicate.test(state));
+		}
+
+		@Nonnull
+		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable BiPredicate<BlockState, BlockPos> statePredicate) {
 			BlockPos.MutableBlockPos mutablePos = centerPos.mutable();
 			xRadius = Math.max(xRadius - minSpreadX, 0);
 			yRadius = Math.max(yRadius - minSpreadY, 0);
@@ -196,7 +217,7 @@ public final class RandomUtil {
 				if (safeSurfacePlacement && world != null)
 					mutablePos.set(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos));
 
-				if (statePredicate == null || statePredicate.test(world.getBlockState(mutablePos)))
+				if (statePredicate == null || statePredicate.test(world.getBlockState(mutablePos), mutablePos.immutable()))
 					return mutablePos.immutable();
 			}
 
