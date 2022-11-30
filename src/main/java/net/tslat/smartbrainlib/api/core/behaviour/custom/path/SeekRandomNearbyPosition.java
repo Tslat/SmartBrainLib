@@ -134,7 +134,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	@Nullable
 	protected Vec3 getTargetPos(E entity) {
 		BlockPos entityPos = entity.blockPosition();
-		BlockPos targetPos = RandomUtil.getRandomPositionWithinRange(entityPos, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), (int)this.radius.xzRadius(), 0, 0, 0, false, entity.level, 10, state -> this.validPosition.test(entity, state));
+		BlockPos targetPos = RandomUtil.getRandomPositionWithinRange(entityPos, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), (int)this.radius.xzRadius(), 0, 0, 0, false, entity.level, 10, (state, pos) -> this.validPosition.test(entity, state));
 
 		return targetPos == entityPos ? null : Vec3.atBottomCenterOf(targetPos);
 	}
