@@ -58,7 +58,7 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (!entity.isUsingItem())
 			return false;
 

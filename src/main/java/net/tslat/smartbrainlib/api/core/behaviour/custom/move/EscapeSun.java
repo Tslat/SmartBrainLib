@@ -78,7 +78,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (this.hidePos == null)
 			return false;
 

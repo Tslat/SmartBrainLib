@@ -56,7 +56,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (this.path == null || this.lastTargetPos == null)
 			return false;
 

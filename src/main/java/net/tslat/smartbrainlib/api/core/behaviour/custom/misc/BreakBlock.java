@@ -112,8 +112,8 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return gameTime <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
+	protected boolean shouldKeepRunning(E entity) {
+		return entity.level.getGameTime() <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, entity.level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
 	}
 
 	@Override

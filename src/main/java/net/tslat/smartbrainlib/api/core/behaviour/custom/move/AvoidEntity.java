@@ -119,7 +119,7 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return !this.runPath.isDone();
 	}
 

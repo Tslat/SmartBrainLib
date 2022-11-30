@@ -93,7 +93,7 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return entity.getNavigation().getPath() == this.runPath && !entity.getNavigation().isDone();
 	}
 
