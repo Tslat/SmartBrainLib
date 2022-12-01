@@ -44,8 +44,8 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return checkExtraStartConditions(level, entity);
+	protected boolean shouldKeepRunning(E entity) {
+		return checkExtraStartConditions((ServerLevel)entity.getLevel(), entity);
 	}
 
 	@Override

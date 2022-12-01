@@ -71,8 +71,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new EscapeSun<>().cooldownFor(entity -> 20), 					// Escape the sun
 				new AvoidEntity<>().avoiding(entity -> entity instanceof Wolf), // Run away from wolves
 				new LookAtTargetSink(40, 300), 							// Look at the look target
-				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow)
-						.startCondition(SBLSkeleton::isHoldingBow),				// Strafe around target
+				new StrafeTarget<>().stopStrafingWhen(entity -> !isHoldingBow(entity)).startCondition(SBLSkeleton::isHoldingBow), // Strafe around target
 				new MoveToWalkTarget<>()); 										// Move to the current walk target
 	}
 

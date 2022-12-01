@@ -1,15 +1,15 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.look;
 
+import java.util.List;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import java.util.List;
 
 /**
  * Look at the look target for as long as it is present
@@ -29,7 +29,7 @@ public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return BrainUtils.hasMemory(entity, MemoryModuleType.LOOK_TARGET);
 	}
 

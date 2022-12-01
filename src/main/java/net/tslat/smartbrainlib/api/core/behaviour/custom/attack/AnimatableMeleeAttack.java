@@ -1,6 +1,12 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
+import java.util.List;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -11,10 +17,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Extended behaviour for melee attacking. Natively supports animation hit delays or other delays. <br>

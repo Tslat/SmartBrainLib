@@ -17,4 +17,9 @@ public class Idle<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();
 	}
+	
+	@Override
+	protected boolean shouldKeepRunning(E entity) {
+		return true;
+	}
 }

@@ -1,17 +1,17 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * Movement behaviour to handle strafing. <br>
@@ -71,8 +71,8 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && this.stopStrafingWhen.test(entity);
+	protected boolean shouldKeepRunning(E entity) {
+		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "smartbrainlib",
-  "version": "1.2",
+  "version": "1.5",
 
   "name": "SmartBrainLib",
   "description": "A library mod for smarter Brains and easier usage of the Brain system.",
