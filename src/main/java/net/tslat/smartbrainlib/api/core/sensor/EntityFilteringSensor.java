@@ -1,14 +1,15 @@
 package net.tslat.smartbrainlib.api.core.sensor;
 
+import java.util.List;
+import java.util.function.BiPredicate;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.BiPredicate;
 
 /**
  * An abstract class that is used to pick out certain entities from the existing {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory. <br>

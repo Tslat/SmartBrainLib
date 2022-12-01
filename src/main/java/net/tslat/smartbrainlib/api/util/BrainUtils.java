@@ -1,13 +1,15 @@
 package net.tslat.smartbrainlib.api.util;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -276,5 +278,20 @@ public final class BrainUtils {
 		else {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
 		}
+	}
+	
+	/**
+	 * Replacement of {@link net.minecraft.world.entity.ai.behavior.BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
+	 * @param entity The entity to check the brain of
+	 * @param target The target entity
+	 * @return Whether the target entity is known to be visible or not
+	 */
+	public static boolean canSee(LivingEntity entity, LivingEntity target) {
+		Brain<?> brain = entity.getBrain();
+
+		if (BehaviorUtils.entityIsVisible(brain, target))
+			return true;
+
+		return entity.hasLineOfSight(target);
 	}
 }

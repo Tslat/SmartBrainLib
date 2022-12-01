@@ -1,8 +1,20 @@
 package net.tslat.smartbrainlib.api.core;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,10 +30,6 @@ import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
-import org.apache.commons.lang3.mutable.MutableObject;
-
-import javax.annotation.Nullable;
-import java.util.*;
 
 /**
  * Supercedes vanilla's {@link Brain}. One of the core components of the SBL

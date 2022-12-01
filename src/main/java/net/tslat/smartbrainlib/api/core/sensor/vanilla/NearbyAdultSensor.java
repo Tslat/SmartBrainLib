@@ -2,7 +2,7 @@ package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
 import java.util.function.BiPredicate;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;

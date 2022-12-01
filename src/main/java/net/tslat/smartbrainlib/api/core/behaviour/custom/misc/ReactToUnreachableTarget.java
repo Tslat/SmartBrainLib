@@ -1,18 +1,18 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * Calls a callback when the entity has been obstructed for a given period of time.
@@ -59,7 +59,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return hasRequiredMemories(entity);
 	}
 

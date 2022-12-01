@@ -1,6 +1,14 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -14,12 +22,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.RandomUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 /**
  * Walk target class that finds a random position nearby and sets it as the walk target if applicable. <br>
@@ -134,7 +136,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	@Nullable
 	protected Vec3 getTargetPos(E entity) {
 		BlockPos entityPos = entity.blockPosition();
-		BlockPos targetPos = RandomUtil.getRandomPositionWithinRange(entityPos, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), (int)this.radius.xzRadius(), 0, 0, 0, false, entity.level, 10, state -> this.validPosition.test(entity, state));
+		BlockPos targetPos = RandomUtil.getRandomPositionWithinRange(entityPos, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), (int)this.radius.xzRadius(), 0, 0, 0, false, entity.level, 10, (state, pos) -> this.validPosition.test(entity, state));
 
 		return targetPos == entityPos ? null : Vec3.atBottomCenterOf(targetPos);
 	}

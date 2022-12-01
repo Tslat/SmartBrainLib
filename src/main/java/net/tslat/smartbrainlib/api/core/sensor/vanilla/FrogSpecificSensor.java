@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;

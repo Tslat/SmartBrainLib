@@ -1,6 +1,12 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
+import java.util.List;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
@@ -10,12 +16,8 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Function;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
 
 /**
  * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
@@ -72,7 +74,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return BehaviorUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
+		return BrainUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 		if (this.target == null)
 			return;
 
-		if (!BehaviorUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, 1);

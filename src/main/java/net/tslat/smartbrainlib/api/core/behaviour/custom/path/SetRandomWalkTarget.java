@@ -1,6 +1,14 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.datafixers.util.Pair;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -12,12 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * Set a random position to walk to. <br>
