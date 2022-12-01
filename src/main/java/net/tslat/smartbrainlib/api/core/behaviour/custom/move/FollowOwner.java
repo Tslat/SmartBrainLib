@@ -6,7 +6,6 @@ import net.minecraft.world.entity.TamableAnimal;
 /**
  * A movement behaviour for automatically following the owner of a {@link net.minecraft.world.entity.TamableAnimal TameableAnimal}.<br>
  * @param <E> The owner of the brain
- * @param <T> The minimum common class of the entity expected to be following
  */
 public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, LivingEntity> {
 	protected LivingEntity owner = null;
