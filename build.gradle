@@ -1,113 +1,46 @@
-plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-}
+subprojects {
+	apply plugin: 'java'
 
-version = mod_version
-group = 'net.tslat.smartbrainlib'
-archivesBaseName = 'SmartBrainLib-Forge'
+	java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+	java.withSourcesJar()
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+	jar {
+		manifest {
+			attributes([
+					'Specification-Title'     : mod_name,
+					'Specification-Vendor'    : mod_author,
+					'Specification-Version'   : project.jar.archiveVersion,
+					'Implementation-Title'    : project.name,
+					'Implementation-Version'  : project.jar.archiveVersion,
+					'Implementation-Vendor'   : mod_author,
+					'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+					'Timestamp'              : System.currentTimeMillis(),
+					'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+					'Built-On-Minecraft'      : minecraft_version
+			])
+		}
+	}
 
-minecraft {
-    mappings channel: mappings_channel, version: mappings_version
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	repositories {
+		mavenCentral()
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-			
-            taskName 'Client'
-			
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
+		maven {
+			name = 'Sponge / Mixin'
+			url = 'https://repo.spongepowered.org/repository/maven-public/'
+		}
 
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
+		maven {
+			name = "Forge"
+			url = 'https://maven.minecraftforge.net'
+		}
+	}
 
-        server {
-            workingDirectory project.file('run')
-			
-            taskName 'Server'
-			
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
+	tasks.withType(JavaCompile).configureEach {
+		it.options.encoding = 'UTF-8'
+		it.options.release = 17
+	}
 
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-
-        gameTestServer {
-            workingDirectory project.file('run')
-			
-            taskName 'Game Tests'
-
-            property 'forge.enabledGameTestNamespaces', 'smartbrainlib'
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-			
-			taskName 'Datagen'
-
-            args '--mod', 'smartbrainlib', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                smartbrainlib {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:$project.minecraft_version-$project.forge_version"
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "smartbrainlib",
-                "Specification-Vendor"    : "Tslat",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Tslat",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-jar.finalizedBy('reobfJar')
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+	tasks.withType(GenerateModuleMetadata) {
+		enabled = false
+	}
 }

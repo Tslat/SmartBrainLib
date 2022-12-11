@@ -1,0 +1,52 @@
+plugins {
+    id 'org.quiltmc.loom' version '1.+'
+    id 'io.github.juuxel.loom-quiltflower' version '1.8.+'
+}
+
+archivesBaseName = "${mod_name}-quilt-${minecraft_version}"
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.19.2:2022.11.27@zip")
+    }
+    modImplementation "org.quiltmc:quilt-loader:${project.quilt_loader_version}"
+    modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fapi_version}-${minecraft_version}"
+    modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
+    modImplementation "org.quiltmc.qsl:core:${qsl_version}+${minecraft_version}"
+    modImplementation "org.quiltmc.qsl.core:resource_loader:${qsl_version}+${minecraft_version}"
+    implementation project(":Common")
+}
+
+processResources {
+    from project(":Common").sourceSets.main.resources
+    inputs.property "version", project.version
+
+    filesMatching('quilt.mod.json') {
+        expand "version": version
+    }
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Quilt Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Quilt Server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+
+    mixin {
+        defaultRefmapName.convention("${mod_id}.refmap.json")
+    }
+
+    accessWidenerPath = file("${project(':Common').projectDir.path}/src/main/resources/smartbrainlib.accesswidener")
+}

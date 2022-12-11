@@ -22,7 +22,6 @@ eclipse
 run
 logs
 libs/*
-excluded/*
 
 # Files from Forge MDK
 forge*changelog.txt

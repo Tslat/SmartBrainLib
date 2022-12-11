@@ -1,8 +1,23 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = 'https://maven.minecraftforge.net/' }
         maven { url = 'https://maven.parchmentmc.org' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = 'https://maven.quiltmc.org/repository/release' }
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.toString() == 'org.spongepowered.mixin') {
+                useModule("org.spongepowered:mixingradle:${requested.version}")
+            }
+        }
     }
 }
-rootProject.name = 'smartbrainlib-forge-1.19'
+
+rootProject.name = 'SmartBrainLib'
+include("Common", "Fabric", "Forge", "Quilt")
+
