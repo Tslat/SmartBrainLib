@@ -12,10 +12,13 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-1.19.2:2022.11.27@zip")
     }
     modImplementation "org.quiltmc:quilt-loader:${project.quilt_loader_version}"
-    modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fapi_version}-${minecraft_version}"
-    modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
-    modImplementation "org.quiltmc.qsl:core:${qsl_version}+${minecraft_version}"
-    modImplementation "org.quiltmc.qsl.core:resource_loader:${qsl_version}+${minecraft_version}"
+    modImplementation ("org.quiltmc.quilted-fabric-api:quilted-fabric-api:${quilted_fapi_version}-${minecraft_version}") {
+        exclude group: "org.quiltmc", module:" qsl"
+    }
+    modImplementation ("org.quiltmc:qsl:${qsl_version}+${minecraft_version}") {
+        exclude group: "net.fabricmc"
+    }
+
     implementation project(":Common")
 }
 
@@ -49,4 +52,12 @@ loom {
     }
 
     accessWidenerPath = file("${project(':Common').projectDir.path}/src/main/resources/smartbrainlib.accesswidener")
+}
+
+tasks.withType(JavaCompile) {
+    source(project(":Common").sourceSets.main.allSource)
+}
+
+sourcesJar {
+    from(project(":Common").sourceSets.main.allSource)
 }

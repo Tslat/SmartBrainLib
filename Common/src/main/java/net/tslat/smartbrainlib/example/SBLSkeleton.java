@@ -44,7 +44,6 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 		super(entityType, level);
 	}
 
-
 	@Override
 	protected final void registerGoals() {}
 	// Let's make sure we're definitely not using any goals

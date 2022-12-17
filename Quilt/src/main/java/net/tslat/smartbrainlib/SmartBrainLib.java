@@ -1,13 +1,11 @@
 package net.tslat.smartbrainlib;
 
-import net.fabricmc.api.ModInitializer;
-import net.tslat.smartbrainlib.example.boilerplate.SBLExampleEntities;
+import org.quiltmc.loader.api.ModContainer;
+import org.quiltmc.qsl.base.api.entrypoint.ModInitializer;
 
 public class SmartBrainLib implements ModInitializer {
-	public static SBLExampleEntities MOBS;
-
 	@Override
-	public void onInitialize() {
+	public void onInitialize(ModContainer mod) {
 		SBLConstants.SBL_LOADER.init();
 	}
 }

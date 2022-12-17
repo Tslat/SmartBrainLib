@@ -1,14 +1,33 @@
 package net.tslat.smartbrainlib.util;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.ai.behavior.GateBehavior;
+import net.minecraft.world.entity.ai.memory.ExpirableValue;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.entity.schedule.Activity;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrain;
+import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
+import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -292,5 +311,185 @@ public final class BrainUtils {
 			return true;
 
 		return entity.hasLineOfSight(target);
+	}
+
+	/**
+	 * Returns a stream of all {@link BehaviorControl Behaviours} registered to this brain
+	 */
+	public static Stream<BehaviorControl<?>> getAllBehaviours(Brain<?> brain) {
+		if (brain instanceof SmartBrain smartBrain)
+			return smartBrain.getBehaviours();
+
+		return brain.availableBehaviorsByPriority.values().stream()
+				.map(Map::values)
+				.flatMap(set -> set.stream().map(value -> value.stream().toList()).flatMap(List::stream));
+	}
+
+	/**
+	 * Loops over all {@link BehaviorControl Behaviours} registered to this brain, calling the consumer for each
+	 * @param brain The brain to scrape the behaviours of
+	 * @param consumer The consumer called for each
+	 */
+	public static void forEachBehaviour(Brain<?> brain, BrainBehaviourConsumer consumer) {
+		if (brain instanceof SmartBrain smartBrain) {
+			smartBrain.forEachBehaviour(consumer);
+
+			return;
+		}
+
+		Set<Map.Entry<Integer, Map<Activity, Set<BehaviorControl<?>>>>> behaviours = (Set)brain.availableBehaviorsByPriority.entrySet();
+
+		for (Map.Entry<Integer, Map<Activity, Set<BehaviorControl<?>>>> priorityEntry : behaviours) {
+			Integer priority = priorityEntry.getKey();
+
+			for (Map.Entry<Activity, Set<BehaviorControl<?>>> activityEntry : priorityEntry.getValue().entrySet()) {
+				Activity activity = activityEntry.getKey();
+
+				for (BehaviorControl<?> behaviour : activityEntry.getValue()) {
+					consumeBehaviour(priority, activity, behaviour, null, consumer);
+				}
+			}
+		}
+	}
+
+	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourConsumer consumer) {
+		consumer.consume(priority, activity, behaviour, parentBehaviour);
+
+		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
+			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+		}
+		else if (behaviour instanceof GroupBehaviour<E> groupBehaviour) {
+			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+		}
+	}
+
+	/**
+	 * Removes any behaviours matching the given predicate from the provided brain.<br>
+	 * Removed behaviours are stopped prior to removal
+	 * @param entity The owner of the brain
+	 * @param predicate The predicate checked for each
+	 */
+	public static <E extends LivingEntity> void removeBehaviour(E entity, BrainBehaviourPredicate predicate) {
+		if (entity.getBrain() instanceof SmartBrain smartBrain) {
+			smartBrain.removeBehaviour(entity, predicate);
+
+			return;
+		}
+
+		Set<Map.Entry<Integer, Map<Activity, Set<BehaviorControl<E>>>>> behaviours = (Set)entity.getBrain().availableBehaviorsByPriority.entrySet();
+
+		for (Map.Entry<Integer, Map<Activity, Set<BehaviorControl<E>>>> priorityEntry : behaviours) {
+			Integer priority = priorityEntry.getKey();
+
+			for (Map.Entry<Activity, Set<BehaviorControl<E>>> activityEntry : priorityEntry.getValue().entrySet()) {
+				Activity activity = activityEntry.getKey();
+
+				for (Iterator<BehaviorControl<E>> iterator = activityEntry.getValue().iterator(); iterator.hasNext();) {
+					BehaviorControl<E> behaviour = iterator.next();
+
+					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
+						if (behaviour.getStatus() == Behavior.Status.RUNNING)
+							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+
+						iterator.remove();
+					});
+				}
+			}
+		}
+	}
+
+	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
+		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
+			callback.run();
+		}
+		else if (behaviour instanceof GateBehavior groupBehaviour) {
+			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.behaviors.iterator(); childBehaviourIterator.hasNext();) {
+				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
+			}
+
+			if (!groupBehaviour.behaviors.iterator().hasNext())
+				callback.run();
+		}
+		else if (behaviour instanceof GroupBehaviour groupBehaviour) {
+			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
+				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
+			}
+
+			if (!groupBehaviour.getBehaviours().hasNext())
+				callback.run();
+		}
+	}
+
+	/**
+	 * Safely a new {@link BehaviorControl Behaviour} to the given {@link Brain}
+	 * @param brain The brain to add the behaviour to
+	 * @param priority The priority index the behaviour belongs to (lower runs earlier)
+	 * @param activity The activity category the behaviour belongs to
+	 * @param behaviourControl The behaviour to add
+	 */
+	public static void addBehaviour(Brain<?> brain, int priority, Activity activity, BehaviorControl behaviourControl) {
+		if (brain instanceof SmartBrain smartBrain) {
+			smartBrain.addBehaviour(priority, activity, behaviourControl);
+
+			return;
+		}
+
+		brain.availableBehaviorsByPriority.computeIfAbsent(priority, priority2 -> Maps.newHashMap()).computeIfAbsent(activity, activity2 -> Sets.newLinkedHashSet()).add(behaviourControl);
+
+		if (behaviourControl instanceof Behavior<?> behavior) {
+			for (MemoryModuleType<?> memoryType : behavior.entryCondition.keySet()) {
+				brain.memories.putIfAbsent(memoryType, Optional.empty());
+			}
+		}
+	}
+
+	/**
+	 * Adds a full {@link BrainActivityGroup} to the brain, inclusive of activities and conditions
+	 */
+	public static void addActivity(Brain<?> brain, BrainActivityGroup<?> behaviourGroup) {
+		if (brain instanceof SmartBrain smartBrain) {
+			smartBrain.addActivity(behaviourGroup);
+
+			return;
+		}
+
+		brain.addActivityAndRemoveMemoriesWhenStopped(behaviourGroup.getActivity(), (ImmutableList)behaviourGroup.pairBehaviourPriorities(), behaviourGroup.getActivityStartMemoryConditions(), behaviourGroup.getWipedMemoriesOnFinish());
+	}
+
+	/**
+	 * Adds a sensor to the given brain, additionally allowing for custom instantiation.<br>
+	 * Automatically adds detected memories to the brain, but because of the nature of the vanilla brain system,
+	 * you may need to {@link BrainUtils#addMemories add additional memories manually} if Mojang didn't set something up properly
+	 */
+	public static <S extends Sensor<?>> void addSensor(Brain<?> brain, SensorType<S> sensorType, S sensor) {
+		if (brain instanceof SmartBrain smartBrain) {
+			if (!(sensor instanceof ExtendedSensor extendedSensor))
+				throw new IllegalArgumentException("Attempted to provide sensor to SmartBrain, only ExtendedSensor subclasses acceptable. Sensor: " + sensor.getClass());
+
+			smartBrain.addSensor(extendedSensor);
+
+			return;
+		}
+
+		brain.sensors.put((SensorType)sensorType, (Sensor)sensor);
+		addMemories(brain, sensor.requires().toArray(new MemoryModuleType[0]));
+	}
+
+	/**
+	 * Adds the given {@link MemoryModuleType} to the provided brain.<br>
+	 * Generally only required if modifying vanilla brains and additional memories are needed.
+	 */
+	public static void addMemories(Brain<?> brain, MemoryModuleType<?>... memories) {
+		if (brain instanceof SmartBrain smartBrain) {
+			for (MemoryModuleType<?> memoryType : memories) {
+				smartBrain.getMemory(memoryType);
+			}
+
+			return;
+		}
+
+		for (MemoryModuleType<?> memoryType : memories) {
+			brain.memories.computeIfAbsent(memoryType, key -> Optional.empty()).map(ExpirableValue::getValue);
+		}
 	}
 }

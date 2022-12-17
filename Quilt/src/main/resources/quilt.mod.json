@@ -1,40 +1,41 @@
 {
-    "schemaVersion": 1,
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "net.tslat.smartbrainlib",
     "id": "smartbrainlib",
     "version": "${version}",
-  
-    "name": "SmartBrainLib",
-    "description": "A library mod for smarter Brains and easier usage of the Brain system.",
-    "authors": [
-      "Tslat"
-    ],
-    "contact": {
-      "homepage": "https://www.curseforge.com/minecraft/mc-mods/smartbrainlib",
-      "sources": "https://github.com/Tslat/SmartBrainLib"
+    "metadata": {
+      "name": "SmartBrainLib",
+      "description": "A library mod for smarter Brains and easier usage of the Brain system.",
+      "contributors": {
+        "Tslat": "Owner"
+      },
+      "contact": {
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/smartbrainlib",
+        "issues": "https://github.com/Tslat/SmartBrainLib/issues",
+        "sources": "https://github.com/Tslat/SmartBrainLib"
+      },
+      "icon": "logo.png"
     },
-  
-    "license": "MIT",
-    "icon": "logo.png",
-  
-    "environment": "*",
+    "intermediate_mappings": "org.parchmentmc.data:parchment",
     "entrypoints": {
-      "main": [
-        "net.tslat.smartbrainlib.SmartBrainLib"
-      ]
+      "init": "net.tslat.smartbrainlib.SmartBrainLib"
     },
-    "mixins": [
-      "smartbrainlib.mixins.json"
-    ],
-    "accessWidener": "smartbrainlib.accesswidener",
-  
-    "depends": {
-      "fabricloader": ">=0.14",
-      "fabric": "*",
-      "minecraft": "1.19.x",
-      "java": ">=17"
-    },
-    "suggests": {
-      "another-mod": "*"
-    }
-  }
-  
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.18.1-"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": ">=5.0.0-"
+      },
+      {
+        "id": "minecraft",
+        "versions": ">=1.19.3"
+      }
+    ]
+  },
+  "mixin": "smartbrainlib.mixins.json",
+  "accessWidener": "smartbrainlib.accesswidener"
+}

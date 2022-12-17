@@ -1,11 +1,11 @@
 modLoader="javafml"
 loaderVersion="[44,)"
-license="MPL 2.0"
+license="MPL-2.0"
 issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
 [[mods]]
 modId="smartbrainlib"
-version="1.6"
+version="1.7"
 displayName="SmartBrainLib"
 logoFile="logo.png"
 authors="Tslat"

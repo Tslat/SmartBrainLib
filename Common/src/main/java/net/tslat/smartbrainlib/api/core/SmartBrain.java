@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
+import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.ExpirableValue;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -17,12 +18,16 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
+import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Supercedes vanilla's {@link Brain}. One of the core components of the SBL
@@ -220,6 +225,13 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return runningBehaviours;
 	}
 
+	/**
+	 * Returns a stream of all {@link BehaviorControl Behaviours} registered to this brain
+	 */
+	public Stream<BehaviorControl<? super E>> getBehaviours() {
+		return this.behaviours.stream().map(ActivityBehaviours::behaviours).flatMap(list -> list.stream().map(Pair::getSecond).flatMap(List::stream));
+	}
+
 	@Override
 	public void removeAllBehaviors() {
 		this.behaviours.clear();
@@ -237,6 +249,9 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		}
 	}
 
+	/**
+	 * Adds a full {@link BrainActivityGroup} to the brain, inclusive of activities and conditions
+	 */
 	public void addActivity(BrainActivityGroup<E> activityGroup) {
 		addActivityAndRemoveMemoriesWhenStopped(activityGroup.getActivity(), activityGroup.pairBehaviourPriorities(), activityGroup.getActivityStartMemoryConditions(), activityGroup.getWipedMemoriesOnFinish());
 	}
@@ -270,34 +285,90 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	}
 
 	/**
-	 * Remove a cached behaviour from the behaviours list of this brain. <br>
-	 * Matching uses <b>reference parity</b>
-	 * 
-	 * @param priority  The behaviour's priority value
-	 * @param activity  The behaviour's activity category
-	 * @param behaviour The behaviour instance
+	 * Removes any behaviours matching the given predicate from the provided brain.<br>
+	 * Removed behaviours are stopped prior to removal
+	 * @param entity The owner of the brain
+	 * @param predicate The predicate checked for each (priority, activity, behaviour)
 	 */
-	public void removeBehaviour(int priority, Activity activity, Behavior<? super E> behaviour) {
+	public void removeBehaviour(E entity, BrainBehaviourPredicate predicate) {
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
-			if (behaviourGroup.priority == priority) {
-				for (Pair<Activity, List<BehaviorControl<? super E>>> pair : behaviourGroup.behaviours) {
-					if (pair.getFirst() == activity) {
-						for (Iterator<BehaviorControl<? super E>> iterator = pair.getSecond().iterator(); iterator
-								.hasNext();) {
-							if (iterator.next() == behaviour) {
-								iterator.remove();
+			int priority = behaviourGroup.priority;
 
-								return;
-							}
-						}
+			for (Pair<Activity, List<BehaviorControl<? super E>>> pair : behaviourGroup.behaviours) {
+				Activity activity = pair.getFirst();
 
-						return;
-					}
+				for (Iterator<BehaviorControl<? super E>> iterator = pair.getSecond().iterator(); iterator.hasNext();) {
+					BehaviorControl<? super E> behaviour = iterator.next();
+
+					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
+						if (behaviour.getStatus() == Behavior.Status.RUNNING)
+							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+
+						iterator.remove();
+					});
 				}
-
-				return;
 			}
 		}
+	}
+
+	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
+		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
+			callback.run();
+		}
+		else if (behaviour instanceof GateBehavior groupBehaviour) {
+			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.behaviors.iterator(); childBehaviourIterator.hasNext();) {
+				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
+			}
+
+			if (!groupBehaviour.behaviors.iterator().hasNext())
+				callback.run();
+		}
+		else if (behaviour instanceof GroupBehaviour groupBehaviour) {
+			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
+				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
+			}
+
+			if (!groupBehaviour.getBehaviours().hasNext())
+				callback.run();
+		}
+	}
+
+	/**
+	 * Loops over all {@link BehaviorControl Behaviours} registered to this brain, calling the consumer for each
+	 * @param consumer The consumer called for each (priority, activity, behaviour)
+	 */
+	public void forEachBehaviour(BrainBehaviourConsumer consumer) {
+		for (ActivityBehaviours<E> behavioursGroup : this.behaviours) {
+			int priority = behavioursGroup.priority();
+
+			for (Pair<Activity, List<BehaviorControl<? super E>>> behaviourList : behavioursGroup.behaviours()) {
+				Activity activity = behaviourList.getFirst();
+
+				for (BehaviorControl<? super E> behaviour : behaviourList.getSecond()) {
+					consumeBehaviour(priority, activity, behaviour, null, consumer);
+				}
+			}
+		}
+	}
+
+	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourConsumer consumer) {
+		consumer.consume(priority, activity, behaviour, parentBehaviour);
+
+		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
+			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+		}
+		else if (behaviour instanceof GroupBehaviour<E> groupBehaviour) {
+			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+		}
+	}
+
+	/**
+	 * Adds an {@link ExtendedSensor} to this brain
+	 */
+	public void addSensor(ExtendedSensor<E> sensor) {
+		SensorType<ExtendedSensor<? super E>> sensorType = (SensorType)sensor.type();
+
+		this.sensors.add(Pair.of(sensorType, sensor));
 	}
 
 	private record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<BehaviorControl<? super E>>>> behaviours) {}
