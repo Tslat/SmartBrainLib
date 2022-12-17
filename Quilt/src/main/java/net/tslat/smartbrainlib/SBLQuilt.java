@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +17,7 @@ import net.tslat.smartbrainlib.mixin.SensorTypeInvoker;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
+import org.quiltmc.loader.api.QuiltLoader;
 
 import java.util.function.Supplier;
 
@@ -34,7 +34,7 @@ public final class SBLQuilt implements SBLLoader {
 
 	@Override
 	public boolean isDevEnv() {
-		return FabricLoader.getInstance().isDevelopmentEnvironment();
+		return QuiltLoader.isDevelopmentEnvironment();
 	}
 
 	@Override
