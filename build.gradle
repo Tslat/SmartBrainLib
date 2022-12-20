@@ -16,7 +16,8 @@ subprojects {
 					'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
 					'Timestamp'              : System.currentTimeMillis(),
 					'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-					'Built-On-Minecraft'      : minecraft_version
+					'Built-On-Minecraft'      : minecraft_version,
+					"MixinConfigs": "${mod_id}.mixins.json"
 			])
 		}
 	}
