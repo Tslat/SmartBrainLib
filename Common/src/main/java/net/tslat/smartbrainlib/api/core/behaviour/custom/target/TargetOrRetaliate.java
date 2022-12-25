@@ -42,7 +42,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
-	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> BrainUtils.getTargetOfEntity(ally) != null && owner.getClass().isAssignableFrom(ally.getClass()) && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
+	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> BrainUtils.getTargetOfEntity(ally) == null && owner.getClass().isAssignableFrom(ally.getClass()) && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
 
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
