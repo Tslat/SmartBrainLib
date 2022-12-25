@@ -37,5 +37,5 @@
     ]
   },
   "mixin": "smartbrainlib.mixins.json",
-  "accessWidener": "smartbrainlib.accesswidener"
+  "access_widener": "smartbrainlib.accesswidener"
 }
