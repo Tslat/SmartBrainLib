@@ -66,21 +66,18 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel pLevel, E owner) {
+	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
 		Brain<?> brain = owner.getBrain();
 		this.toTarget = BrainUtils.getMemory(brain, this.priorityTargetMemory);
 
 		if (this.toTarget == null)
 			this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 
-		if (this.toTarget == null) {
+		if (this.toTarget == null || !this.canAttackPredicate.test(this.toTarget)) {
 			NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 			if (nearbyEntities != null)
-				this.toTarget = nearbyEntities.findClosest(canAttackPredicate).orElse(null);
-
-			if (this.toTarget != null)
-				return true;
+				this.toTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
 		}
 
 		return this.toTarget != null && this.canAttackPredicate.test(this.toTarget);
