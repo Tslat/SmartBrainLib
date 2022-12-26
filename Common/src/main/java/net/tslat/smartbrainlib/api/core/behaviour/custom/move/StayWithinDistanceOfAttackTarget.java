@@ -45,19 +45,6 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	}
 
 	/**
-	 * Set a custom condition for when the strafing should end.
-	 * Deprecated, use {@link ExtendedBehaviour#stopIf}
-	 * @param predicate The predicate
-	 * @return this
-	 */
-	@Deprecated(forRemoval = true)
-	public StayWithinDistanceOfAttackTarget<E> stopStrafingWhen(Predicate<E> predicate) {
-		this.stopWhen = predicate;
-
-		return this;
-	}
-
-	/**
 	 * Set how far the entity should attempt to stay away from the target at a minimum.
 	 * @param distance The distance, in blocks
 	 * @return this
