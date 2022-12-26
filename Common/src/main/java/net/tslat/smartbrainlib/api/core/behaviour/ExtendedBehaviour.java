@@ -32,11 +32,9 @@ import java.util.function.Predicate;
  */
 public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior<E> {
 	protected Predicate<E> startCondition = entity -> true;
-	protected Predicate<E> stopCondition = entity -> true;
-	protected Consumer<E> taskStartCallback = entity -> {
-	};
-	protected Consumer<E> taskStopCallback = entity -> {
-	};
+	protected Predicate<E> stopCondition = entity -> false;
+	protected Consumer<E> taskStartCallback = entity -> {};
+	protected Consumer<E> taskStopCallback = entity -> {};
 
 	protected Function<E, Integer> runtimeProvider = entity -> 60;
 	protected Function<E, Integer> cooldownProvider = entity -> 0;
@@ -242,7 +240,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 */
 	@Override
 	protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-		return shouldKeepRunning(entity) && this.stopCondition.test(entity);
+		return shouldKeepRunning(entity) && !this.stopCondition.test(entity);
 	}
 
 	/**
