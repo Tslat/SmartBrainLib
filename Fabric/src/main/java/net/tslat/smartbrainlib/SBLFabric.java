@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,14 +50,14 @@ public final class SBLFabric implements SBLLoader {
 
 	@Override
 	public <T extends ExtendedSensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<T> sensor) {
-		SensorType<T> sensorType = Registry.register(BuiltInRegistries.SENSOR_TYPE, new ResourceLocation(SBLConstants.MOD_ID, id), SensorTypeInvoker.createSensorType(sensor));
+		SensorType<T> sensorType = Registry.register(Registry.SENSOR_TYPE, new ResourceLocation(SBLConstants.MOD_ID, id), SensorTypeInvoker.createSensorType(sensor));
 
 		return () -> sensorType;
 	}
 
 	@Override
 	public <T extends LivingEntity> Supplier<EntityType<T>> registerEntityType(String id, Supplier<EntityType<T>> entityType) {
-		Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(SBLConstants.MOD_ID, id), entityType.get());
+		Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(SBLConstants.MOD_ID, id), entityType.get());
 
 		return entityType;
 	}

@@ -1,10 +1,9 @@
 package net.tslat.smartbrainlib.object;
 
-import net.minecraft.world.entity.ai.behavior.BehaviorControl;
+import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Functional interface to handle passing multiple arguments back for behaviour-predication handling
@@ -19,5 +18,5 @@ public interface BrainBehaviourPredicate {
 	 * @param parentBehaviour The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
 	 *                        the behaviour is a child of, if applicable
 	 */
-	boolean isBehaviour(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parentBehaviour);
+	boolean isBehaviour(int priority, Activity activity, Behavior<?> behaviour, @Nullable Behavior<?> parentBehaviour);
 }

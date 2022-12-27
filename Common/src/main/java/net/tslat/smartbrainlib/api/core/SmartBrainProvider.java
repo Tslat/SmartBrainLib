@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.schedule.Activity;
@@ -101,15 +100,15 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		return ImmutableList.copyOf(memoryTypes);
 	}
 
-	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, BehaviorControl<?> behaviour) {
+	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Behavior<?> behaviour) {
 		if (behaviour instanceof GateBehavior<?> gateBehaviour) {
 			gateBehaviour.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
 		else if (behaviour instanceof GroupBehaviour<?> groupBehaviour) {
 			groupBehaviour.getBehaviours().forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
-		else if (behaviour instanceof Behavior<?> behaviour2) {
-			memories.addAll(behaviour2.entryCondition.keySet());
+		else {
+			memories.addAll(behaviour.entryCondition.keySet());
 		}
 	}
 
