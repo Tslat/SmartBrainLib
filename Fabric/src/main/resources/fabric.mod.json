@@ -20,6 +20,9 @@
     "entrypoints": {
       "main": [
         "net.tslat.smartbrainlib.SmartBrainLib"
+      ],
+      "client": [
+        "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
       ]
     },
     "mixins": [
