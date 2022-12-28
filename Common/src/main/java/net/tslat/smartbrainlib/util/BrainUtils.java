@@ -8,7 +8,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
-import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.ExpirableValue;
@@ -314,9 +313,9 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Returns a stream of all {@link BehaviorControl Behaviours} registered to this brain
+	 * Returns a stream of all {@link Behavior Behaviours} registered to this brain
 	 */
-	public static Stream<BehaviorControl<?>> getAllBehaviours(Brain<?> brain) {
+	public static Stream<Behavior<?>> getAllBehaviours(Brain<?> brain) {
 		if (brain instanceof SmartBrain smartBrain)
 			return smartBrain.getBehaviours();
 
@@ -326,7 +325,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Loops over all {@link BehaviorControl Behaviours} registered to this brain, calling the consumer for each
+	 * Loops over all {@link Behavior Behaviours} registered to this brain, calling the consumer for each
 	 * @param brain The brain to scrape the behaviours of
 	 * @param consumer The consumer called for each
 	 */
@@ -337,29 +336,29 @@ public final class BrainUtils {
 			return;
 		}
 
-		Set<Map.Entry<Integer, Map<Activity, Set<BehaviorControl<?>>>>> behaviours = (Set)brain.availableBehaviorsByPriority.entrySet();
+		Set<Map.Entry<Integer, Map<Activity, Set<Behavior<?>>>>> behaviours = (Set)brain.availableBehaviorsByPriority.entrySet();
 
-		for (Map.Entry<Integer, Map<Activity, Set<BehaviorControl<?>>>> priorityEntry : behaviours) {
+		for (Map.Entry<Integer, Map<Activity, Set<Behavior<?>>>> priorityEntry : behaviours) {
 			Integer priority = priorityEntry.getKey();
 
-			for (Map.Entry<Activity, Set<BehaviorControl<?>>> activityEntry : priorityEntry.getValue().entrySet()) {
+			for (Map.Entry<Activity, Set<Behavior<?>>> activityEntry : priorityEntry.getValue().entrySet()) {
 				Activity activity = activityEntry.getKey();
 
-				for (BehaviorControl<?> behaviour : activityEntry.getValue()) {
+				for (Behavior<?> behaviour : activityEntry.getValue()) {
 					consumeBehaviour(priority, activity, behaviour, null, consumer);
 				}
 			}
 		}
 	}
 
-	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourConsumer consumer) {
+	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, Behavior<E> behaviour, @Nullable Behavior<E> parentBehaviour, BrainBehaviourConsumer consumer) {
 		consumer.consume(priority, activity, behaviour, parentBehaviour);
 
 		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
-			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
 		}
 		else if (behaviour instanceof GroupBehaviour<E> groupBehaviour) {
-			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (BehaviorControl)childBehaviour, groupBehaviour, consumer));
+			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
 		}
 	}
 
@@ -376,16 +375,16 @@ public final class BrainUtils {
 			return;
 		}
 
-		Set<Map.Entry<Integer, Map<Activity, Set<BehaviorControl<E>>>>> behaviours = (Set)entity.getBrain().availableBehaviorsByPriority.entrySet();
+		Set<Map.Entry<Integer, Map<Activity, Set<Behavior<E>>>>> behaviours = (Set)entity.getBrain().availableBehaviorsByPriority.entrySet();
 
-		for (Map.Entry<Integer, Map<Activity, Set<BehaviorControl<E>>>> priorityEntry : behaviours) {
+		for (Map.Entry<Integer, Map<Activity, Set<Behavior<E>>>> priorityEntry : behaviours) {
 			Integer priority = priorityEntry.getKey();
 
-			for (Map.Entry<Activity, Set<BehaviorControl<E>>> activityEntry : priorityEntry.getValue().entrySet()) {
+			for (Map.Entry<Activity, Set<Behavior<E>>> activityEntry : priorityEntry.getValue().entrySet()) {
 				Activity activity = activityEntry.getKey();
 
-				for (Iterator<BehaviorControl<E>> iterator = activityEntry.getValue().iterator(); iterator.hasNext();) {
-					BehaviorControl<E> behaviour = iterator.next();
+				for (Iterator<Behavior<E>> iterator = activityEntry.getValue().iterator(); iterator.hasNext();) {
+					Behavior<E> behaviour = iterator.next();
 
 					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
 						if (behaviour.getStatus() == Behavior.Status.RUNNING)
@@ -398,20 +397,20 @@ public final class BrainUtils {
 		}
 	}
 
-	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
+	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, Behavior<E> behaviour, @Nullable Behavior<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
 		}
 		else if (behaviour instanceof GateBehavior groupBehaviour) {
-			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.behaviors.iterator(); childBehaviourIterator.hasNext();) {
+			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.behaviors.stream().iterator(); childBehaviourIterator.hasNext();) {
 				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
 			}
 
-			if (!groupBehaviour.behaviors.iterator().hasNext())
+			if (!groupBehaviour.behaviors.stream().iterator().hasNext())
 				callback.run();
 		}
 		else if (behaviour instanceof GroupBehaviour groupBehaviour) {
-			for (Iterator<BehaviorControl<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
+			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
 				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
 			}
 
@@ -421,13 +420,13 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Safely a new {@link BehaviorControl Behaviour} to the given {@link Brain}
+	 * Safely a new {@link Behavior Behaviour} to the given {@link Brain}
 	 * @param brain The brain to add the behaviour to
 	 * @param priority The priority index the behaviour belongs to (lower runs earlier)
 	 * @param activity The activity category the behaviour belongs to
 	 * @param behaviourControl The behaviour to add
 	 */
-	public static void addBehaviour(Brain<?> brain, int priority, Activity activity, BehaviorControl behaviourControl) {
+	public static void addBehaviour(Brain<?> brain, int priority, Activity activity, Behavior behaviourControl) {
 		if (brain instanceof SmartBrain smartBrain) {
 			smartBrain.addBehaviour(priority, activity, behaviourControl);
 
@@ -436,11 +435,11 @@ public final class BrainUtils {
 
 		brain.availableBehaviorsByPriority.computeIfAbsent(priority, priority2 -> Maps.newHashMap()).computeIfAbsent(activity, activity2 -> Sets.newLinkedHashSet()).add(behaviourControl);
 
-		if (behaviourControl instanceof Behavior<?> behavior) {
-			for (MemoryModuleType<?> memoryType : behavior.entryCondition.keySet()) {
-				brain.memories.putIfAbsent(memoryType, Optional.empty());
-			}
-		}
+//		if (behaviourControl instanceof Behavior<?> behavior) {
+//			for (MemoryModuleType<?> memoryType : behavior.entryCondition.keySet()) {
+//				brain.memories.putIfAbsent(memoryType, Optional.empty());
+//			}
+//		}
 	}
 
 	/**
