@@ -17,7 +17,7 @@
       },
       "icon": "logo.png"
     },
-    "intermediate_mappings": "org.parchmentmc.data:parchment",
+    "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
       "init": "net.tslat.smartbrainlib.SmartBrainLib",
       "client_init": "net.tslat.smartbrainlib.example.boilerplate.SBLClient"

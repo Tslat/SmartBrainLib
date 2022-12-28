@@ -2,15 +2,19 @@ package net.tslat.smartbrainlib;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.example.SBLSkeleton;
 import net.tslat.smartbrainlib.example.boilerplate.SBLExampleEntities;
 import net.tslat.smartbrainlib.mixin.MemoryTypesInvoker;
 import net.tslat.smartbrainlib.mixin.SensorTypeInvoker;
@@ -22,12 +26,14 @@ import org.quiltmc.loader.api.QuiltLoader;
 import java.util.function.Supplier;
 
 public final class SBLQuilt implements SBLLoader {
+	public static EntityType<SBLSkeleton> SBL_SKELETON;
+
 	public void init() {
 		SBLMemoryTypes.init();
 		SBLSensors.init();
 
 		if (isDevEnv()) {
-			SBLExampleEntities.init();
+			SBL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(SBLConstants.MOD_ID, "sbl_skeleton"), FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new).dimensions(EntityDimensions.scalable(0.6f, 1.99f)).build());
 			registerEntityStats();
 		}
 	}
@@ -64,6 +70,6 @@ public final class SBLQuilt implements SBLLoader {
 	}
 
 	private static void registerEntityStats() {
-		FabricDefaultAttributeRegistry.register(SBLExampleEntities.SBL_SKELETON.get(), Skeleton.createAttributes());
+		FabricDefaultAttributeRegistry.register(SBL_SKELETON, Skeleton.createAttributes());
 	}
 }
