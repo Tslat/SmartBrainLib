@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * A sensor that looks for a nearby
- * {@link net.minecraft.world.entity.ai.village.poi.PoiType POI} block that
+ * {@link net.minecraft.world.entity.ai.village.poi.PoiTypes POI} block that
  * matches a villager's secondary profession.<br>
  * Defaults:
  * <ul>
@@ -76,7 +76,7 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 	protected void doTick(ServerLevel level, E entity) {
 		ResourceKey<Level> dimension = level.dimension();
 		BlockPos pos = entity.blockPosition();
-		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().getSecondaryPoi();
+		ImmutableSet<Block> testPoiBlocks = entity.getVillagerData().getProfession().secondaryPoi();
 		List<GlobalPos> poiPositions = new ObjectArrayList<>();
 
 		if (testPoiBlocks.isEmpty())
