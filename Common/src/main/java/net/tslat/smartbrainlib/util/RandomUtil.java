@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -18,7 +18,7 @@ import java.util.function.Predicate;
  * Utility class for easy and legible random functionality.
  */
 public final class RandomUtil {
-	public static final EasyRandom RANDOM = new EasyRandom(ThreadLocalRandom.current());
+	public static final EasyRandom RANDOM = new EasyRandom(RandomSource.createThreadSafe());
 
 	public static ThreadLocalRandom getRandomInstance() {
 		return ThreadLocalRandom.current();
@@ -98,19 +98,19 @@ public final class RandomUtil {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
 
-	public static final class EasyRandom extends Random  {
-		private final Random random;
+	public static final class EasyRandom implements RandomSource  {
+		private final RandomSource random;
 
 		public EasyRandom() {
-			this(new Random());
+			this(RandomSource.create());
 		}
 
-		public EasyRandom(@NotNull Random rand) {
+		public EasyRandom(@NotNull RandomSource rand) {
 			this.random = rand;
 		}
 
-		public Random getSource() {
-			return new Random();
+		public RandomSource getSource() {
+			return RandomSource.create();
 		}
 
 		public boolean fiftyFifty() {
@@ -223,8 +223,14 @@ public final class RandomUtil {
 			return centerPos;
 		}
 
+		@Override
 		public EasyRandom fork() {
-			return new EasyRandom(this.random);
+			return new EasyRandom(this.random.fork());
+		}
+
+		@Override
+		public PositionalRandomFactory forkPositional() {
+			return this.random.forkPositional();
 		}
 
 		@Override

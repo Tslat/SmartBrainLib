@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[44,)"
 license="MPL-2.0"
 issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
@@ -17,12 +17,12 @@ A library mod for smarter Brains and easier usage of the Brain system.
 [[dependencies.smartbrainlib]]
 modId="forge"
 mandatory=true
-versionRange="[40,)"
+versionRange="[44,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.smartbrainlib]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.18.2,)"
+versionRange="[1.19.3,)"
 ordering="NONE"
 side="BOTH"
