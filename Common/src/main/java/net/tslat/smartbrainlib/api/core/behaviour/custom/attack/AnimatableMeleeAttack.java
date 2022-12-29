@@ -56,7 +56,12 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
+		return entity.getSensing().hasLineOfSight(this.target) && this.isWithinMeleeAttackRange(entity, this.target);
+	}
+
+	public boolean isWithinMeleeAttackRange(E entity, LivingEntity livingEntity) {
+		double d = entity.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+		return d <= entity.getMeleeAttackRangeSqr(livingEntity);
 	}
 
 	@Override
@@ -77,7 +82,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 		if (this.target == null)
 			return;
 
-		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
+		if (!entity.getSensing().hasLineOfSight(this.target) || !this.isWithinMeleeAttackRange(entity, this.target))
 			return;
 
 		entity.doHurtTarget(this.target);
