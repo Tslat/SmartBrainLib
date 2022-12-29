@@ -6,12 +6,13 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.tslat.smartbrainlib.SBLConstants;
+import net.tslat.smartbrainlib.SBLForge;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-final class SBLExampleEntityRenderers {
+final class SBLClient {
 	@SubscribeEvent
 	public static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers ev) {
 		if (SBLConstants.SBL_LOADER.isDevEnv())
-			ev.registerEntityRenderer(SBLExampleEntities.SBL_SKELETON.get(), SkeletonRenderer::new);
+			ev.registerEntityRenderer(SBLForge.SBL_SKELETON.get(), SkeletonRenderer::new);
 	}
 }
