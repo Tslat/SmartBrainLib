@@ -1,14 +1,18 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.behavior.AcquirePoi;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
@@ -84,8 +88,8 @@ public class NearestHomeSensor<E extends Mob> extends PredicateSensor<E, E> {
 
 			return true;
 		};
-		Set<BlockPos> poiLocations = poiManager.findAll(poiType -> poiType.equals(PoiType.HOME), predicate, entity.blockPosition(), this.radius, PoiManager.Occupancy.ANY).collect(Collectors.toSet());
-		Path pathToHome = entity.getNavigation().createPath(poiLocations, PoiType.HOME.getValidRange());
+		Set<Pair<Holder<PoiType>, BlockPos>> poiLocations = poiManager.findAllWithType(poiType -> poiType.is(PoiTypes.HOME), predicate, entity.blockPosition(), this.radius, PoiManager.Occupancy.ANY).collect(Collectors.toSet());
+		Path pathToHome = AcquirePoi.findPathToPois(entity, poiLocations);
 
 		if (pathToHome != null && pathToHome.canReach()) {
 			BlockPos targetPos = pathToHome.getTarget();

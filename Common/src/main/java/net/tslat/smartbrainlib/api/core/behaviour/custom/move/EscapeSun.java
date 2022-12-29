@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -15,7 +16,6 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Sets the {@link MemoryModuleType#WALK_TARGET walk target} to a safe position if caught in the sun. <br>
@@ -92,7 +92,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Nullable
 	protected Vec3 getHidePos(E entity) {
-		Random randomsource = entity.getRandom();
+		RandomSource randomsource = entity.getRandom();
 		BlockPos entityPos = entity.blockPosition();
 
 		for(int i = 0; i < 10; ++i) {

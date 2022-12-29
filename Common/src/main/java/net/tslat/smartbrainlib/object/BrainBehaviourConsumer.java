@@ -1,6 +1,6 @@
 package net.tslat.smartbrainlib.object;
 
-import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 
@@ -19,5 +19,5 @@ public interface BrainBehaviourConsumer {
 	 * @param parentBehaviour The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
 	 *                        the behaviour is a child of, if applicable
 	 */
-	void consume(int priority, Activity activity, Behavior<?> behaviour, @Nullable Behavior<?> parent);
+	void consume(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parent);
 }

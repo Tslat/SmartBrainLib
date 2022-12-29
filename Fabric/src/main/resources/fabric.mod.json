@@ -20,9 +20,6 @@
     "entrypoints": {
       "main": [
         "net.tslat.smartbrainlib.SmartBrainLib"
-      ],
-      "client": [
-        "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
       ]
     },
     "mixins": [
@@ -33,7 +30,7 @@
     "depends": {
       "fabricloader": ">=0.14",
       "fabric": "*",
-      "minecraft": "1.18.2",
+      "minecraft": "1.19.x",
       "java": ">=17"
     },
     "suggests": {

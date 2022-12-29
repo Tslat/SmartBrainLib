@@ -17,10 +17,9 @@
       },
       "icon": "logo.png"
     },
-    "intermediate_mappings": "net.fabricmc:intermediary",
+    "intermediate_mappings": "org.parchmentmc.data:parchment",
     "entrypoints": {
-      "init": "net.tslat.smartbrainlib.SmartBrainLib",
-      "client_init": "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
+      "init": "net.tslat.smartbrainlib.SmartBrainLib"
     },
     "depends": [
       {
@@ -29,11 +28,11 @@
       },
       {
         "id": "quilted_fabric_api",
-        "versions": ">=1.0.0-"
+        "versions": ">=5.0.0-"
       },
       {
         "id": "minecraft",
-        "versions": ">=1.18.2"
+        "versions": ">=1.19.3"
       }
     ]
   },
