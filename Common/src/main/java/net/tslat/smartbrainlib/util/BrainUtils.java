@@ -15,9 +15,12 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.entity.schedule.Schedule;
+import net.minecraft.world.entity.schedule.Timeline;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrain;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
@@ -510,6 +513,39 @@ public final class BrainUtils {
 
 		for (MemoryModuleType<?> memoryType : memories) {
 			brain.memories.computeIfAbsent(memoryType, key -> Optional.empty()).map(ExpirableValue::getValue);
+		}
+	}
+
+	/**
+	 * Adds the given scheduled activity transition to the provided brain's {@link net.minecraft.world.entity.schedule.Schedule schedule}, creating a new schedule if required.
+	 * @param brain The brain the schedule belongs to
+	 * @param activity The activity to transition to
+	 * @param tickTime The tick-time the activity transition should happen
+	 * @param tickType The type of tick tracking the schedule should use, if a new schedule has to be created.
+	 */
+	public static void addScheduledActivityTransition(Brain<?> brain, Activity activity, int tickTime, SmartBrainSchedule.Type tickType) {
+		if (brain instanceof SmartBrain smartBrain) {
+			SmartBrainSchedule schedule;
+
+			if ((schedule = smartBrain.getSchedule()) == null)
+				smartBrain.setSchedule((schedule = new SmartBrainSchedule(tickType)));
+
+			schedule.activityAt(tickTime, activity);
+		}
+		else {
+			Schedule schedule;
+
+			if ((schedule = brain.getSchedule()) == Schedule.EMPTY)
+				brain.setSchedule(new Schedule());
+
+			Timeline timeline = schedule.timelines.computeIfAbsent(activity, key -> new Timeline());
+
+			timeline.addKeyframe(tickTime, 1);
+
+			for (Map.Entry<Activity, Timeline> entry : schedule.timelines.entrySet()) {
+				if (entry.getKey() != activity)
+					entry.getValue().addKeyframe(tickTime, 0);
+			}
 		}
 	}
 }

@@ -15,6 +15,8 @@ accessible method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
 extendable method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
 accessible field net/minecraft/world/entity/ai/Brain coreActivities Ljava/util/Set;
 accessible method net/minecraft/world/entity/ai/Brain setCoreActivities (Ljava/util/Set;)V
+extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
+extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
@@ -38,3 +40,6 @@ accessible method net/minecraft/client/multiplayer/ClientLevel getEntities ()Lne
 
 # Entities
 accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
+
+# Schedule
+accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
