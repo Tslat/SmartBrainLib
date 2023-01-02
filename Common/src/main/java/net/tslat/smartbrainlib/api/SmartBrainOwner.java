@@ -10,8 +10,11 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.APIOnly;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrain;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,6 +119,17 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * @param brain The brain that the entity will be using.
 	 */
 	default void handleAdditionalBrainSetup(Brain<T> brain) {}
+
+	/**
+	 * Override this to return the {@link net.minecraft.world.entity.schedule.Schedule schedule} for your entity.<br>
+	 * This can be set at any time via {@link SmartBrain#setSchedule(SmartBrainSchedule)}, but it's recommended to
+	 * do so statically if possible and provide it through this method
+	 * @return The schedule for the brain, or null if no schedule
+	 */
+	@Nullable
+	default SmartBrainSchedule getSchedule() {
+		return null;
+	}
 
 	/**
 	 * SmartBrainOwners should call this from the entity's {@link LivingEntity#serverAiStep}, or {@link Mob#customServerAiStep} if extending Mob. <br>

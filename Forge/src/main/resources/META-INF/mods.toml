@@ -5,11 +5,10 @@ issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
 [[mods]]
 modId="smartbrainlib"
-version="1.7.3"
+version="1.8"
 displayName="SmartBrainLib"
 logoFile="logo.png"
 authors="Tslat"
-displayTest="IGNORE_SERVER_VERSION"
 description='''
 A library mod for smarter Brains and easier usage of the Brain system.
 '''
