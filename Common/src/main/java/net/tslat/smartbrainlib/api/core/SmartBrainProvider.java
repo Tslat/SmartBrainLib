@@ -138,6 +138,10 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		this.owner.handleAdditionalBrainSetup(brain);
 	}
 
+	/**
+	 * Use one of the startup 'getTasks' methods if adding at startup, or else use {@link net.tslat.smartbrainlib.util.BrainUtils#addActivity(Brain, BrainActivityGroup)}
+	 */
+	@Deprecated(forRemoval = true)
 	protected void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
 		brain.activityRequirements.put(activity, activityGroup.getActivityStartMemoryConditions());
 

@@ -17,8 +17,10 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.entity.schedule.Schedule;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
@@ -41,6 +43,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	private final List<MemoryModuleType<?>> expirableMemories = new ObjectArrayList<>();
 	private final List<ActivityBehaviours<E>> behaviours = new ObjectArrayList<>();
 	private final List<Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>>> sensors = new ObjectArrayList<>();
+	private SmartBrainSchedule schedule = null;
 
 	private boolean sortBehaviours = false;
 
@@ -69,13 +72,26 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		tickSensors(level, entity);
 		checkForNewBehaviours(level, entity);
 		tickRunningBehaviours(level, entity);
-
-		setActiveActivityToFirstValid(entity.getActivityPriorities());
+		findAndSetActiveActivity(entity);
 
 		entity.level.getProfiler().pop();
 
 		if (entity instanceof Mob mob)
 			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
+	}
+
+	private void findAndSetActiveActivity(E entity) {
+		if (this.schedule != null) {
+			Activity scheduledActivity = this.schedule.tick(entity);
+
+			if (scheduledActivity != null && !getActiveActivities().contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
+				setActiveActivity(scheduledActivity);
+
+				return;
+			}
+		}
+
+		setActiveActivityToFirstValid(entity.getActivityPriorities());
 	}
 
 	private void tickSensors(ServerLevel level, E entity) {
@@ -89,7 +105,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
 			for (Pair<Activity, List<BehaviorControl<? super E>>> pair : behaviourGroup.behaviours) {
-				if (this.getActiveActivities().contains(pair.getFirst())) {
+				if (getActiveActivities().contains(pair.getFirst())) {
 					for (BehaviorControl<? super E> behaviour : pair.getSecond()) {
 						if (behaviour.getStatus() == Behavior.Status.STOPPED)
 							behaviour.tryStart(level, entity, gameTime);
@@ -311,6 +327,37 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		}
 	}
 
+	/**
+	 * Sets a {@link SmartBrainSchedule} for this brain, for scheduled functionality
+	 * @param schedule The schedule to set for the brain
+	 * @return this
+	 */
+	public SmartBrain<E> setSchedule(SmartBrainSchedule schedule) {
+		this.schedule = schedule;
+
+		return this;
+	}
+
+	/**
+	 * @return The {@link SmartBrainSchedule schedule} of this brain
+	 */
+	@Override
+	public SmartBrainSchedule getSchedule() {
+		return this.schedule;
+	}
+
+	/**
+	 * Cheekily (and conveniently) uses the {@link SmartBrainSchedule schedule} system to schedule a delayed runnable for this entity/brain.
+	 * @param delay The delay (in ticks) before running the task
+	 * @param task The task to run at the given tick
+	 */
+	public void scheduleTask(E brainOwner, int delay, Runnable task) {
+		if (this.schedule == null)
+			this.schedule = new SmartBrainSchedule();
+
+		this.schedule.scheduleTask(brainOwner, delay, task);
+	}
+
 	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
@@ -370,6 +417,13 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		this.sensors.add(Pair.of(sensorType, sensor));
 	}
+
+	/**
+	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead
+	 */
+	@Deprecated(forRemoval = true)
+	@Override
+	public final void setSchedule(Schedule schedule) {}
 
 	private record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<BehaviorControl<? super E>>>> behaviours) {}
 }
