@@ -70,8 +70,8 @@ public class SmartBrainSchedule extends Schedule {
 	 * @param delay The delay time (in ticks) before the task should be called
 	 * @param task The task to run after the given delay
 	 */
-	public void scheduleTask(LivingEntity brainOwner, int delay, Runnable task) {
-		this.callbacks.put(this.type.resolveDelay(brainOwner, delay), entity -> task.run());
+	public void scheduleTask(LivingEntity brainOwner, int delay, Consumer<LivingEntity> task) {
+		this.callbacks.put(this.type.resolveDelay(brainOwner, delay), entity -> task.accept(brainOwner));
 	}
 
 	/**

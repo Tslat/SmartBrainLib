@@ -29,6 +29,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -351,11 +352,11 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	 * @param delay The delay (in ticks) before running the task
 	 * @param task The task to run at the given tick
 	 */
-	public void scheduleTask(E brainOwner, int delay, Runnable task) {
+	public void scheduleTask(E brainOwner, int delay, Consumer<E> task) {
 		if (this.schedule == null)
 			this.schedule = new SmartBrainSchedule();
 
-		this.schedule.scheduleTask(brainOwner, delay, task);
+		this.schedule.scheduleTask(brainOwner, delay, (Consumer)task);
 	}
 
 	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
