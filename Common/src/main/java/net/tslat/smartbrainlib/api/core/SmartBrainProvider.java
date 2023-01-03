@@ -134,6 +134,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		brain.setCoreActivities(this.owner.getAlwaysRunningActivities());
 		brain.setDefaultActivity(this.owner.getDefaultActivity());
 		brain.useDefaultActivity();
+		brain.setSchedule(this.owner.getSchedule());
 		this.owner.handleAdditionalBrainSetup(brain);
 	}
 
