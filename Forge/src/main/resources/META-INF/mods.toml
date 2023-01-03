@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
 [[mods]]
 modId="smartbrainlib"
-version="1.7.4"
+version="1.8"
 displayName="SmartBrainLib"
 logoFile="logo.png"
 authors="Tslat"
