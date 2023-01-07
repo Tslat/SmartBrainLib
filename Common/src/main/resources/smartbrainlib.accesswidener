@@ -32,7 +32,6 @@ accessible field net/minecraft/world/entity/ai/behavior/GateBehavior behaviors L
 accessible method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
 extendable method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
 accessible field net/minecraft/world/entity/ai/sensing/Sensor scanRate I
-accessible field net/minecraft/world/entity/ai/sensing/Sensor RANDOM Lnet/minecraft/util/RandomSource;
 
 # World
 accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
