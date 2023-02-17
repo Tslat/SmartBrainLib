@@ -39,10 +39,10 @@
     "suggests": {
       "another-mod": "*"
     },
-	"custom": {
-		"lithium:options": {
-			"mixin.ai.task.memory_change_counting": false
-		}
-	}
+    "custom": {
+      "lithium:options": {
+	"mixin.ai.task.memory_change_counting": false
+      }
+    }
   }
   
