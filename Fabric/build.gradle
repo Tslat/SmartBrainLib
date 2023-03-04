@@ -9,7 +9,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.2:2022.11.27@zip")
+        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${mappings_version}@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
@@ -71,6 +71,13 @@ jar {
                 'Built-On-Minecraft'      : minecraft_version,
                 "MixinConfigs": "${mod_id}.mixins.json"
         ])
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = compileJava.destinationDirectory.asFile.get() as File
     }
 }
 
