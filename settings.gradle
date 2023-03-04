@@ -19,5 +19,5 @@ pluginManagement {
 }
 
 rootProject.name = 'SmartBrainLib'
-include("Common", "Fabric", "Forge", "Quilt")
+include("Common", "Fabric", "Forge")
 

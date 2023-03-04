@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
 
 [[mods]]
 modId="smartbrainlib"
-version="1.8"
+version="1.8.1"
 displayName="SmartBrainLib"
 logoFile="logo.png"
 authors="Tslat"
@@ -23,6 +23,6 @@ side="BOTH"
 [[dependencies.smartbrainlib]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19.2,1.19.3)"
+versionRange="[1.19,)"
 ordering="NONE"
 side="BOTH"

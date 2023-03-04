@@ -6,7 +6,7 @@ plugins {
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 minecraft {
-    mappings channel: mappings_channel, version: mappings_version
+    mappings channel: mappings_channel, version: "${mappings_version}-${minecraft_version}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -97,3 +97,14 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = archivesBaseName
+            artifact jar
+            artifact sourcesJar
+        }
+    }
+}

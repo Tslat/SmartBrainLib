@@ -33,3 +33,13 @@ processResources {
         expand buildProps
     }
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = archivesBaseName
+            artifact jar
+            artifact sourcesJar
+        }
+    }
+}
