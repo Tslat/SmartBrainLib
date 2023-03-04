@@ -32,7 +32,7 @@ subprojects {
 		repositories {
 			maven {
 				name = "Repsy"
-				url 'https://repo.repsy.io/mvn/tslat/tslatentitystatus'
+				url 'https://repo.repsy.io/mvn/tslat/smartbrainlib'
 				credentials {
 					username project.findProperty("repsy.user") ?: System.getenv("REPSY_USERNAME")
 					password project.findProperty("repsy.password") ?: System.getenv("REPSY_PASSWORD")
