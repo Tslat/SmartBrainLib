@@ -41,7 +41,7 @@
     },
     "custom": {
       "lithium:options": {
-	"mixin.ai.task.memory_change_counting": false
+        "mixin.ai.task.memory_change_counting": false
       }
     }
   }
