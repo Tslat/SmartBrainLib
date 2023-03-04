@@ -97,3 +97,13 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = archivesBaseName
+            artifact jar
+            artifact sourcesJar
+        }
+    }
+}
