@@ -6,7 +6,7 @@ plugins {
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 minecraft {
-    mappings channel: mappings_channel, version: "${mappings_version}-${minecraft_version}"
+    mappings channel: mappings_channel, version: "1.19.3-${mappings_version}-${minecraft_version}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
