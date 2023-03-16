@@ -19,7 +19,7 @@ public class FreePositionTracker implements PositionTracker {
 
 	@Override
 	public BlockPos currentBlockPosition() {
-		return new BlockPos(pos);
+		return BlockPos.containing(pos);
 	}
 
 	@Override

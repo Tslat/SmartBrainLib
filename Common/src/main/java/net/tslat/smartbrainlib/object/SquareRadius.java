@@ -17,7 +17,7 @@ public record SquareRadius(double xzRadius, double yRadius) {
 	}
 
 	public BlockPos toBlockPos() {
-		return new BlockPos(this.xzRadius, this.yRadius, this.xzRadius);
+		return BlockPos.containing(this.xzRadius, this.yRadius, this.xzRadius);
 	}
 
 	public Vec3 toVec3() {
