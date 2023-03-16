@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
  */
 public record SquareRadius(double xzRadius, double yRadius) {
 	public Vec3i toVec3i() {
-		return new Vec3i(this.xzRadius, this.yRadius, this.xzRadius);
+		return new Vec3i((int) this.xzRadius, (int) this.yRadius, (int) this.xzRadius);
 	}
 
 	public BlockPos toBlockPos() {
