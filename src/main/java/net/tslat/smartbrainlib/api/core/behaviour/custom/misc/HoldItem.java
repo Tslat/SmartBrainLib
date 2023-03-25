@@ -1,18 +1,17 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 /**
  * Equips the entity with an item in its {@link net.minecraft.world.InteractionHand hand}. <br>

@@ -28,7 +28,7 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	 * @param predicate The predicate
 	 * @return this
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated()
 	public BlockWithShield<E> stopWhen(Predicate<E> predicate) {
 		this.stopCondition = predicate;
 

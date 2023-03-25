@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +10,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY} memory by checking if any of the detected nearby entities are {@link net.minecraft.world.entity.animal.IronGolem Iron Golems}. <br>

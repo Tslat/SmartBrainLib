@@ -1,9 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.custom;
 
-import java.util.function.BiPredicate;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
@@ -12,6 +8,9 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import javax.annotation.Nullable;
+import java.util.function.BiPredicate;
 
 /**
  * Sets the {@link MemoryModuleType#NEAREST_ATTACKABLE} memory based on visible nearby entities. <br>

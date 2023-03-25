@@ -1,14 +1,7 @@
 package net.tslat.smartbrainlib.api.core;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +10,11 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.schedule.Activity;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	private final Activity activity;

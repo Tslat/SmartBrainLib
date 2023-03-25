@@ -1,10 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -12,6 +8,9 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Movement behaviour to handle strafing. <br>

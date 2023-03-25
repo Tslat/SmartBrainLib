@@ -1,9 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableSet;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -18,6 +15,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor that looks for a nearby {@link net.minecraft.world.entity.ai.village.poi.PoiTypes POI} block that matches a villager's secondary profession.<br>

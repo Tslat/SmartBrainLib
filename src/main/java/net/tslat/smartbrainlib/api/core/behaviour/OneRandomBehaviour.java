@@ -1,12 +1,11 @@
 package net.tslat.smartbrainlib.api.core.behaviour;
 
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
+
+import javax.annotation.Nullable;
 
 /**
  * Group behaviour that attempts to run sub-behaviours in a

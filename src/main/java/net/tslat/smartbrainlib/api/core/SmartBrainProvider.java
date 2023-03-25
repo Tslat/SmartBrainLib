@@ -1,18 +1,8 @@
 package net.tslat.smartbrainlib.api.core;
 
-import javax.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.logging.log4j.Level;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -28,6 +18,13 @@ import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import org.apache.logging.log4j.Level;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> extends Brain.BrainCodec<E> {
 	private static final Map<EntityType<? extends LivingEntity>, ImmutableList<MemoryModuleType<?>>> BRAIN_MEMORY_CACHE = new Object2ObjectOpenHashMap<>();

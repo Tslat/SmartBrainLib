@@ -1,9 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.custom;
 
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +14,8 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * Sensor for identifying and memorising nearby blocks using the {@link net.tslat.smartbrainlib.registry.SBLMemoryTypes#NEARBY_BLOCKS} memory module. <br>

@@ -1,11 +1,5 @@
 package net.tslat.smartbrainlib.api.util;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -15,7 +9,11 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ShootableItem;
 import net.minecraft.util.math.EntityPosWrapper;
-import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.

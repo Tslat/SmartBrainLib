@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -16,6 +14,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.PiglinBruteSpecificSensor}. Not really useful, but included for completeness' sake and legibility. <br>

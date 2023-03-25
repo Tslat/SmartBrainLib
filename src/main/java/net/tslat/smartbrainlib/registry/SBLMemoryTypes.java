@@ -1,13 +1,7 @@
 package net.tslat.smartbrainlib.registry;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -20,6 +14,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.tslat.smartbrainlib.SmartBrainLib;
 import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Registry class for custom {@link net.minecraft.world.entity.ai.memory.MemoryModuleType Memory Types}

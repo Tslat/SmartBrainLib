@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.custom;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -12,6 +10,8 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor to attempt to track whether the entity's target is currently obstructed either by blocks or a wall/tower of blocks. <br>

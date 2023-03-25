@@ -1,9 +1,9 @@
 package net.tslat.smartbrainlib.api.core.behaviour;
 
-import java.util.function.Consumer;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.server.ServerWorld;
+
+import java.util.function.Consumer;
 
 /**
  * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br>

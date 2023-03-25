@@ -1,14 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -22,6 +14,12 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.RandomUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 /**
  * Walk target class that finds a random position nearby and sets it as the walk target if applicable. <br>

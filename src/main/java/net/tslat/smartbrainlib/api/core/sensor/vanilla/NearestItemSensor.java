@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
@@ -16,6 +14,8 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.List;
 
 /**
  * A sensor that looks for the nearest item entity in the surrounding area.<br>

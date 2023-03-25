@@ -1,10 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -14,6 +10,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Sets the attack target of the entity based on the last entity to hurt it if a target isn't already set. <br>

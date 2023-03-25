@@ -1,11 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
@@ -19,6 +14,9 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class MoveToWalkTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.wrap(new Pair[] {Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleStatus.REGISTERED), Pair.of(MemoryModuleType.PATH, MemoryModuleStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryModuleStatus.VALUE_PRESENT)});

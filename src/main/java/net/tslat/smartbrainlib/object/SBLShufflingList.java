@@ -1,21 +1,15 @@
 package net.tslat.smartbrainlib.object;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import io.netty.util.internal.ThreadLocalRandom;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class SBLShufflingList<T> implements Iterable<T> {
 	private final List<WeightedEntry<T>> entries;

@@ -1,10 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -12,6 +8,9 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Avoid the sun if not wearing a hat
  * @param <E> The entity

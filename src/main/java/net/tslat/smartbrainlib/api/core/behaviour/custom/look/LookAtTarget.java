@@ -1,15 +1,14 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.look;
 
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import java.util.List;
 
 /**
  * Look at the look target for as long as it is present

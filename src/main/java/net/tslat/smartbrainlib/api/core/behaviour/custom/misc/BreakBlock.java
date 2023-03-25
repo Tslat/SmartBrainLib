@@ -1,9 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,6 +17,8 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.TriFunction;
 import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import java.util.List;
 
 /**
  * Gradually breaks then destroys a block. <br>

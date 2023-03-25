@@ -1,12 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -15,6 +9,11 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.APIOnly;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * An extension of the base Behavior class that is used for tasks in the brain system. <br>

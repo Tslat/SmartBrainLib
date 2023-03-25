@@ -1,16 +1,16 @@
 package net.tslat.smartbrainlib.api.core.sensor;
 
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.world.server.ServerWorld;
+
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br>

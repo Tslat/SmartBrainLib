@@ -1,18 +1,16 @@
 package net.tslat.smartbrainlib.api.core.behaviour;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Functional replacement to {@link net.minecraft.world.entity.ai.behavior.GateBehavior} due to the very poor way it is implemented. <br>

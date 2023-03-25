@@ -1,23 +1,25 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.behavior.EntityTracker;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.util.BrainUtils;
-import net.tslat.smartbrainlib.api.util.RandomUtil;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.memory.WalkTarget;
+import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityPosWrapper;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.util.BrainUtils;
+import net.tslat.smartbrainlib.api.util.RandomUtil;
 
 /**
  * A movement behaviour for automatically following a given entity.<br>
@@ -31,7 +33,7 @@ import java.util.function.Function;
  * @param <E> The owner of the brain
  * @param <T> The minimum common class of the entity expected to be following
  */
-public class FollowEntity<E extends PathfinderMob, T extends Entity> extends ExtendedBehaviour<E> {
+public class FollowEntity<E extends CreatureEntity, T extends Entity> extends ExtendedBehaviour<E> {
 	protected Function<E, T> followingEntityProvider = entity -> null;
 
 	protected BiFunction<E, T, Double> teleportDistance = (entity, target) -> Double.MAX_VALUE;
@@ -42,8 +44,8 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected float oldLavaPathMalus = 0;
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+	protected List<Pair<MemoryModuleType<?>, MemoryModuleStatus>> getMemoryRequirements() {
+		return new ArrayList<>();
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerWorld level, E entity) {
 		T target = this.followingEntityProvider.apply(entity);
 
 		if (target == null || target.isSpectator())
@@ -150,25 +152,25 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		T target = this.followingEntityProvider.apply(entity);
 		double minDist = this.followDistMin.apply(entity, target);
 		float speedMod = this.speedMod.apply(entity, target);
-		this.oldWaterPathMalus = entity.getPathfindingMalus(BlockPathTypes.WATER);
+		this.oldWaterPathMalus = entity.getPathfindingMalus(PathNodeType.WATER);
 
 		if (entity.fireImmune()) {
-			this.oldLavaPathMalus = entity.getPathfindingMalus(BlockPathTypes.LAVA);
+			this.oldLavaPathMalus = entity.getPathfindingMalus(PathNodeType.LAVA);
 
-			entity.setPathfindingMalus(BlockPathTypes.LAVA, 0);
+			entity.setPathfindingMalus(PathNodeType.LAVA, 0);
 		}
 
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target, speedMod, (int)minDist));
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-		entity.setPathfindingMalus(BlockPathTypes.WATER, 0);
+		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target.position(), speedMod, (int)minDist));
+		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
+		entity.setPathfindingMalus(PathNodeType.WATER, 0);
 	}
 
 	@Override
 	protected void stop(E entity) {
-		entity.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterPathMalus);
+		entity.setPathfindingMalus(PathNodeType.WATER, this.oldWaterPathMalus);
 
 		if (entity.fireImmune())
-			entity.setPathfindingMalus(BlockPathTypes.LAVA, this.oldLavaPathMalus);
+			entity.setPathfindingMalus(PathNodeType.LAVA, this.oldLavaPathMalus);
 
 		entity.getNavigation().stop();
 		BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
@@ -184,20 +186,20 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	}
 
 	protected void teleportToTarget(E entity, T target) {
-		Level level = entity.level;
+		World level = entity.level;
 		BlockPos entityPos = target.blockPosition();
 
 		BlockPos pos = RandomUtil.getRandomPositionWithinRange(entityPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) -> {
-			BlockPathTypes pathTypes = entity.getNavigation().getNodeEvaluator().getBlockPathType(level, statePos.getX(), statePos.getY(), statePos.getZ());
+			PathNodeType pathTypes = entity.getNavigation().getNodeEvaluator().getBlockPathType(level, statePos.getX(), statePos.getY(), statePos.getZ());
 
-			if (pathTypes != BlockPathTypes.WALKABLE)
+			if (pathTypes != PathNodeType.WALKABLE)
 				return false;
 
 			return level.noCollision(entity, entity.getBoundingBox().move(statePos.subtract(entityPos)));
 		});
 
 		if (pos != entityPos) {
-			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
+			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getRotationVector().y, entity.getRotationVector().x);
 			entity.getNavigation().stop();
 			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}

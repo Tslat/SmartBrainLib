@@ -1,18 +1,17 @@
 package net.tslat.smartbrainlib.api.util;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap;
 
 /**
  * Utility class for easy and legible random functionality.
@@ -88,7 +87,7 @@ public final class RandomUtil {
 
 	// Deprecated, use the BiPredicate variant below
 	@Nonnull
-	@Deprecated(forRemoval = true)
+	@Deprecated()
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, World world, int tries, @Nullable Predicate<BlockState> statePredicate) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
@@ -192,7 +191,7 @@ public final class RandomUtil {
 
 		@Nonnull
 		// Deprecated, use the BiPredicate variant below
-		@Deprecated(forRemoval = true)
+		@Deprecated()
 		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, World world, int tries, @Nullable Predicate<BlockState> statePredicate) {
             return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, (state, pos) -> statePredicate == null || statePredicate.test(state));
 		}
