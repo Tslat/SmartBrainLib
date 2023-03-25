@@ -8,6 +8,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
@@ -138,7 +139,9 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 			return;
 		}
 
-		navigation.stop();
+		if (navigation instanceof GroundPathNavigation)
+			navigation.stop();
+
 		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
 
 		if (distanceToTarget > maxDistSq * 0.5f) {
