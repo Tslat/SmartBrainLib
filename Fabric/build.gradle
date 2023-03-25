@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'idea'
+    id 'io.github.CDAGaming.cursegradle' version '1.6.0'
 }
 
 archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
@@ -9,7 +10,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:${mappings_version}@zip")
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
@@ -85,8 +86,22 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifactId = archivesBaseName
-            artifact jar
-            artifact sourcesJar
+            from components.java
+        }
+    }
+}
+
+curseforge {
+    apiKey = System.getenv("CURSEFORGE_TOKEN")
+
+    project {
+        id = curseforge_id
+        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.19.4'
+        releaseType = 'release'
+        addGameVersion minecraft_version
+
+        mainArtifact(remapJar) {
+            it.displayName = "${project.mod_name} Fabric ${project.minecraft_version}-${project.version}"
         }
     }
 }

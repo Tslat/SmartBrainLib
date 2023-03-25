@@ -31,11 +31,11 @@ subprojects {
 	publishing {
 		repositories {
 			maven {
-				name = "Repsy"
-				url 'https://repo.repsy.io/mvn/tslat/smartbrainlib'
+				name = "Cloudsmith"
+				url 'https://maven.cloudsmith.io/tslat/sbl/'
 				credentials {
-					username project.findProperty("repsy.user") ?: System.getenv("REPSY_USERNAME")
-					password project.findProperty("repsy.password") ?: System.getenv("REPSY_PASSWORD")
+					username System.getenv("CLOUDSMITH_USERNAME")
+					password System.getenv("CLOUDSMITH_API_KEY")
 				}
 			}
 		}
