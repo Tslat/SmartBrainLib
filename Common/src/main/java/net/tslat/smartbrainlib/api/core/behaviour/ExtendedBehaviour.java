@@ -146,7 +146,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 
 	@APIOnly
 	protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
-		return cooldownFinishedAt <= gameTime && hasRequiredMemories(entity) && this.startCondition.test(entity)
+		return this.cooldownFinishedAt <= gameTime && hasRequiredMemories(entity) && this.startCondition.test(entity)
 				&& checkExtraStartConditions(level, entity);
 	}
 

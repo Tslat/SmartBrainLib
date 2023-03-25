@@ -21,7 +21,7 @@ import java.util.function.Function;
 public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	protected Function<E, Integer> scanRate = entity -> 20;
 	protected Consumer<E> scanCallback = entity -> {};
-	private long nextTickTime = 0;
+	protected long nextTickTime = 0;
 
 	public ExtendedSensor() {
 		super();

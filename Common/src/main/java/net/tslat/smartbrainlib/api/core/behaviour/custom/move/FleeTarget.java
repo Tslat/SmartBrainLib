@@ -27,10 +27,10 @@ import java.util.List;
 public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
 
-	private int fleeDistance = 20;
-	private float speedModifier = 1;
+	protected int fleeDistance = 20;
+	protected float speedModifier = 1;
 
-	private Path runPath = null;
+	protected Path runPath = null;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

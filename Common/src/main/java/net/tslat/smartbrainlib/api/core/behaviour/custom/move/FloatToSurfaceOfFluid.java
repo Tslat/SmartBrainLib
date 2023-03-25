@@ -20,7 +20,7 @@ import java.util.List;
  * </ul>
  */
 public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
-	private float riseChance = 0.8f;
+	protected float riseChance = 0.8f;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
