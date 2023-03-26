@@ -27,7 +27,7 @@ import java.util.List;
 public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSensor<E> {
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 
-	private long lastUnpathableTime = 0;
+	protected long lastUnpathableTime = 0;
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {

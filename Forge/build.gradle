@@ -1,6 +1,7 @@
 plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'io.github.CDAGaming.cursegradle' version '1.6.0'
 }
 
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
@@ -105,6 +106,21 @@ publishing {
             artifactId = archivesBaseName
             artifact jar
             artifact sourcesJar
+        }
+    }
+}
+
+curseforge {
+    apiKey = System.getenv("CURSEFORGE_TOKEN")
+
+    project {
+        id = curseforge_id
+        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.19.2'
+        releaseType = 'release'
+        addGameVersion minecraft_version
+
+        mainArtifact(jar) {
+            it.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
         }
     }
 }

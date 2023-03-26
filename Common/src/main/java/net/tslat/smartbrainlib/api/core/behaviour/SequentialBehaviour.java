@@ -14,8 +14,8 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public final class SequentialBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
-	protected Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
-	protected ExtendedBehaviour<? super E> lastRun = null;
+	private Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
+	private ExtendedBehaviour<? super E> lastRun = null;
 
 	public SequentialBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);

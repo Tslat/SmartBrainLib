@@ -18,10 +18,10 @@ import java.util.List;
  * NOTE: Only supports ExtendedBehaviour implementations as sub-behaviours. This is due to access-modifiers on the vanilla behaviours making this prohibitively annoying to work with.
  */
 public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private final SBLShufflingList<ExtendedBehaviour<? super E>> behaviours;
+	protected final SBLShufflingList<ExtendedBehaviour<? super E>> behaviours;
 
 	@Nullable
-	private ExtendedBehaviour<? super E> runningBehaviour = null;
+	protected ExtendedBehaviour<? super E> runningBehaviour = null;
 
 	public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		this.behaviours = new SBLShufflingList<>(behaviours);
