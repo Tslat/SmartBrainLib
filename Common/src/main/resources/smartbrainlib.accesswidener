@@ -1,4 +1,5 @@
 accessWidener v1 named
+# Brain
 accessible field net/minecraft/world/entity/ai/Brain sensors Ljava/util/Map;
 accessible method net/minecraft/world/entity/ai/Brain memories ()Ljava/util/stream/Stream;
 accessible field net/minecraft/world/entity/ai/Brain memories Ljava/util/Map;
@@ -9,7 +10,7 @@ accessible field net/minecraft/world/entity/ai/behavior/Behavior entryCondition 
 accessible class net/minecraft/world/entity/ai/Brain$Provider
 extendable class net/minecraft/world/entity/ai/Brain$Provider
 accessible method net/minecraft/world/entity/ai/Brain$Provider <init> (Ljava/util/Collection;Ljava/util/Collection;)V
-accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/util/Optional;)V
+extendable method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/util/Optional;)V
 accessible method net/minecraft/world/entity/ai/Brain$MemoryValue setMemoryInternal (Lnet/minecraft/world/entity/ai/Brain;)V
 accessible method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
 extendable method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
@@ -18,6 +19,7 @@ accessible method net/minecraft/world/entity/ai/Brain setCoreActivities (Ljava/u
 extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
 extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
 accessible field net/minecraft/world/entity/ai/Brain activeActivities Ljava/util/Set;
+accessible method net/minecraft/world/entity/ai/Brain addActivityAndRemoveMemoriesWhenStopped (Lnet/minecraft/world/entity/schedule/Activity;Lcom/google/common/collect/ImmutableList;Ljava/util/Set;Ljava/util/Set;)V
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z

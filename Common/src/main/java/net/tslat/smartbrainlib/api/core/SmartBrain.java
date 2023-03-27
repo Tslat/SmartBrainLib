@@ -178,7 +178,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public <U> void setMemoryInternal(MemoryModuleType<U> memoryType, Optional<? extends ExpirableValue<?>> memory) {
-		if (memory.isPresent() && memory.get().getValue()instanceof Collection<?> collection && collection.isEmpty())
+		if (memory.isPresent() && memory.get().getValue() instanceof Collection<?> && ((Collection<?>)memory.get().getValue()).isEmpty())
 			memory = Optional.empty();
 
 		this.memories.put(memoryType, memory);
@@ -247,11 +247,6 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	 */
 	public Stream<Behavior<? super E>> getBehaviours() {
 		return this.behaviours.stream().map(ActivityBehaviours::behaviours).flatMap(list -> list.stream().map(Pair::getSecond).flatMap(List::stream));
-	}
-
-	@Override
-	public void removeAllBehaviors() {
-		this.behaviours.clear();
 	}
 
 	@Override
