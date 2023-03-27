@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	public Set<MemoryModuleType<?>> getWipedMemoriesOnFinish() {
-		return this.wipedMemoriesOnFinish != null ? this.wipedMemoriesOnFinish : Set.of();
+		return this.wipedMemoriesOnFinish != null ? this.wipedMemoriesOnFinish : Collections.emptySet();
 	}
 
 	public ImmutableList<Pair<Integer, Behavior<? super T>>> pairBehaviourPriorities() {

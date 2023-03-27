@@ -17,6 +17,7 @@ accessible field net/minecraft/world/entity/ai/Brain coreActivities Ljava/util/S
 accessible method net/minecraft/world/entity/ai/Brain setCoreActivities (Ljava/util/Set;)V
 extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
 extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
+accessible field net/minecraft/world/entity/ai/Brain activeActivities Ljava/util/Set;
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
@@ -26,7 +27,7 @@ accessible field net/minecraft/world/entity/ai/behavior/Behavior status Lnet/min
 accessible method net/minecraft/world/entity/ai/behavior/Behavior getStatus ()Lnet/minecraft/world/entity/ai/behavior/Behavior$Status;
 accessible method net/minecraft/world/entity/ai/behavior/Behavior hasRequiredMemories (Lnet/minecraft/world/entity/LivingEntity;)Z
 extendable method net/minecraft/world/entity/ai/behavior/Behavior hasRequiredMemories (Lnet/minecraft/world/entity/LivingEntity;)Z
-accessible field net/minecraft/world/entity/ai/behavior/GateBehavior behaviors Lnet/minecraft/world/entity/ai/behavior/ShufflingList;
+accessible field net/minecraft/world/entity/ai/behavior/GateBehavior behaviors Lnet/minecraft/world/entity/ai/behavior/WeightedList;
 
 # Sensor
 accessible method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V

@@ -1,11 +1,11 @@
 package net.tslat.smartbrainlib;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,15 +17,15 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.example.boilerplate.SBLExampleEntities;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class SBLForge implements SBLLoader {
-	public static final DeferredRegister<MemoryModuleType<?>> MEMORY_TYPES = DeferredRegister.create(ForgeRegistries.Keys.MEMORY_MODULE_TYPES, SBLConstants.MOD_ID);
-	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.Keys.SENSOR_TYPES, SBLConstants.MOD_ID);
-	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.Keys.ENTITY_TYPES, SBLConstants.MOD_ID);
+	public static final DeferredRegister<MemoryModuleType<?>> MEMORY_TYPES = DeferredRegister.create(ForgeRegistries.MEMORY_MODULE_TYPES, SBLConstants.MOD_ID);
+	public static final DeferredRegister<SensorType<?>> SENSORS = DeferredRegister.create(ForgeRegistries.SENSOR_TYPES, SBLConstants.MOD_ID);
+	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, SBLConstants.MOD_ID);
 
 	public void init() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -69,6 +69,6 @@ public final class SBLForge implements SBLLoader {
 	}
 
 	private static void registerEntityStats(final EntityAttributeCreationEvent ev) {
-		ev.put(SBLExampleEntities.SBL_SKELETON.get(), Skeleton.createAttributes().build());
+		ev.put(SBLExampleEntities.SBL_SKELETON.get(), SkeletonEntity.createAttributes().build());
 	}
 }

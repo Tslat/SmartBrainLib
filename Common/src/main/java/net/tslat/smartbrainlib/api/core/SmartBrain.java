@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -75,15 +77,15 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		entity.level.getProfiler().pop();
 
-		if (entity instanceof Mob mob)
-			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
+		if (entity instanceof Mob)
+			((Mob)entity).setAggressive(BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET));
 	}
 
 	private void findAndSetActiveActivity(E entity) {
 		if (this.schedule != null) {
 			Activity scheduledActivity = this.schedule.tick(entity);
 
-			if (scheduledActivity != null && !getActiveActivities().contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
+			if (scheduledActivity != null && !activeActivities.contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
 				setActiveActivity(scheduledActivity);
 
 				return;
@@ -104,7 +106,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
 			for (Pair<Activity, List<Behavior<? super E>>> pair : behaviourGroup.behaviours) {
-				if (getActiveActivities().contains(pair.getFirst())) {
+				if (activeActivities.contains(pair.getFirst())) {
 					for (Behavior<? super E> behaviour : pair.getSecond()) {
 						if (behaviour.getStatus() == Behavior.Status.STOPPED)
 							behaviour.tryStart(level, entity, gameTime);
@@ -135,7 +137,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 			MemoryModuleType<?> memoryType = expirable.next();
 			Optional<? extends ExpirableValue<?>> memory = memories.get(memoryType);
 
-			if (memory.isEmpty()) {
+			if (!memory.isPresent()) {
 				expirable.remove();
 			}
 			else {
@@ -212,7 +214,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public Brain<E> copyWithoutBehaviors() {
-		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).toList(), null, false);
+		SmartBrain<E> brain = new SmartBrain<>(new ObjectArrayList<>(this.memories.keySet()), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).collect(Collectors.toList()), null, false);
 
 		for (Map.Entry<MemoryModuleType<?>, Optional<? extends ExpirableValue<?>>> entry : this.memories.entrySet()) {
 			MemoryModuleType<?> memoryType = entry.getKey();
@@ -289,13 +291,13 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 					}
 				}
 
-				behaviourGroup.behaviours.add(Pair.of(activity, ObjectArrayList.of(behaviour)));
+				behaviourGroup.behaviours.add(Pair.of(activity, Util.make(new ObjectArrayList<>(), list -> list.add(behaviour))));
 
 				return;
 			}
 		}
 
-		this.behaviours.add(new ActivityBehaviours<>(priority, ObjectArrayList.of(Pair.of(activity, ObjectArrayList.<Behavior<? super E>>of(behaviour)))));
+		this.behaviours.add(new ActivityBehaviours<>(priority, Util.make(new ObjectArrayList<>(), list -> list.add(Pair.of(activity, Util.make(new ObjectArrayList<>(), list2 -> list2.add(behaviour)))))));
 		this.sortBehaviours = true;
 	}
 
@@ -317,7 +319,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
 						if (behaviour.getStatus() == Behavior.Status.RUNNING)
-							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+							behaviour.doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
 
 						iterator.remove();
 					});
@@ -361,7 +363,9 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
 		}
-		else if (behaviour instanceof GateBehavior groupBehaviour) {
+		else if (behaviour instanceof GateBehavior) {
+			GateBehavior groupBehaviour = (GateBehavior)behaviour;
+
 			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.behaviors.stream().iterator(); childBehaviourIterator.hasNext();) {
 				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
 			}
@@ -369,7 +373,9 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 			if (!groupBehaviour.behaviors.stream().iterator().hasNext())
 				callback.run();
 		}
-		else if (behaviour instanceof GroupBehaviour groupBehaviour) {
+		else if (behaviour instanceof GroupBehaviour) {
+			GroupBehaviour groupBehaviour = (GroupBehaviour)behaviour;
+
 			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
 				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
 			}
@@ -400,10 +406,14 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, Behavior<E> behaviour, @Nullable Behavior<E> parentBehaviour, BrainBehaviourConsumer consumer) {
 		consumer.consume(priority, activity, behaviour, parentBehaviour);
 
-		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
-			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
+		if (behaviour instanceof GateBehavior) {
+			GateBehavior<E> gateBehaviour = (GateBehavior<E>)behaviour;
+
+			gateBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, gateBehaviour, consumer));
 		}
-		else if (behaviour instanceof GroupBehaviour<E> groupBehaviour) {
+		else if (behaviour instanceof GroupBehaviour) {
+			GroupBehaviour<E> groupBehaviour = (GroupBehaviour<E>)behaviour;
+
 			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
 		}
 	}
@@ -420,9 +430,25 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	/**
 	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	@Override
 	public final void setSchedule(Schedule schedule) {}
 
-	private record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<Behavior<? super E>>>> behaviours) {}
+	private static final class ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> {
+		private final int priority;
+		private final List<Pair<Activity, List<Behavior<? super E>>>> behaviours;
+
+		public ActivityBehaviours(int priority, List<Pair<Activity, List<Behavior<? super E>>>> behaviours) {
+			this.priority = priority;
+			this.behaviours = behaviours;
+		}
+
+		public int priority() {
+			return this.priority;
+		}
+
+		public List<Pair<Activity, List<Behavior<? super E>>>> behaviours() {
+			return this.behaviours;
+		}
+	}
 }

@@ -17,6 +17,7 @@ import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	 *                          sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(E owner, boolean saveMemories, boolean nonStaticMemories) {
-		super(List.of(), List.of());
+		super(Collections.emptyList(), Collections.emptyList());
 
 		this.owner = owner;
 		this.saveMemories = saveMemories;
@@ -101,10 +102,14 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	}
 
 	private void collectMemoriesFromTask(Set<MemoryModuleType<?>> memories, Behavior<?> behaviour) {
-		if (behaviour instanceof GateBehavior<?> gateBehaviour) {
+		if (behaviour instanceof GateBehavior<?>) {
+			GateBehavior<?> gateBehaviour = (GateBehavior<?>)behaviour;
+
 			gateBehaviour.behaviors.stream().forEach(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
-		else if (behaviour instanceof GroupBehaviour<?> groupBehaviour) {
+		else if (behaviour instanceof GroupBehaviour<?>) {
+			GroupBehaviour<?> groupBehaviour = (GroupBehaviour<?>)behaviour;
+
 			groupBehaviour.getBehaviours().forEachRemaining(subBehaviour -> collectMemoriesFromTask(memories, subBehaviour));
 		}
 		else {
@@ -141,7 +146,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	/**
 	 * Use one of the startup 'getTasks' methods if adding at startup, or else use {@link net.tslat.smartbrainlib.util.BrainUtils#addActivity(Brain, BrainActivityGroup)}
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	protected void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
 		brain.activityRequirements.put(activity, activityGroup.getActivityStartMemoryConditions());
 

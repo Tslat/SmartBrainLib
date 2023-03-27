@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -109,7 +110,10 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * @return An <b>ordered</b> {@link List} of {@link Activity} categories
 	 */
 	default List<Activity> getActivityPriorities() {
-		return ObjectArrayList.of(Activity.FIGHT, Activity.IDLE);
+		return Util.make(new ObjectArrayList<>(), list -> {
+			list.add(Activity.FIGHT);
+			list.add(Activity.IDLE);
+		});
 	}
 
 	/**
@@ -139,6 +143,6 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 */
 	@APIOnly
 	default void tickBrain(T entity) {
-		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.getLevel(), entity);
+		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.level, entity);
 	}
 }
