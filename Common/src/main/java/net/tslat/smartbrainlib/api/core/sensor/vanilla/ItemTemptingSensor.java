@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -9,10 +8,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
-import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.registry.SBLSensors;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.TEMPTING_PLAYER);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(SBLMemoryTypes.TEMPTING_PLAYER.get());
 
 	protected Ingredient temptingItems = Ingredient.EMPTY;
 	protected SquareRadius radius = new SquareRadius(10, 10);
@@ -90,6 +91,6 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity)));
+		BrainUtils.setMemory(entity, SBLMemoryTypes.TEMPTING_PLAYER.get(), EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity)));
 	}
 }

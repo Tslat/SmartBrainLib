@@ -11,8 +11,10 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class HoglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(
 			MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLIN, MemoryModuleType.NEAREST_VISIBLE_ADULT_HOGLINS,
 			MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT,
 			MemoryModuleType.NEAREST_REPELLENT);
@@ -44,20 +46,20 @@ public class HoglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 	protected void doTick(ServerLevel level, E entity) {
 		Brain<?> brain = entity.getBrain();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> {
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> {
 			int piglinCount = 0;
 			Piglin nearestPiglin = null;
 			List<Hoglin> hoglins = new ObjectArrayList<>();
 
 			for (LivingEntity target : entities.findAll(mob -> !mob.isBaby())) {
-				if (target instanceof Piglin piglin) {
+				if (target instanceof Piglin) {
 					piglinCount++;
 
 					if (nearestPiglin == null)
-						nearestPiglin = piglin;
+						nearestPiglin = (Piglin)target;
 				}
-				else if (target instanceof Hoglin hoglin) {
-					hoglins.add(hoglin);
+				else if (target instanceof Hoglin) {
+					hoglins.add((Hoglin)target);
 				}
 			}
 

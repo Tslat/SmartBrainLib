@@ -16,8 +16,8 @@ import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +62,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	 *                          sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(E owner, boolean saveMemories, boolean nonStaticMemories) {
-		super(Collections.emptyList(), Collections.emptyList());
+		super(Collections.immutableList(), Collections.immutableList());
 
 		this.owner = owner;
 		this.saveMemories = saveMemories;

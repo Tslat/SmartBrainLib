@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.UseAnim;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -20,22 +21,9 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 
 	protected Predicate<E> stopCondition = entity -> false;
 
-	/**
-	 * Sets the condition for when the entity should stop blocking.<br>
-	 * Deprecated, use {@link ExtendedBehaviour#stopIf}
-	 * @param predicate The predicate
-	 * @return this
-	 */
-	@Deprecated(forRemoval = true)
-	public BlockWithShield<E> stopWhen(Predicate<E> predicate) {
-		this.stopCondition = predicate;
-
-		return this;
-	}
-
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -10,9 +9,11 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.BackportUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.DefaultRandomPos;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = Collections.list(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
 
 	protected BiFunction<E, LivingEntity, Float> distMax = (entity, target) -> 20f;
 	protected BiFunction<E, LivingEntity, Float> distMin = (entity, target) -> 5f;
@@ -121,7 +122,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 		double minDistSq = Math.pow(this.distMin.apply(entity, target), 2);
 		PathNavigation navigation = entity.getNavigation();
 
-		if (distanceToTarget > maxDistSq || !entity.hasLineOfSight(target)) {
+		if (distanceToTarget > maxDistSq || !BackportUtils.hasLineOfSight(entity, target)) {
 			if (navigation.isDone())
 				navigation.moveTo(target, this.repositionSpeedMod);
 

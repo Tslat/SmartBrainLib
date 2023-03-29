@@ -19,7 +19,7 @@ public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, Living
 		if (this.owner == null)
 			this.owner = entity.getOwner();
 
-		if (this.owner != null && this.owner.isRemoved())
+		if (this.owner != null && this.owner.removed)
 			this.owner = null;
 
 		return this.owner;

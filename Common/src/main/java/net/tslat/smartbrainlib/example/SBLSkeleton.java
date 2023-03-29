@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib.example;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
@@ -33,6 +32,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 
@@ -57,14 +57,14 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 
 	@Override
 	public List<ExtendedSensor<SBLSkeleton>> getSensors() {
-		return ObjectArrayList.of(
+		return Collections.list(
 				new NearbyPlayersSensor<>(), 							// Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>()
 						.setPredicate((target, entity) ->
 								target instanceof Player ||
 								target instanceof IronGolem ||
 								target instanceof Wolf ||
-								(target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
+								(target instanceof Turtle && target.isBaby() && !target.isInWater())));
 	}																	// Keep track of nearby entities the Skeleton is interested in
 
 	@Override
@@ -87,7 +87,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 						new SetRandomLookTarget<>()), 					// Set the look target to a random nearby location
 				new OneRandomBehaviour<>( 								// Run only one of the below behaviours, picked at random
 						new SetRandomWalkTarget<>().speedModifier(1), 				// Set the walk target to a nearby random pathable location
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60)))); // Don't walk anywhere
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30) + 30))); // Don't walk anywhere
 	}
 
 	@Override
@@ -107,6 +107,6 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 
 	// Easy predicate to save on redundant code
 	private static boolean isHoldingBow(LivingEntity livingEntity) {
-		return livingEntity.isHolding(stack -> stack.getItem() instanceof BowItem);
+		return livingEntity.isHolding(item -> item instanceof BowItem);
 	}
 }

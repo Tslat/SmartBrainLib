@@ -1,16 +1,17 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.DefaultRandomPos;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.function.Predicate;
  * </ul>
  */
 public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = Collections.list(Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryStatus.VALUE_PRESENT));
 
 	protected Predicate<LivingEntity> avoidingPredicate = target -> false;
 	protected float noCloserThanSqr = 9f;
@@ -87,9 +88,9 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		Optional<LivingEntity> target = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(this.avoidingPredicate);
+		Optional<LivingEntity> target = BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).findClosest(this.avoidingPredicate);
 
-		if (target.isEmpty())
+		if (!target.isPresent())
 			return false;
 
 		LivingEntity avoidingEntity = target.get();

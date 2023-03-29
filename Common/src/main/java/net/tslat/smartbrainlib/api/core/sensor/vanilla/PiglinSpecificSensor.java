@@ -21,8 +21,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_VISIBLE_NEMESIS, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, MemoryModuleType.NEAREST_REPELLENT, MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEARBY_ADULT_PIGLINS);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.NEAREST_VISIBLE_NEMESIS, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, MemoryModuleType.NEAREST_REPELLENT, SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), MemoryModuleType.NEARBY_ADULT_PIGLINS);
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
@@ -52,7 +54,7 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 		Brain<?> brain = entity.getBrain();
 		List<AbstractPiglin> adultPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> {
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> {
 			Mob nemesis = null;
 			Hoglin nearestHuntableHoglin = null;
 			Hoglin nearestBabyHoglin = null;
@@ -63,7 +65,9 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 			int adultHoglinCount = 0;
 
 			for (LivingEntity target : entities.findAll(obj -> true)) {
-				if (target instanceof Hoglin hoglin) {
+				if (target instanceof Hoglin) {
+					Hoglin hoglin = (Hoglin)target;
+
 					if (hoglin.isBaby() && nearestBabyHoglin == null) {
 						nearestBabyHoglin = hoglin;
 					}
@@ -74,14 +78,18 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 							nearestHuntableHoglin = hoglin;
 					}
 				}
-				else if (target instanceof PiglinBrute brute) {
-					visibleAdultPiglins.add(brute);
+				else if (target instanceof PiglinBrute) {
+					visibleAdultPiglins.add((PiglinBrute)target);
 				}
-				else if (target instanceof Piglin piglin) {
+				else if (target instanceof Piglin) {
+					Piglin piglin = (Piglin)target;
+
 					if (piglin.isAdult())
 						visibleAdultPiglins.add(piglin);
 				}
-				else if (target instanceof Player player) {
+				else if (target instanceof Player) {
+					Player player = (Player)target;
+
 					if (nearestPlayerWithoutGold == null && !PiglinAi.isWearingGold(player) && entity.canAttack(player))
 						nearestPlayerWithoutGold = player;
 
@@ -115,10 +123,10 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 					}).orElse(null));
 		});
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), entities -> {
 			for (LivingEntity target : entities) {
-				if (target instanceof AbstractPiglin piglin && piglin.isAdult())
-					adultPiglins.add(piglin);
+				if (target instanceof AbstractPiglin && ((AbstractPiglin)target).isAdult())
+					adultPiglins.add((AbstractPiglin)target);
 			}
 		});
 		BrainUtils.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, adultPiglins);

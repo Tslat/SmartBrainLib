@@ -20,6 +20,8 @@ extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet
 extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
 accessible field net/minecraft/world/entity/ai/Brain activeActivities Ljava/util/Set;
 extendable method net/minecraft/world/entity/ai/Brain addActivityAndRemoveMemoriesWhenStopped (Lnet/minecraft/world/entity/schedule/Activity;Lcom/google/common/collect/ImmutableList;Ljava/util/Set;Ljava/util/Set;)V
+accessible method net/minecraft/world/entity/ai/Brain addActivityAndRemoveMemoriesWhenStopped (Lnet/minecraft/world/entity/schedule/Activity;Lcom/google/common/collect/ImmutableList;Ljava/util/Set;Ljava/util/Set;)V
+accessible field net/minecraft/world/entity/ai/memory/ExpirableValue timeToLive J
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
@@ -35,6 +37,7 @@ accessible field net/minecraft/world/entity/ai/behavior/GateBehavior behaviors L
 accessible method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
 extendable method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
 accessible field net/minecraft/world/entity/ai/sensing/Sensor scanRate I
+accessible method net/minecraft/world/entity/ai/sensing/Sensor isEntityTargetable (Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;)Z
 
 # World
 accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
@@ -45,3 +48,6 @@ accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
 
 # Schedule
 accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
+
+# Other
+accessible method net/minecraft/world/entity/ai/util/RandomPos generateRandomPos (Lnet/minecraft/world/entity/PathfinderMob;IIILnet/minecraft/world/phys/Vec3;ZDLjava/util/function/ToDoubleFunction;ZIIZ)Lnet/minecraft/world/phys/Vec3;

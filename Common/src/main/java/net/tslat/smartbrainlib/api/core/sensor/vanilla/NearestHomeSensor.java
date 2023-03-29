@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
@@ -12,8 +11,9 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @param <E> The entity
  */
 public class NearestHomeSensor<E extends Mob> extends PredicateSensor<E, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_BED);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.NEAREST_BED);
 
 	protected int radius = 48;
 

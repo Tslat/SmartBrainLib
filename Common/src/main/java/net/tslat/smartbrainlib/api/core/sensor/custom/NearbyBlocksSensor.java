@@ -10,10 +10,11 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  * </ul>
  */
 public class NearbyBlocksSensor<E extends LivingEntity> extends PredicateSensor<BlockState, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected SquareRadius radius = new SquareRadius(1, 1);
 

@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib;
 
-import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,7 +18,6 @@ import net.tslat.smartbrainlib.mixin.MemoryTypesInvoker;
 import net.tslat.smartbrainlib.mixin.SensorTypeInvoker;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -43,11 +41,6 @@ public final class SBLFabric implements SBLLoader {
 
 	@Override
 	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id) {
-		return registerMemoryType(id, null);
-	}
-
-	@Override
-	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, @Nullable Codec<T> codec) {
 		MemoryModuleType<T> memoryType = MemoryTypesInvoker.invokeRegister(SBLConstants.MOD_ID + ":" + id);
 
 		return () -> memoryType;

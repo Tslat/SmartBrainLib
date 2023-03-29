@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,8 +7,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.GOLEM_DETECTED_RECENTLY);
 
 	private int timeToRemember = 600;
 
@@ -61,7 +62,7 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entityList -> {
+		BrainUtils.withMemory(entity, SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), entityList -> {
 			if (entityList.isEmpty())
 				return;
 

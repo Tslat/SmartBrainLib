@@ -1,15 +1,16 @@
 package net.tslat.smartbrainlib.registry;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Unit;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.SBLConstants;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -25,11 +26,14 @@ public final class SBLMemoryTypes {
 	public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_BLOCKS = register("nearby_blocks");
 	public static final Supplier<MemoryModuleType<Unit>> IS_IN_WATER = register("is_in_water");
 
-	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
-		return register(id, null);
-	}
+	// Backported from modern MC
+	public static final Supplier<MemoryModuleType<NearestVisibleLivingEntities>> NEAREST_VISIBLE_LIVING_ENTITIES = register("visible_mobs");
+	public static final Supplier<MemoryModuleType<List<LivingEntity>>> NEAREST_LIVING_ENTITIES = register("mobs");
+	public static final Supplier<MemoryModuleType<Player>> TEMPTING_PLAYER = register("tempting_player");
+	public static final Supplier<MemoryModuleType<Player>> NEAREST_VISIBLE_ATTACKABLE_PLAYER = register("nearest_visible_targetable_player");
+	public static final Supplier<MemoryModuleType<LivingEntity>> NEAREST_ATTACKABLE = register("nearest_attackable");
 
-	private static <T> Supplier<MemoryModuleType<T>> register(String id, @Nullable Codec<T> codec) {
-		return SBLConstants.SBL_LOADER.registerMemoryType(id, codec);
+	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
+		return SBLConstants.SBL_LOADER.registerMemoryType(id);
 	}
 }

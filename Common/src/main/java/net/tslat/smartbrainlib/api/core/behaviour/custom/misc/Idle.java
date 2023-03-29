@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class Idle<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 	
 	@Override

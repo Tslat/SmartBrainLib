@@ -2,13 +2,14 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.ToBooleanBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtils;
-import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.List;
 
@@ -21,9 +22,9 @@ import java.util.List;
  * </ul>
  */
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = Util.make(new ObjectArrayList<>(), list -> {list.add(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT)); list.add(Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED));});
 
-	protected ToBooleanBiFunction<E, LivingEntity> customPredicate = (entity, target) -> target instanceof Player pl && (pl.isCreative() || pl.isSpectator());
+	protected ToBooleanBiFunction<E, LivingEntity> customPredicate = (entity, target) -> target instanceof Player && ((Player)target).abilities.invulnerable;
 	protected long pathfindingAttentionSpan = 200;
 
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -74,7 +75,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 		if (entity.level != target.level)
 			return true;
 
-		return target.isDeadOrDying() || target.isRemoved();
+		return target.isDeadOrDying() || target.removed;
 	}
 
 	protected boolean canAttack(E entity, LivingEntity target) {

@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,7 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	public Iterator<ExtendedBehaviour<? super E>> getBehaviours() {

@@ -10,5 +10,5 @@ public class SBLConstants {
 	public static final String MOD_ID = "smartbrainlib";
 	public static final String MOD_NAME = "SmartBrainLib";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static final SBLLoader SBL_LOADER = ServiceLoader.load(SBLLoader.class).findFirst().get();
+	public static final SBLLoader SBL_LOADER = ServiceLoader.load(SBLLoader.class).iterator().next();
 }

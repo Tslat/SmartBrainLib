@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * Utility class for easy and legible random functionality.
@@ -84,13 +82,6 @@ public final class RandomUtil {
 	@NotNull
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, safeSurfacePlacement, world);
-	}
-	
-	// Deprecated, use the BiPredicate variant below
-	@NotNull
-	@Deprecated(forRemoval = true)
-	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
-		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);
 	}
 	
 	@NotNull
@@ -187,14 +178,7 @@ public final class RandomUtil {
 
 		@NotNull
 		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
-			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, 0, 0, 0, safeSurfacePlacement, world, 1, (Predicate<BlockState>)null);
-		}
-
-		@NotNull
-		// Deprecated, use the BiPredicate variant below
-		@Deprecated(forRemoval = true)
-		public BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable Predicate<BlockState> statePredicate) {
-			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, (state, pos) -> statePredicate == null || statePredicate.test(state));
+			return getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, 0, 0, 0, safeSurfacePlacement, world, 1, null);
 		}
 
 		@NotNull

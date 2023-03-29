@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.ItemStack;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -69,7 +70,7 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	@Override

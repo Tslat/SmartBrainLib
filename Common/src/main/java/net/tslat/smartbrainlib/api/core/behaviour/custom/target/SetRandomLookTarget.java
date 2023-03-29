@@ -1,19 +1,17 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
-import net.minecraft.util.valueproviders.ConstantFloat;
-import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
 /**
@@ -21,9 +19,9 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = Collections.list(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	protected FloatProvider runChance = ConstantFloat.of(0.02f);
+	protected Function<Random, Float> runChance = rand -> 0.02f;
 	protected Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
 
 	/**
@@ -31,7 +29,7 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	 * @param chance The float provider
 	 * @return this
 	 */
-	public SetRandomLookTarget<E> lookChance(FloatProvider chance) {
+	public SetRandomLookTarget<E> lookChance(Function<Random, Float> chance) {
 		this.runChance = chance;
 
 		return this;
@@ -50,14 +48,14 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		return entity.getRandom().nextFloat() < this.runChance.sample(entity.getRandom());
+		return entity.getRandom().nextFloat() < this.runChance.apply(entity.getRandom());
 	}
 
 	@Override
 	protected void start(E entity) {
-		double angle = Mth.TWO_PI * entity.getRandom().nextDouble();
+		double angle = Math.PI * 2d * entity.getRandom().nextDouble();
 
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
+		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition(1).add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
 	}
 
 	@Override

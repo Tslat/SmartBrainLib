@@ -24,6 +24,7 @@ import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +50,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	private boolean sortBehaviours = false;
 
 	public SmartBrain(List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList, boolean saveMemories) {
-		super(memories, ImmutableList.of(), ImmutableList.of(), saveMemories ? () -> Brain.codec(memories, convertSensorsToTypes(sensors)) : SmartBrain::emptyBrainCodec);
+		super(memories, Collections.immutableList(), ImmutableList.of(), saveMemories ? () -> Brain.codec(memories, convertSensorsToTypes(sensors)) : SmartBrain::emptyBrainCodec);
 
 		for (ExtendedSensor<E> sensor : sensors) {
 			this.sensors.add(Pair.of((SensorType)sensor.type(), sensor));
@@ -197,7 +198,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	private static <E extends LivingEntity & SmartBrainOwner<E>> Codec<Brain<E>> emptyBrainCodec() {
 		MutableObject<Codec<Brain<E>>> brainCodec = new MutableObject<>();
 
-		brainCodec.setValue(Codec.unit(() -> new Brain<>(ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), brainCodec::getValue)));
+		brainCodec.setValue(Codec.unit(() -> new Brain<>(Collections.immutableList(), ImmutableList.of(), ImmutableList.of(), brainCodec::getValue)));
 
 		return brainCodec.getValue();
 	}

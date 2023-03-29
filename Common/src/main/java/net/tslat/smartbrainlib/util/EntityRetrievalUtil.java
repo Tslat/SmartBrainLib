@@ -113,7 +113,9 @@ public final class EntityRetrievalUtil {
 		final MutableDouble dist = new MutableDouble(Double.MAX_VALUE);
 		final MutableObject<Entity> closest = new MutableObject<>(null);
 
-		level.getEntities().get(area, entity -> {
+		for (Object obj : getEntities(level, area, typeSafePredicate)) {
+			Entity entity = (Entity)obj;
+
 			if (typeSafePredicate.test(entity)) {
 				double entityDist = entity.distanceToSqr(origin);
 
@@ -122,7 +124,7 @@ public final class EntityRetrievalUtil {
 					closest.setValue(entity);
 				}
 			}
-		});
+		}
 
 		return (T) closest.getValue();
 	}
@@ -312,14 +314,6 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	public static <T> List<T> getEntities(Level level, AABB area, Predicate<? extends Entity> predicate) {
-		Predicate<Entity> typeSafePredicate = (Predicate<Entity>) predicate;
-		List<T> entities = new ObjectArrayList<>();
-
-		level.getEntities().get(area, entity -> {
-			if (typeSafePredicate.test(entity))
-				entities.add((T) entity);
-		});
-
-		return entities;
+		return level.getEntitiesOfClass(Entity.class, area, (Predicate)predicate);
 	}
 }

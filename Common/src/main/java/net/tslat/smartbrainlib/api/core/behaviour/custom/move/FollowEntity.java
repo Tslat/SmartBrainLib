@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.RandomUtil;
 
@@ -43,7 +44,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			entity.setPathfindingMalus(BlockPathTypes.LAVA, 0);
 		}
 
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target, speedMod, (int)minDist));
+		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), speedMod, (int)minDist));
 		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
 		entity.setPathfindingMalus(BlockPathTypes.WATER, 0);
 	}
@@ -197,7 +198,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		});
 
 		if (pos != entityPos) {
-			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
+			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.yRot, entity.xRot);
 			entity.getNavigation().stop();
 			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}

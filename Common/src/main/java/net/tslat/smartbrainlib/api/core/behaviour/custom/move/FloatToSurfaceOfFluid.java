@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return checkExtraStartConditions((ServerLevel)entity.getLevel(), entity);
+		return checkExtraStartConditions((ServerLevel)entity.level, entity);
 	}
 
 	@Override

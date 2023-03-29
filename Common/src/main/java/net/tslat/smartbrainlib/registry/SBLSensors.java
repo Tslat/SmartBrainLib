@@ -32,7 +32,6 @@ public final class SBLSensors {
 	public static final Supplier<SensorType<InWaterSensor<?>>> IN_WATER = register("in_water", InWaterSensor::new);
 
 	// Entity Specific
-	public static final Supplier<SensorType<AxolotlSpecificSensor<?>>> AXOLOTL_SPECIFIC = register("axolotl_specific", AxolotlSpecificSensor::new);
 	public static final Supplier<SensorType<PiglinSpecificSensor<?>>> PIGLIN_SPECIFIC = register("piglin_specific", PiglinSpecificSensor::new);
 	public static final Supplier<SensorType<PiglinBruteSpecificSensor<?>>> PIGLIN_BRUTE_SPECIFIC = register("piglin_brute_specific", PiglinBruteSpecificSensor::new);
 	public static final Supplier<SensorType<HoglinSpecificSensor<?>>> HOGLIN_SPECIFIC = register("hoglin_specific", HoglinSpecificSensor::new);

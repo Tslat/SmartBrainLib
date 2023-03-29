@@ -9,10 +9,12 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
-import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -32,7 +34,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.NEAREST_PLAYERS, MemoryModuleType.NEAREST_VISIBLE_PLAYER, SBLMemoryTypes.NEAREST_VISIBLE_ATTACKABLE_PLAYER.get());
 
 	@Nullable
 	protected SquareRadius radius = null;
@@ -98,6 +100,6 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_PLAYERS, players);
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER, targetablePlayers.isEmpty() ? null : targetablePlayers.get(0));
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, attackablePlayers.isEmpty() ? null : attackablePlayers.get(0));
+		BrainUtils.setMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_ATTACKABLE_PLAYER.get(), attackablePlayers.isEmpty() ? null : attackablePlayers.get(0));
 	}
 }

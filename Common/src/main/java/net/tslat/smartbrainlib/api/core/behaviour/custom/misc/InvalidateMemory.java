@@ -1,12 +1,15 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.ToBooleanBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtils;
-import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.List;
 
@@ -28,12 +31,12 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 		super();
 
 		this.memory = memory;
-		this.memoryRequirements = List.of(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT));
+		this.memoryRequirements = Util.make(new ObjectArrayList<>(), list -> list.add(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT)));
 	}
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return this.memoryRequirements == null ? List.of() : this.memoryRequirements;
+		return this.memoryRequirements == null ? Collections.immutableList() : this.memoryRequirements;
 	}
 
 	/**
@@ -41,7 +44,7 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 	 */
 	public InvalidateMemory<E, M> forMemory(MemoryModuleType<M> memory) {
 		this.memory = memory;
-		this.memoryRequirements = List.of(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT));
+		this.memoryRequirements = Util.make(new ObjectArrayList<>(), list -> list.add(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT)));
 
 		return this;
 	}

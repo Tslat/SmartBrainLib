@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,8 +9,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.HURT_BY, MemoryModuleType.HURT_BY_ENTITY);
 
 	public HurtBySensor() {
 		super((damageSource, entity) -> true);
@@ -48,8 +48,8 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 		else if (predicate().test(damageSource, entity)) {
 			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
 
-			if (damageSource.getEntity()instanceof LivingEntity attacker && attacker.isAlive() && attacker.level == entity.level)
-				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
+			if (damageSource.getEntity() instanceof LivingEntity && damageSource.getEntity().isAlive() && damageSource.getEntity().level == entity.level)
+				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, ((LivingEntity)damageSource.getEntity()));
 		}
 		else {
 			BrainUtils.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {

@@ -3,10 +3,10 @@ package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
 

@@ -12,9 +12,10 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.SECONDARY_JOB_SITE);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.SECONDARY_JOB_SITE);
 
 	protected SquareRadius radius = new SquareRadius(8, 4);
 

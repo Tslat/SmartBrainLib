@@ -3,7 +3,9 @@ package net.tslat.smartbrainlib.api.core.sensor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +32,7 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
-		return List.of(getMemory());
+		return Collections.list(getMemory());
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 	}
 
 	protected P testForEntity(E entity) {
-		NearestVisibleLivingEntities matcher = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+		NearestVisibleLivingEntities matcher = BrainUtils.getMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 
 		if (matcher == null)
 			return null;

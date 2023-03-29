@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.tslat.smartbrainlib.object.backport.TargetingConditions;
 
 import java.util.List;
 import java.util.Set;
@@ -93,5 +94,25 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	@Override
 	public final Set<MemoryModuleType<?>> requires() {
 		return new ObjectOpenHashSet<>(memoriesUsed());
+	}
+
+	// Backported from modern MC
+
+	public static final TargetingConditions TARGET_CONDITIONS = TargetingConditions.forNonCombat().range(16.0D);
+	public static final TargetingConditions TARGET_CONDITIONS_IGNORE_INVISIBILITY_TESTING = TargetingConditions.forNonCombat().range(16.0D).ignoreInvisibilityTesting();
+	public static final TargetingConditions ATTACK_TARGET_CONDITIONS = TargetingConditions.forCombat().range(16.0D);
+	public static final TargetingConditions ATTACK_TARGET_CONDITIONS_IGNORE_INVISIBILITY_TESTING = TargetingConditions.forCombat().range(16.0D).ignoreInvisibilityTesting();
+	public static final TargetingConditions ATTACK_TARGET_CONDITIONS_IGNORE_LINE_OF_SIGHT = TargetingConditions.forCombat().range(16.0D).ignoreLineOfSight();
+	public static final TargetingConditions ATTACK_TARGET_CONDITIONS_IGNORE_INVISIBILITY_AND_LINE_OF_SIGHT = TargetingConditions.forCombat().range(16.0D).ignoreLineOfSight().ignoreInvisibilityTesting();
+
+	/**
+	 * @return if entity is remembered as an attack target and is valid to attack
+	 */
+	public static boolean isEntityAttackable(LivingEntity pAttacker, LivingEntity pTarget) {
+		return pAttacker.getBrain().isMemoryValue(MemoryModuleType.ATTACK_TARGET, pTarget) ? ATTACK_TARGET_CONDITIONS_IGNORE_INVISIBILITY_TESTING.test(pAttacker, pTarget) : ATTACK_TARGET_CONDITIONS.test(pAttacker, pTarget);
+	}
+
+	public static boolean isEntityAttackableIgnoringLineOfSight(LivingEntity pAttacker, LivingEntity pTarget) {
+		return pAttacker.getBrain().isMemoryValue(MemoryModuleType.ATTACK_TARGET, pTarget) ? ATTACK_TARGET_CONDITIONS_IGNORE_INVISIBILITY_AND_LINE_OF_SIGHT.test(pAttacker, pTarget) : ATTACK_TARGET_CONDITIONS_IGNORE_LINE_OF_SIGHT.test(pAttacker, pTarget);
 	}
 }

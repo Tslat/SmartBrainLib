@@ -1,6 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.custom;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -8,10 +7,11 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
-import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
  * @param <E>
  */
 public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<Projectile, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(SBLMemoryTypes.INCOMING_PROJECTILES.get());
 
 	public IncomingProjectilesSensor() {
 		setScanRate(entity -> 3);
@@ -51,7 +51,7 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof Projectile projectile && predicate().test(projectile, entity));
+		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof Projectile && predicate().test((Projectile)target, entity));
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));

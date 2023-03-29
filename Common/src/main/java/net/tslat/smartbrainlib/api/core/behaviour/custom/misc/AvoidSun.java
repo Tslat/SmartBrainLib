@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class AvoidSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	@Override
@@ -32,7 +33,7 @@ public class AvoidSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void stop(E entity) {
-		if (entity.getNavigation() instanceof GroundPathNavigation groundNavigation)
-			groundNavigation.setAvoidSun(true);
+		if (entity.getNavigation() instanceof GroundPathNavigation)
+			((GroundPathNavigation)entity.getNavigation()).setAvoidSun(true);
 	}
 }

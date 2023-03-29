@@ -1,18 +1,19 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
+import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
-import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -32,7 +33,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateSensor<LivingEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 
 	@Nullable
 	protected SquareRadius radius = null;
@@ -84,11 +85,11 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 			radius = new SquareRadius(dist, dist);
 		}
 
-		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()), obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
+		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()), obj -> obj instanceof LivingEntity && predicate().test((LivingEntity)obj, entity));
 
 		entities.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities);
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, new NearestVisibleLivingEntities(entity, entities));
+		BrainUtils.setMemory(entity, SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), entities);
+		BrainUtils.setMemory(entity, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), new NearestVisibleLivingEntities(entity, entities));
 	}
 }

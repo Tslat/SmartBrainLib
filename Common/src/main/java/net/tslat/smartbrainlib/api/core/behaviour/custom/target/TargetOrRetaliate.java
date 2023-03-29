@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,9 +10,11 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
@@ -38,14 +39,14 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_ATTACKABLE, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.REGISTERED));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = Collections.list(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_ATTACKABLE.get(), MemoryStatus.REGISTERED), Pair.of(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), MemoryStatus.REGISTERED));
 
-	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player) || !((Player)entity).abilities.invulnerable);
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
-	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
+	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal) || ((TamableAnimal)owner).getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
 
 	protected LivingEntity toTarget = null;
-	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
+	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = SBLMemoryTypes.NEAREST_ATTACKABLE.get();
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
@@ -112,7 +113,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 				return true;
 			}
 			else {
-				NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+				NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 
 				if (nearbyEntities != null)
 					this.toTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
@@ -136,7 +137,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 		double followRange = owner.getAttributeValue(Attributes.FOLLOW_RANGE);
 
 		for (LivingEntity ally : EntityRetrievalUtil.<LivingEntity>getEntities(level, owner.getBoundingBox().inflate(followRange, 10, followRange),
-				entity -> entity != owner && entity instanceof LivingEntity livingEntity && this.allyPredicate.test(owner, livingEntity))) {
+				entity -> entity != owner && entity instanceof LivingEntity && this.allyPredicate.test(owner, (LivingEntity)entity))) {
 			BrainUtils.setTargetOfEntity(ally, this.toTarget);
 		}
 	}

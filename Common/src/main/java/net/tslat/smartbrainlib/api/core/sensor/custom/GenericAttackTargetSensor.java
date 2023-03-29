@@ -2,17 +2,18 @@ package net.tslat.smartbrainlib.api.core.sensor.custom;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.backport.NearestVisibleLivingEntities;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
 
 /**
- * Sets the {@link MemoryModuleType#NEAREST_ATTACKABLE} memory based on visible nearby entities. <br>
+ * Sets the {@link SBLMemoryTypes#NEAREST_ATTACKABLE} memory based on visible nearby entities. <br>
  * Defaults:
  * <ul>
  *     <li>Only targets that {@link net.minecraft.world.entity.ai.sensing.Sensor#isEntityAttackable(LivingEntity, LivingEntity)} passes.</li>
@@ -22,7 +23,7 @@ import java.util.function.BiPredicate;
 public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	@Override
 	protected MemoryModuleType<LivingEntity> getMemory() {
-		return MemoryModuleType.NEAREST_ATTACKABLE;
+		return SBLMemoryTypes.NEAREST_ATTACKABLE.get();
 	}
 
 	@Override

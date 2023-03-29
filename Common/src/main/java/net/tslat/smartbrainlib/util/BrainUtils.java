@@ -24,11 +24,13 @@ import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
+import net.tslat.smartbrainlib.object.backport.BackportUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -149,7 +151,7 @@ public final class BrainUtils {
 	 * @return The ticks until the memory expires, or 0 if the memory doesn't exist or doesn't expire
 	 */
 	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
-		return brain.getTimeUntilExpiry(memory);
+		return brain.memories.get(memory).map(expirable -> expirable.timeToLive).orElse(0L);
 	}
 
 	/**
@@ -289,8 +291,8 @@ public final class BrainUtils {
 	 * @param target The entity to target
 	 */
 	public static void setTargetOfEntity(LivingEntity entity, @Nullable LivingEntity target) {
-		if (entity instanceof Mob mob)
-			mob.setTarget(target);
+		if (entity instanceof Mob)
+			((Mob)entity).setTarget(target);
 
 		if (target == null) {
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
@@ -312,19 +314,19 @@ public final class BrainUtils {
 		if (BehaviorUtils.entityIsVisible(brain, target))
 			return true;
 
-		return entity.hasLineOfSight(target);
+		return BackportUtils.hasLineOfSight(entity, target);
 	}
 
 	/**
 	 * Returns a stream of all {@link Behavior Behaviours} registered to this brain
 	 */
 	public static Stream<Behavior<?>> getAllBehaviours(Brain<?> brain) {
-		if (brain instanceof SmartBrain smartBrain)
-			return smartBrain.getBehaviours();
+		if (brain instanceof SmartBrain)
+			return ((SmartBrain)brain).getBehaviours();
 
 		return brain.availableBehaviorsByPriority.values().stream()
 				.map(Map::values)
-				.flatMap(set -> set.stream().map(value -> value.stream().toList()).flatMap(List::stream));
+				.flatMap(set -> set.stream().map(value -> value.stream().collect(Collectors.toList())).flatMap(List::stream));
 	}
 
 	/**
@@ -333,8 +335,8 @@ public final class BrainUtils {
 	 * @param consumer The consumer called for each
 	 */
 	public static void forEachBehaviour(Brain<?> brain, BrainBehaviourConsumer consumer) {
-		if (brain instanceof SmartBrain smartBrain) {
-			smartBrain.forEachBehaviour(consumer);
+		if (brain instanceof SmartBrain) {
+			((SmartBrain)brain).forEachBehaviour(consumer);
 
 			return;
 		}
@@ -357,10 +359,14 @@ public final class BrainUtils {
 	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, Behavior<E> behaviour, @Nullable Behavior<E> parentBehaviour, BrainBehaviourConsumer consumer) {
 		consumer.consume(priority, activity, behaviour, parentBehaviour);
 
-		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
-			groupBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
+		if (behaviour instanceof GateBehavior) {
+			GateBehavior<E> gateBehaviour = (GateBehavior<E>)behaviour;
+
+			gateBehaviour.behaviors.stream().forEach(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, gateBehaviour, consumer));
 		}
-		else if (behaviour instanceof GroupBehaviour<E> groupBehaviour) {
+		else if (behaviour instanceof GroupBehaviour) {
+			GroupBehaviour<E> groupBehaviour = (GroupBehaviour<E>)behaviour;
+
 			groupBehaviour.getBehaviours().forEachRemaining(childBehaviour -> consumeBehaviour(priority, activity, (Behavior)childBehaviour, groupBehaviour, consumer));
 		}
 	}
@@ -372,8 +378,8 @@ public final class BrainUtils {
 	 * @param predicate The predicate checked for each
 	 */
 	public static <E extends LivingEntity> void removeBehaviour(E entity, BrainBehaviourPredicate predicate) {
-		if (entity.getBrain() instanceof SmartBrain smartBrain) {
-			smartBrain.removeBehaviour(entity, predicate);
+		if (entity.getBrain() instanceof SmartBrain) {
+			((SmartBrain)entity.getBrain()).removeBehaviour(entity, predicate);
 
 			return;
 		}
@@ -391,7 +397,7 @@ public final class BrainUtils {
 
 					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
 						if (behaviour.getStatus() == Behavior.Status.RUNNING)
-							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+							behaviour.doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
 
 						iterator.remove();
 					});
@@ -404,15 +410,19 @@ public final class BrainUtils {
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
 		}
-		else if (behaviour instanceof GateBehavior groupBehaviour) {
-			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.behaviors.stream().iterator(); childBehaviourIterator.hasNext();) {
-				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
+		else if (behaviour instanceof GateBehavior) {
+			GateBehavior gateBehaviour = (GateBehavior)behaviour;
+
+			for (Iterator<Behavior<E>> childBehaviourIterator = gateBehaviour.behaviors.stream().iterator(); childBehaviourIterator.hasNext();) {
+				checkBehaviour(priority, activity, childBehaviourIterator.next(), gateBehaviour, predicate, childBehaviourIterator::remove);
 			}
 
-			if (!groupBehaviour.behaviors.stream().iterator().hasNext())
+			if (!gateBehaviour.behaviors.stream().iterator().hasNext())
 				callback.run();
 		}
-		else if (behaviour instanceof GroupBehaviour groupBehaviour) {
+		else if (behaviour instanceof GroupBehaviour) {
+			GroupBehaviour groupBehaviour = (GroupBehaviour)behaviour;
+
 			for (Iterator<Behavior<E>> childBehaviourIterator = groupBehaviour.getBehaviours(); childBehaviourIterator.hasNext();) {
 				checkBehaviour(priority, activity, childBehaviourIterator.next(), groupBehaviour, predicate, childBehaviourIterator::remove);
 			}
@@ -430,8 +440,8 @@ public final class BrainUtils {
 	 * @param behaviourControl The behaviour to add
 	 */
 	public static void addBehaviour(Brain<?> brain, int priority, Activity activity, Behavior behaviourControl) {
-		if (brain instanceof SmartBrain smartBrain) {
-			smartBrain.addBehaviour(priority, activity, behaviourControl);
+		if (brain instanceof SmartBrain) {
+			((SmartBrain)brain).addBehaviour(priority, activity, behaviourControl);
 
 			return;
 		}
@@ -449,8 +459,8 @@ public final class BrainUtils {
 	 * Adds a full {@link BrainActivityGroup} to the brain, inclusive of activities and conditions
 	 */
 	public static void addActivity(Brain<?> brain, BrainActivityGroup<?> behaviourGroup) {
-		if (brain instanceof SmartBrain smartBrain) {
-			smartBrain.addActivity(behaviourGroup);
+		if (brain instanceof SmartBrain) {
+			((SmartBrain)brain).addActivity(behaviourGroup);
 
 			return;
 		}
@@ -464,11 +474,11 @@ public final class BrainUtils {
 	 * you may need to {@link BrainUtils#addMemories add additional memories manually} if Mojang didn't set something up properly
 	 */
 	public static <S extends Sensor<?>> void addSensor(Brain<?> brain, SensorType<S> sensorType, S sensor) {
-		if (brain instanceof SmartBrain smartBrain) {
-			if (!(sensor instanceof ExtendedSensor extendedSensor))
+		if (brain instanceof SmartBrain) {
+			if (!(sensor instanceof ExtendedSensor))
 				throw new IllegalArgumentException("Attempted to provide sensor to SmartBrain, only ExtendedSensor subclasses acceptable. Sensor: " + sensor.getClass());
 
-			smartBrain.addSensor(extendedSensor);
+			((SmartBrain)brain).addSensor((ExtendedSensor)sensor);
 
 			return;
 		}
@@ -482,9 +492,9 @@ public final class BrainUtils {
 	 * Generally only required if modifying vanilla brains and additional memories are needed.
 	 */
 	public static void addMemories(Brain<?> brain, MemoryModuleType<?>... memories) {
-		if (brain instanceof SmartBrain smartBrain) {
+		if (brain instanceof SmartBrain) {
 			for (MemoryModuleType<?> memoryType : memories) {
-				smartBrain.getMemory(memoryType);
+				((SmartBrain)brain).getMemory(memoryType);
 			}
 
 			return;
@@ -503,7 +513,8 @@ public final class BrainUtils {
 	 * @param tickType The type of tick tracking the schedule should use, if a new schedule has to be created.
 	 */
 	public static void addScheduledActivityTransition(Brain<?> brain, Activity activity, int tickTime, SmartBrainSchedule.Type tickType) {
-		if (brain instanceof SmartBrain smartBrain) {
+		if (brain instanceof SmartBrain) {
+			SmartBrain smartBrain = (SmartBrain)brain;
 			SmartBrainSchedule schedule;
 
 			if ((schedule = smartBrain.getSchedule()) == null)

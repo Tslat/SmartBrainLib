@@ -12,8 +12,10 @@ import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.backport.Collections;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.NEARBY_ADULT_PIGLINS);
+	private static final List<MemoryModuleType<?>> MEMORIES = Collections.list(MemoryModuleType.NEARBY_ADULT_PIGLINS);
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
@@ -44,11 +46,11 @@ public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedS
 		Brain<?> brain = entity.getBrain();
 		List<AbstractPiglin> nearbyPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (Mob)entities.findClosest(target -> target instanceof WitherSkeleton || target instanceof WitherBoss).orElse(null)));
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (Mob)entities.findClosest(target -> target instanceof WitherSkeleton || target instanceof WitherBoss).orElse(null)));
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_LIVING_ENTITIES.get(), entities -> {
 			for (LivingEntity target : entities) {
-				if (target instanceof AbstractPiglin piglin && piglin.isAdult())
-					nearbyPiglins.add(piglin);
+				if (target instanceof AbstractPiglin && ((AbstractPiglin)target).isAdult())
+					nearbyPiglins.add((AbstractPiglin)target);
 			}
 		});
 		BrainUtils.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, nearbyPiglins);

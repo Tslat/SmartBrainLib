@@ -11,7 +11,9 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.backport.Collections;
 import net.tslat.smartbrainlib.object.TriPredicate;
+import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -34,13 +36,13 @@ import java.util.Set;
 public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour<E> {
 	private final List<MemoryModuleType<? extends LivingEntity>> targetingMemories = new ObjectArrayList<>();
 
-	protected TriPredicate<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> canAttackPredicate = (owner, memory, target) -> target.isAlive() && target instanceof Player player && !player.getAbilities().invulnerable;
+	protected TriPredicate<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> canAttackPredicate = (owner, memory, target) -> target.isAlive() && target instanceof Player && !((Player)target).abilities.invulnerable;
 	protected TriConsumer<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> targetCallback = (owner, memory, target) -> {};
 	protected boolean avoidDuplicateTargets = true;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
+		return Collections.immutableList();
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	 * This appends to any existing memories already added to this behaviour, and the functionality of this behaviour is order-dependent.
 	 */
 	public SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
-		this.targetingMemories.addAll(List.of(targetMemories));
+		this.targetingMemories.addAll(Collections.list(targetMemories));
 
 		return this;
 	}
@@ -91,7 +93,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 				return true;
 		}
 
-		return BrainUtils.hasMemory(brain, MemoryModuleType.NEAREST_PLAYERS) || BrainUtils.hasMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+		return BrainUtils.hasMemory(brain, MemoryModuleType.NEAREST_PLAYERS) || BrainUtils.hasMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get());
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 		Set<LivingEntity> targetPool = new ObjectOpenHashSet<>();
 
 		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_PLAYERS, targetPool::addAll);
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, memory -> memory.findAll(target -> true).forEach(targetPool::add));
+		BrainUtils.withMemory(brain, SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get(), memory -> memory.findAll(target -> true).forEach(targetPool::add));
 
 		if (targetPool.isEmpty())
 			return;
