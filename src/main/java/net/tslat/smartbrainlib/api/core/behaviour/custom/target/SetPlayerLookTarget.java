@@ -1,10 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
-import java.util.List;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
@@ -14,6 +10,9 @@ import net.minecraft.util.math.EntityPosWrapper;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Set the {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#LOOK_TARGET} of the brain owner from {@link net.minecraft.world.entity.ai.memory.MemoryModuleType#NEAREST_PLAYERS}

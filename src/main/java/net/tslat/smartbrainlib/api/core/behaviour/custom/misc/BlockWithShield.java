@@ -23,10 +23,12 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	protected Predicate<E> stopCondition = entity -> false;
 
 	/**
-	 * Sets the condition for when the entity should stop blocking. <br>
+	 * Sets the condition for when the entity should stop blocking.<br>
+	 * Deprecated, use {@link ExtendedBehaviour#stopIf}
 	 * @param predicate The predicate
 	 * @return this
 	 */
+	@Deprecated()
 	public BlockWithShield<E> stopWhen(Predicate<E> predicate) {
 		this.stopCondition = predicate;
 
@@ -60,7 +62,7 @@ public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (!entity.isUsingItem())
 			return false;
 

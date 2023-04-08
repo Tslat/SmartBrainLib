@@ -1,11 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
@@ -14,6 +9,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Sets the attack target of the entity if one is available. <br>

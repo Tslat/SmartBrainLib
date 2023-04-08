@@ -1,17 +1,15 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.tags.ITag;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Replacement for {@link net.minecraft.world.entity.ai.goal.FloatGoal} or {@link net.minecraft.world.entity.ai.behavior.Swim}. <br>
@@ -55,8 +53,8 @@ public class FloatToSurfaceOfFluid<E extends CreatureEntity> extends ExtendedBeh
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
-		return checkExtraStartConditions(level, entity);
+	protected boolean shouldKeepRunning(E entity) {
+		return checkExtraStartConditions((ServerWorld)entity.level, entity);
 	}
 
 	@Override

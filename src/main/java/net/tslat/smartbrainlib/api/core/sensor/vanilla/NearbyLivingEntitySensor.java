@@ -1,10 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.Comparator;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -19,6 +14,10 @@ import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A sensor that looks for nearby living entities in the surrounding area, sorted by proximity to the brain owner.<br>

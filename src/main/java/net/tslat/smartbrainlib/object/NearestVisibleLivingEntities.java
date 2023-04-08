@@ -1,14 +1,10 @@
 package net.tslat.smartbrainlib.object;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public class NearestVisibleLivingEntities extends ArrayList<LivingEntity> {
 

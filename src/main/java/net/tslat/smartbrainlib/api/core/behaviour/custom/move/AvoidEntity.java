@@ -1,12 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
@@ -19,6 +13,11 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 /**
  * Try to move away from certain entities when they get too close. <br>
@@ -121,7 +120,7 @@ public class AvoidEntity<E extends CreatureEntity> extends ExtendedBehaviour<E> 
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return !this.runPath.isDone();
 	}
 

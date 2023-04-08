@@ -1,13 +1,5 @@
 package net.tslat.smartbrainlib.api.util;
 
-import java.util.List;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.mutable.MutableDouble;
-import org.apache.commons.lang3.mutable.MutableObject;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +7,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.entity.PartEntity;
+import org.apache.commons.lang3.mutable.MutableDouble;
+import org.apache.commons.lang3.mutable.MutableObject;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A helper class for retrieving entities from a given world.

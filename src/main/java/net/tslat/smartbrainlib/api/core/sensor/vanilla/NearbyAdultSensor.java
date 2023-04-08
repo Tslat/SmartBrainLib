@@ -1,9 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
-import java.util.function.BiPredicate;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -12,6 +8,9 @@ import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.NearestVisibleLivingEntities;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import javax.annotation.Nullable;
+import java.util.function.BiPredicate;
 
 /**
  * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory by checking the existing visible entities for nearby adults of the same entity type. <br>

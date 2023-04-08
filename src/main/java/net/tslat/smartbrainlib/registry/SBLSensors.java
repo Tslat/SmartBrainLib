@@ -1,7 +1,5 @@
 package net.tslat.smartbrainlib.registry;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -12,21 +10,9 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
 import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HoglinSpecificSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.InWaterSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.ItemTemptingSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyAdultSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyBabySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyGolemSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyHostileSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestHomeSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearestItemSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinBruteSpecificSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.PiglinSpecificSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.SecondaryPoiSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.*;
+
+import java.util.function.Supplier;
 
 /**
  * Registry class for {@link ExtendedSensor} implementations

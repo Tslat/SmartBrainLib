@@ -1,12 +1,7 @@
 package net.tslat.smartbrainlib.api;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -15,6 +10,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.APIOnly;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implement this class for any entity you want to use the SmartBrain system. <br>

@@ -5,7 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.task.FindNewAttackTargetTask;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.ai.brain.task.LookAtEntityTask;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.TurtleEntity;
@@ -20,7 +20,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.BowAttack;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.AvoidSun;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.AvoidEntity;
@@ -72,12 +71,13 @@ public class SBLSkeleton extends SkeletonEntity implements SmartBrainOwner<SBLSk
 	@Override
 	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
-				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
-				new EscapeSun<>().speedModifier(1.5F).cooldownFor(entity -> 20),													// Escape the sun
-				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity).speedModifier(1.5F),												// Run away from wolves
-				new LookAtTarget<>(), 														// Look at the look target
-				new StrafeTarget<>().stopStrafingWhen(SBLSkeleton::isHoldingBow).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
-				new MoveToWalkTarget<>());																					// Move to the current walk target
+				new AvoidSun<SBLSkeleton>(),																							// Keep pathfinder avoiding the sun
+				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
+				new AvoidEntity<>().avoiding(entity -> entity instanceof WolfEntity),												// Run away from wolves
+				new LookAtEntityTask(300),
+				//new LookAtTarget<SBLSkeleton>(40, 300), 														// Look at the look target
+				new StrafeTarget<>().stopStrafingWhen(entity -> !isHoldingBow(entity)).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
+				new MoveToWalkTarget<SBLSkeleton>());																					// Move to the current walk target
 	}
 
 	@Override

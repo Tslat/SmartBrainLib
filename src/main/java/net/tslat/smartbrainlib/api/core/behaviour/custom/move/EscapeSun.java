@@ -1,13 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.BiFunction;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
@@ -19,6 +12,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+import java.util.function.BiFunction;
 
 /**
  * Sets the {@link MemoryModuleType#WALK_TARGET walk target} to a safe position if caught in the sun. <br>
@@ -80,7 +78,7 @@ public class EscapeSun<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		if (this.hidePos == null)
 			return false;
 

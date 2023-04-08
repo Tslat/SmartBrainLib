@@ -1,9 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,6 +17,8 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.TriFunction;
 import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import java.util.List;
 
 /**
  * Gradually breaks then destroys a block. <br>
@@ -113,8 +112,8 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
-		return gameTime <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
+	protected boolean shouldKeepRunning(E entity) {
+		return entity.level.getGameTime() <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, entity.level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
 	}
 
 	@Override

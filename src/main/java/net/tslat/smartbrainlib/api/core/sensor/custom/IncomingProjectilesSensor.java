@@ -1,8 +1,5 @@
 package net.tslat.smartbrainlib.api.core.sensor.custom;
 
-import java.util.Comparator;
-import java.util.List;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -15,6 +12,9 @@ import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.api.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Custom sensor that detects incoming projectiles.

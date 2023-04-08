@@ -1,11 +1,5 @@
 package net.tslat.smartbrainlib.api.util;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.Brain;
@@ -15,7 +9,11 @@ import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ShootableItem;
 import net.minecraft.util.math.EntityPosWrapper;
-import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
@@ -304,12 +302,19 @@ public final class BrainUtils {
 		entity.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityPosWrapper(target, true));
 	}
 	
+	/**
+	 * Replacement of {@link net.minecraft.world.entity.ai.behavior.BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
+	 * @param entity The entity to check the brain of
+	 * @param target The target entity
+	 * @return Whether the target entity is known to be visible or not
+	 */
 	public static boolean canSee(LivingEntity pLivingEntity, LivingEntity pTarget) {
 		Brain<?> brain = pLivingEntity.getBrain();
-		if (!brain.hasMemoryValue(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get())) {
-			return false;
-		}
-		return brain.getMemory(SBLMemoryTypes.NEAREST_VISIBLE_LIVING_ENTITIES.get()).get().contains(pTarget);
+
+		if (BrainUtil.entityIsVisible(brain, pTarget))
+			return true;
+
+		return pLivingEntity.canSee(pTarget);
 	}
 
 	public static boolean isWithinAttackRange(MobEntity entity, LivingEntity target, int maxDistance) {

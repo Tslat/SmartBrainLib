@@ -1,12 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
-import java.util.List;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
@@ -17,6 +11,10 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.

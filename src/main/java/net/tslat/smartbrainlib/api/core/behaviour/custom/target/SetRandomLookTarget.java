@@ -1,11 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleStatus;
@@ -14,6 +9,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
+
+import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
 
 /**
  * Set the look target to a random nearby position

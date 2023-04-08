@@ -1,10 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import java.util.List;
-import java.util.function.BiFunction;
-
 import com.mojang.datafixers.util.Pair;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
@@ -16,6 +12,9 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.util.BrainUtils;
+
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Flee the current attack target. <br>
@@ -95,7 +94,7 @@ public class FleeTarget<E extends CreatureEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean canStillUse(ServerWorld level, E entity, long gameTime) {
+	protected boolean shouldKeepRunning(E entity) {
 		return entity.getNavigation().getPath() == this.runPath && !entity.getNavigation().isDone();
 	}
 
