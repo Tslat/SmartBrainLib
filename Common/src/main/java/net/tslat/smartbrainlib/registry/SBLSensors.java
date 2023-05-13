@@ -3,10 +3,7 @@ package net.tslat.smartbrainlib.registry;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.GenericAttackTargetSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.IncomingProjectilesSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.NearbyBlocksSensor;
-import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.*;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.*;
 
 import java.util.function.Supplier;
@@ -44,6 +41,7 @@ public final class SBLSensors {
 	public static final Supplier<SensorType<GenericAttackTargetSensor<?>>> GENERIC_ATTACK_TARGET = register("generic_attack_target", GenericAttackTargetSensor::new);
 	public static final Supplier<SensorType<UnreachableTargetSensor<?>>> UNREACHABLE_TARGET = register("unreachable_target", UnreachableTargetSensor::new);
 	public static final Supplier<SensorType<NearbyBlocksSensor<?>>> NEARBY_BLOCKS = register("nearby_blocks", NearbyBlocksSensor::new);
+	public static final Supplier<SensorType<NearbyItemsSensor<?>>> NEARBY_ITEMS = register("nearby_items", NearbyItemsSensor::new);
 
 	private static <T extends ExtendedSensor<?>> Supplier<SensorType<T>> register(String id, Supplier<T> sensor) {
 		return SBLConstants.SBL_LOADER.registerSensorType(id, sensor);
