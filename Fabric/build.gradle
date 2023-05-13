@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.1.+'
     id 'idea'
     id 'io.github.CDAGaming.cursegradle' version '1.6.0'
 }
