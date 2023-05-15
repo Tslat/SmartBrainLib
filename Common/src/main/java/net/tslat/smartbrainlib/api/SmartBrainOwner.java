@@ -31,7 +31,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 * Only supports ExtendedSensors.
 	 * @return A {@link List} of {@link ExtendedSensor Sensors} that the entity will use to fill memories for tasks.
 	 */
-	List<ExtendedSensor<T>> getSensors();
+	List<? extends ExtendedSensor<? extends T>> getSensors();
 
 	/**
 	 * Override this for tasks that ideally should always be running, regardless of anything else. <br>
@@ -42,7 +42,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>core</i> tasks your entity should run.
 	 */
-	default BrainActivityGroup<T> getCoreTasks() {
+	default BrainActivityGroup<? extends T> getCoreTasks() {
 		return BrainActivityGroup.empty();
 	}
 
@@ -55,7 +55,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>idle</i> tasks your entity should run.
 	 */
-	default BrainActivityGroup<T> getIdleTasks() {
+	default BrainActivityGroup<? extends T> getIdleTasks() {
 		return BrainActivityGroup.empty();
 	}
 
@@ -68,7 +68,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>fight</i> tasks your entity should run.
 	 */
-	default BrainActivityGroup<T> getFightTasks() {
+	default BrainActivityGroup<? extends T> getFightTasks() {
 		return BrainActivityGroup.empty();
 	}
 
@@ -78,7 +78,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 *
 	 * @return a {@link Map} of Activities to BrainActivityGroups group containing the additional tasks your entity should run.
 	 */
-	default Map<Activity, BrainActivityGroup<T>> getAdditionalTasks() {
+	default Map<Activity, BrainActivityGroup<? extends T>> getAdditionalTasks() {
 		return new Object2ObjectOpenHashMap<>(0);
 	}
 
@@ -113,20 +113,12 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Use {@link SmartBrainOwner#handleAdditionalBrainSetup(SmartBrain)}
-	 */
-	@Deprecated(forRemoval = true)
-	default void handleAdditionalBrainSetup(Brain<T> brain) {
-		handleAdditionalBrainSetup((SmartBrain<T>)brain);
-	}
-
-	/**
 	 * Override this to do any additional work after the brain has been built and readied. <br>
 	 * By this stage, the brain has had all its memories, sensors, activities, and priorities set.
 	 *
 	 * @param brain The brain that the entity will be using.
 	 */
-	default void handleAdditionalBrainSetup(SmartBrain<T> brain) {}
+	default void handleAdditionalBrainSetup(SmartBrain<? extends T> brain) {}
 
 	/**
 	 * Override this to return the {@link net.minecraft.world.entity.schedule.Schedule schedule} for your entity.<br>
