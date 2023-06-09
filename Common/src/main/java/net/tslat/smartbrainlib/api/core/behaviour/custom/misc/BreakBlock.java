@@ -86,7 +86,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void stop(E entity) {
-		entity.level.destroyBlockProgress(entity.getId(), this.pos, -1);
+		entity.level().destroyBlockProgress(entity.getId(), this.pos, -1);
 
 		this.state = null;
 		this.pos = null;
@@ -112,7 +112,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return entity.level.getGameTime() <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, entity.level.getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
+		return entity.level().getGameTime() <= this.breakTime && this.targetBlockPredicate.test(entity, this.pos, entity.level().getBlockState(this.pos)) && !this.stopPredicate.test(entity, this.pos, this.state);
 	}
 
 	@Override
@@ -121,16 +121,16 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 		int progress = (int)(this.breakTime / (float)this.timeToBreak * 10);
 
 		if (progress != this.breakProgress) {
-			entity.level.destroyBlockProgress(entity.getId(), this.pos, progress);
+			entity.level().destroyBlockProgress(entity.getId(), this.pos, progress);
 
 			this.breakProgress = progress;
 		}
 
 		if (this.breakTime >= this.timeToBreak) {
-			entity.level.removeBlock(this.pos, false);
-			entity.level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, this.pos, Block.getId(entity.level.getBlockState(this.pos)));
+			entity.level().removeBlock(this.pos, false);
+			entity.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, this.pos, Block.getId(entity.level().getBlockState(this.pos)));
 
-			doStop((ServerLevel)entity.level, entity, entity.level.getGameTime());
+			doStop((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 		}
 	}
 }

@@ -64,7 +64,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public void tick(ServerLevel level, E entity) {
-		entity.level.getProfiler().push("SmartBrain");
+		entity.level().getProfiler().push("SmartBrain");
 
 		if (this.sortBehaviours)
 			this.behaviours.sort(Comparator.comparingInt(ActivityBehaviours::priority));
@@ -75,7 +75,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		tickRunningBehaviours(level, entity);
 		findAndSetActiveActivity(entity);
 
-		entity.level.getProfiler().pop();
+		entity.level().getProfiler().pop();
 
 		if (entity instanceof Mob mob)
 			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
@@ -319,7 +319,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
 						if (behaviour.getStatus() == Behavior.Status.RUNNING)
-							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+							behaviour.doStop((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 
 						iterator.remove();
 					});

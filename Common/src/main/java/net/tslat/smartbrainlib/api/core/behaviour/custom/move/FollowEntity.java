@@ -182,7 +182,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	}
 
 	protected void teleportToTarget(E entity, T target) {
-		Level level = entity.level;
+		Level level = entity.level();
 		BlockPos entityPos = target.blockPosition();
 
 		BlockPos pos = RandomUtil.getRandomPositionWithinRange(entityPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) -> {

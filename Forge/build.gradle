@@ -1,5 +1,5 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'io.github.CDAGaming.cursegradle' version '1.6.0'
 }
@@ -69,12 +69,24 @@ sourcesJar {
     from(project(":Common").sourceSets.main.allSource)
 }
 
+def replaceProperties = [
+        mod_id: mod_id,
+        mod_name: mod_name,
+        mod_version: version,
+        minecraft_version: minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version,
+        forge_version_range: forge_version_range,
+        loader_version_range: forge_loader_version_range
+]
+
 processResources {
     from project(":Common").sourceSets.main.resources
-    inputs.property "version", project.version
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
 
-    filesMatching("mods.toml") {
-        expand "version": project.version
+    filesMatching('META-INF/mods.toml') {
+        expand replaceProperties
     }
 
     exclude '**/*.accesswidener'
@@ -114,7 +126,7 @@ curseforge {
 
     project {
         id = curseforge_id
-        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.19.4'
+        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20'
         releaseType = 'release'
         addGameVersion minecraft_version
 

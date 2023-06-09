@@ -80,7 +80,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
 		this.toTarget = BrainUtils.getMemory(owner, MemoryModuleType.HURT_BY_ENTITY);
 
-		if (this.toTarget.isAlive() && this.toTarget.level == level && this.canAttackPredicate.test(this.toTarget)) {
+		if (this.toTarget.isAlive() && this.toTarget.level() == level && this.canAttackPredicate.test(this.toTarget)) {
 			if (this.alertAlliesPredicate.test(owner, this.toTarget))
 				alertAllies(level, owner);
 

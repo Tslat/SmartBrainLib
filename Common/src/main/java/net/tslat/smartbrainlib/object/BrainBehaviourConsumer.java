@@ -3,8 +3,7 @@ package net.tslat.smartbrainlib.object;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Functional consumer for brain activity related functions

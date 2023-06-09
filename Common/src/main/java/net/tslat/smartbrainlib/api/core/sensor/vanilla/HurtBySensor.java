@@ -48,12 +48,12 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 		else if (predicate().test(damageSource, entity)) {
 			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
 
-			if (damageSource.getEntity()instanceof LivingEntity attacker && attacker.isAlive() && attacker.level == entity.level)
+			if (damageSource.getEntity()instanceof LivingEntity attacker && attacker.isAlive() && attacker.level() == entity.level())
 				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
 		}
 		else {
 			BrainUtils.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {
-				if (!attacker.isAlive() || attacker.level != entity.level)
+				if (!attacker.isAlive() || attacker.level() != entity.level())
 					BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 			});
 		}

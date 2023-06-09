@@ -44,7 +44,7 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 		boolean stillOperational = false;
 
 		for (ExtendedBehaviour<? super E> behaviour : this.behaviours) {
-			stillOperational |= behaviour.getStatus() == Status.RUNNING && behaviour.canStillUse((ServerLevel)entity.level, entity, entity.level.getGameTime());
+			stillOperational |= behaviour.getStatus() == Status.RUNNING && behaviour.canStillUse((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 		}
 
 		return stillOperational;

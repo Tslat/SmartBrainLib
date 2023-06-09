@@ -124,7 +124,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 			BrainUtils.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 		}
 		else {
-			BrainUtils.setMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, entity.level.getGameTime());
+			BrainUtils.setMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, entity.level().getGameTime());
 		}
 
 		if (this.path != null)

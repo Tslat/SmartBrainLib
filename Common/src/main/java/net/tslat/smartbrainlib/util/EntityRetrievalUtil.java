@@ -86,7 +86,7 @@ public final class EntityRetrievalUtil {
 	 */
 	@Nullable
 	public static <T extends Entity> T getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
-		return getNearestEntity(origin.level,
+		return getNearestEntity(origin.level(),
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
 				origin.position(), predicate);
@@ -156,7 +156,7 @@ public final class EntityRetrievalUtil {
 	 */
 	@Nullable
 	public static Player getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getNearestPlayer(origin.level,
+		return getNearestPlayer(origin.level(),
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
 				origin.position(), predicate);
@@ -230,7 +230,7 @@ public final class EntityRetrievalUtil {
 	 *         criteria in the predicate
 	 */
 	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getPlayers(origin.level, new AABB(origin.getX() - radiusX, origin.getY() - radiusY,
+		return getPlayers(origin.level(), new AABB(origin.getX() - radiusX, origin.getY() - radiusY,
 				origin.getZ() - radiusZ, origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
 				predicate);
 	}
@@ -291,7 +291,7 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
-		return getEntities(origin.level,
+		return getEntities(origin.level(),
 				new AABB(origin.getX() - radiusX, origin.getY() - radiusY, origin.getZ() - radiusZ,
 						origin.getX() + radiusX, origin.getY() + radiusY, origin.getZ() + radiusZ),
 				predicate.and(entity -> entity != origin));

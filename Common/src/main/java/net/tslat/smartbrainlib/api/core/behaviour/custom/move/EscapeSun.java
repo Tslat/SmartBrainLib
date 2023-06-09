@@ -98,7 +98,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		for(int i = 0; i < 10; ++i) {
 			BlockPos hidePos = entityPos.offset(randomsource.nextInt(20) - 10, randomsource.nextInt(6) - 3, randomsource.nextInt(20) - 10);
 
-			if (!entity.level.canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
+			if (!entity.level().canSeeSky(hidePos) && entity.getWalkTargetValue(hidePos) < 0.0F)
 				return Vec3.atBottomCenterOf(hidePos);
 		}
 

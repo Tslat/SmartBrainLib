@@ -413,7 +413,7 @@ public final class BrainUtils {
 
 					checkBehaviour(priority, activity, behaviour, null, predicate, () -> {
 						if (behaviour.getStatus() == Behavior.Status.RUNNING)
-							behaviour.doStop((ServerLevel)entity.getLevel(), entity, entity.level.getGameTime());
+							behaviour.doStop((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 
 						iterator.remove();
 					});

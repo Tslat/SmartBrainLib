@@ -71,7 +71,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 	}
 
 	protected boolean isTargetInvalid(E entity, LivingEntity target) {
-		if (entity.level != target.level)
+		if (entity.level() != target.level())
 			return true;
 
 		return target.isDeadOrDying() || target.isRemoved();
@@ -87,6 +87,6 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 
 		Long time = BrainUtils.getMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
-		return time != null && entity.level.getGameTime() - time > this.pathfindingAttentionSpan;
+		return time != null && entity.level().getGameTime() - time > this.pathfindingAttentionSpan;
 	}
 }

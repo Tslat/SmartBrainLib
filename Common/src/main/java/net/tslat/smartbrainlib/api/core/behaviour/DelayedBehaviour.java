@@ -55,7 +55,7 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return this.delayFinishedAt >= entity.level.getGameTime();
+		return this.delayFinishedAt >= entity.level().getGameTime();
 	}
 
 	@Override

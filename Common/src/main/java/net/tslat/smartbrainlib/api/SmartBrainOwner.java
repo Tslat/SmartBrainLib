@@ -13,8 +13,8 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrain;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -139,6 +139,6 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 */
 	@APIOnly
 	default void tickBrain(T entity) {
-		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.getLevel(), entity);
+		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.level(), entity);
 	}
 }

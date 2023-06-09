@@ -32,7 +32,7 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 	public IncomingProjectilesSensor() {
 		setScanRate(entity -> 3);
 		setPredicate((projectile, entity) -> {
-			if (projectile.isOnGround() || projectile.horizontalCollision || projectile.verticalCollision)
+			if (projectile.onGround() || projectile.horizontalCollision || projectile.verticalCollision)
 				return false;
 
 			return entity.getBoundingBox().clip(projectile.position(), projectile.position().add(projectile.getDeltaMovement().multiply(3, 3, 3))).isPresent();

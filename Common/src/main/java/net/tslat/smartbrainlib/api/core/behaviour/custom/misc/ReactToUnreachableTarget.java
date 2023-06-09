@@ -64,7 +64,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 
 	@Override
 	protected void start(E entity) {
-		this.reactAtTime = entity.level.getGameTime() + this.ticksToReact.apply(entity);
+		this.reactAtTime = entity.level().getGameTime() + this.ticksToReact.apply(entity);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 
 	@Override
 	protected void tick(E entity) {
-		if (entity.level.getGameTime() == this.reactAtTime)
+		if (entity.level().getGameTime() == this.reactAtTime)
 			this.callback.accept(entity, BrainUtils.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE.get()));
 	}
 }

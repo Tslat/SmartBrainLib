@@ -8,8 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.entity.schedule.Schedule;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.ToIntBiFunction;
@@ -165,7 +165,7 @@ public class SmartBrainSchedule extends Schedule {
 		/**
 		 * Time of day (0-24000 ticks)
 		 */
-		DAYTIME(e -> (int)(e.level.getDayTime() % 24000L), (e, t) -> (int)((e.level.getDayTime() + t) % 24000L)),
+		DAYTIME(e -> (int)(e.level().getDayTime() % 24000L), (e, t) -> (int)((e.level().getDayTime() + t) % 24000L)),
 		/**
 		 * Age of the brain owner (0+).<br>
 		 * This makes the schedule a 'run-once' per entity
