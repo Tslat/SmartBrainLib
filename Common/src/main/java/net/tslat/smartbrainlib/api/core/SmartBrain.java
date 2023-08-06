@@ -183,7 +183,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		this.memories.put(memoryType, memory);
 
-		if (memory.isPresent() && memory.get().canExpire())
+		if (memory.isPresent() && memory.get().canExpire() && !this.expirableMemories.contains(memoryType))
 			this.expirableMemories.add(memoryType);
 	}
 
