@@ -17,7 +17,7 @@ A library mod for smarter Brains and easier usage of the Brain system.
 [[dependencies.${mod_id}]]
 modId="forge"
 mandatory=true
-versionRange="${forge_version_range}"
+versionRange="${neoforge_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
