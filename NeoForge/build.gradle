@@ -1,7 +1,7 @@
 plugins {
     id 'net.neoforged.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'io.github.CDAGaming.cursegradle' version '1.6.0'
+    id 'io.github.CDAGaming.cursegradle' version '1.6.1'
 }
 
 archivesBaseName = "${mod_name}-neoforge-${minecraft_version}"
@@ -77,7 +77,7 @@ def replaceProperties = [
         minecraft_version_range: minecraft_version_range,
         neoforge_version       : neoforge_version,
         neoforge_version_range : neoforge_version_range,
-        loader_version_range   : neoforge_loader_version_range
+        neoforge_loader_version_range   : neoforge_loader_version_range
 ]
 
 processResources {
