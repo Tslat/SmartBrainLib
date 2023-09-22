@@ -19,7 +19,6 @@ minecraft {
             mods {
                 modClientRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -32,7 +31,6 @@ minecraft {
             mods {
                 modServerRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -46,7 +44,6 @@ minecraft {
             mods {
                 modDataRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
                 }
             }
         }
@@ -58,15 +55,6 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly project(":Common")
-}
-
-tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
-}
-
-sourcesJar {
-    from(project(":Common").sourceSets.main.allSource)
 }
 
 def replaceProperties = [
@@ -81,7 +69,6 @@ def replaceProperties = [
 ]
 
 processResources {
-    from project(":Common").sourceSets.main.resources
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
 

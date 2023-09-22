@@ -22,4 +22,4 @@ plugins {
 }
 
 rootProject.name = 'SmartBrainLib'
-include("Common", "Forge")
+include("Forge")
