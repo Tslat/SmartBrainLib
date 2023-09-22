@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api.core;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.entity.schedule.Schedule;
+import net.minecraftforge.common.util.BrainBuilder;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
@@ -41,6 +43,7 @@ import java.util.stream.Stream;
  * @param <E> The entity
  */
 public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Brain<E> {
+	private final E owner;
 	private final List<MemoryModuleType<?>> expirableMemories = new ObjectArrayList<>();
 	private final List<ActivityBehaviours<E>> behaviours = new ObjectArrayList<>();
 	private final List<Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>>> sensors = new ObjectArrayList<>();
@@ -48,8 +51,10 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	private boolean sortBehaviours = false;
 
-	public SmartBrain(List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList, boolean saveMemories) {
+	public SmartBrain(E owner, List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList, boolean saveMemories) {
 		super(memories, ImmutableList.of(), ImmutableList.of(), saveMemories ? () -> Brain.codec(memories, convertSensorsToTypes(sensors)) : SmartBrain::emptyBrainCodec);
+
+		this.owner = owner;
 
 		for (ExtendedSensor<E> sensor : sensors) {
 			this.sensors.add(Pair.of((SensorType)sensor.type(), sensor));
@@ -60,6 +65,27 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 				addActivity(group);
 			}
 		}
+	}
+
+	// SBL does not support brain modification via event, because it's just not possible to support in its full extent anyway
+	// This poorly thought out Forge hook only supports vanilla brains - which SBL is not
+	@Override
+	public BrainBuilder<E> createBuilder() {
+		final SmartBrain<E> brain = this;
+
+		final BrainBuilder<E> builder = new BrainBuilder<>(this) {
+			@Override
+			public Provider<E> provider() {
+				return new SmartBrainProvider<>(SmartBrain.this.owner);
+			}
+
+			@Override
+			public Brain<E> makeBrain(Dynamic<?> dynamic) {
+				return brain;
+			}
+		};
+
+		return builder;
 	}
 
 	@Override
@@ -214,7 +240,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public Brain<E> copyWithoutBehaviors() {
-		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).toList(), null, false);
+		SmartBrain<E> brain = new SmartBrain<>(this.owner, this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).toList(), null, false);
 
 		for (Map.Entry<MemoryModuleType<?>, Optional<? extends ExpirableValue<?>>> entry : this.memories.entrySet()) {
 			MemoryModuleType<?> memoryType = entry.getKey();

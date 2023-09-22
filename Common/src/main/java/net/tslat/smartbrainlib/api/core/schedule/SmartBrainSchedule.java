@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.entity.schedule.Schedule;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;

@@ -17,6 +17,7 @@ accessible field net/minecraft/world/entity/ai/Brain coreActivities Ljava/util/S
 accessible method net/minecraft/world/entity/ai/Brain setCoreActivities (Ljava/util/Set;)V
 extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
 extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
+accessible field net/minecraft/entity/ai/brain/Brain defaultActivity Lnet/minecraft/entity/ai/brain/Activity;
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z

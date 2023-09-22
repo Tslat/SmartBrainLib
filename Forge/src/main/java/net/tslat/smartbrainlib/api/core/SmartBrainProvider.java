@@ -85,7 +85,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>)this.owner.getType(), memories);
 		}
 
-		SmartBrain<E> brain = new SmartBrain(memories, sensors, taskList, this.saveMemories);
+		SmartBrain<E> brain = new SmartBrain(owner, memories, sensors, taskList, this.saveMemories);
 
 		finaliseBrain(brain);
 

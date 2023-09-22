@@ -1,10 +1,10 @@
 plugins {
-    id 'net.neoforged.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'io.github.CDAGaming.cursegradle' version '1.6.0'
+    id 'io.github.CDAGaming.cursegradle' version '1.6.1'
 }
 
-archivesBaseName = "${mod_name}-neoforge-${minecraft_version}"
+archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 minecraft {
     mappings channel: mappings_channel, version: "${mappings_version}-${minecraft_version}"
@@ -56,7 +56,7 @@ minecraft {
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     compileOnly project(":Common")
 }
@@ -75,9 +75,9 @@ def replaceProperties = [
         mod_version            : version,
         minecraft_version      : minecraft_version,
         minecraft_version_range: minecraft_version_range,
-        neoforge_version       : neoforge_version,
-        neoforge_version_range : neoforge_version_range,
-        loader_version_range   : neoforge_loader_version_range
+        forge_version          : forge_version,
+        forge_version_range    : forge_version_range,
+        loader_version_range   : forge_loader_version_range
 ]
 
 processResources {
@@ -126,12 +126,12 @@ curseforge {
 
     project {
         id = curseforge_id
-        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20'
+        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20-Forge'
         releaseType = 'release'
         addGameVersion minecraft_version
 
         mainArtifact(jar) {
-            it.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
+            it.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
         }
     }
 }

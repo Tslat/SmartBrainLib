@@ -14,8 +14,8 @@ subprojects {
 		}
 
 		maven {
-			name = "NeoForge"
-			url = 'https://maven.neoforged.net'
+			name = "Forge"
+			url = 'https://maven.minecraftforge.net'
 		}
 	}
 
