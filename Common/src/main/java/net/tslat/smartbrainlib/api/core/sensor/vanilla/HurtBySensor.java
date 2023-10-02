@@ -43,7 +43,7 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 		DamageSource damageSource = entity.getLastDamageSource();
 
 		if (damageSource == null) {
-			BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY);
+			BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 		}
 		else if (predicate().test(damageSource, entity)) {
 			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);

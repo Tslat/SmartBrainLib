@@ -71,28 +71,28 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 
 	@Override
 	public final SmartBrain<E> makeBrain(Dynamic<?> codecLoader) {
-		List<ExtendedSensor<E>> sensors = owner.getSensors();
-		List<BrainActivityGroup<E>> taskList = compileTasks();
+		List<? extends ExtendedSensor<? extends E>> sensors = this.owner.getSensors();
+		List<BrainActivityGroup<? extends E>> taskList = compileTasks();
 		ImmutableList<MemoryModuleType<?>> memories;
 
-		if (!this.nonStaticMemories && BRAIN_MEMORY_CACHE.containsKey(owner.getType())) {
-			memories = BRAIN_MEMORY_CACHE.get(owner.getType());
+		if (!this.nonStaticMemories && BRAIN_MEMORY_CACHE.containsKey(this.owner.getType())) {
+			memories = BRAIN_MEMORY_CACHE.get(this.owner.getType());
 		}
 		else {
 			memories = createMemoryList(taskList, sensors);
 
 			if (!this.nonStaticMemories)
-				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>) this.owner.getType(), memories);
+				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>)this.owner.getType(), memories);
 		}
 
-		SmartBrain<E> brain = new SmartBrain<>(memories, sensors, taskList, this.saveMemories);
+		SmartBrain<E> brain = new SmartBrain(memories, sensors, taskList, this.saveMemories);
 
 		finaliseBrain(brain);
 
 		return brain;
 	}
 
-	private ImmutableList<MemoryModuleType<?>> createMemoryList(List<BrainActivityGroup<E>> taskList, List<? extends ExtendedSensor<?>> sensors) {
+	private ImmutableList<MemoryModuleType<?>> createMemoryList(List<BrainActivityGroup<? extends E>> taskList, List<? extends ExtendedSensor<?>> sensors) {
 		Set<MemoryModuleType<?>> memoryTypes = new ObjectOpenHashSet<>();
 
 		taskList.forEach(activityGroup -> activityGroup.getBehaviours().forEach(behavior -> collectMemoriesFromTask(memoryTypes, behavior)));
@@ -113,9 +113,9 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		}
 	}
 
-	private List<BrainActivityGroup<E>> compileTasks() {
-		List<BrainActivityGroup<E>> tasks = new ObjectArrayList<>();
-		BrainActivityGroup<E> activityGroup;
+	private List<BrainActivityGroup<? extends E>> compileTasks() {
+		List<BrainActivityGroup<? extends E>> tasks = new ObjectArrayList<>();
+		BrainActivityGroup<? extends E> activityGroup;
 
 		if (!(activityGroup = owner.getCoreTasks()).getBehaviours().isEmpty())
 			tasks.add(activityGroup);

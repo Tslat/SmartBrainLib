@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
@@ -14,7 +15,9 @@ import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * Find the nearest player that is holding out a tempting item for the entity.
@@ -30,7 +33,7 @@ import java.util.List;
 public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.TEMPTING_PLAYER);
 
-	protected Ingredient temptingItems = Ingredient.EMPTY;
+	protected BiPredicate<E, ItemStack> temptPredicate = (entity, stack) -> false;
 	protected SquareRadius radius = new SquareRadius(10, 10);
 
 	public ItemTemptingSensor() {
@@ -38,7 +41,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 			if (target.isSpectator() || !target.isAlive())
 				return false;
 
-			return this.temptingItems.test(target.getMainHandItem()) || this.temptingItems.test(target.getOffhandItem());
+			return this.temptPredicate.test(entity, target.getMainHandItem()) || this.temptPredicate.test(entity, target.getOffhandItem());
 		});
 	}
 
@@ -57,10 +60,23 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	 *
 	 * @param temptingItems An ingredient representing the temptations for the
 	 *                      entity
+	 * @deprecated Use {@link ItemTemptingSensor#temptedWith}
 	 * @return this
 	 */
+	@Deprecated(forRemoval = true)
 	public ItemTemptingSensor<E> setTemptingItems(Ingredient temptingItems) {
-		this.temptingItems = temptingItems;
+		return temptedWith((entity, stack) -> temptingItems.test(stack));
+	}
+
+	/**
+	 * Set the items to temptable items for the entity.
+	 *
+	 * @param temptingItems An ingredient representing the temptations for the
+	 *                      entity
+	 * @return this
+	 */
+	public ItemTemptingSensor<E> temptedWith(final BiPredicate<E, ItemStack> predicate) {
+		this.temptPredicate = predicate;
 
 		return this;
 	}
@@ -90,6 +106,21 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity)));
+		Player player;
+		final List<Player> nearbyPlayers = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS);
+
+		if (nearbyPlayers != null) {
+			player = nearbyPlayers.stream().filter(pl -> predicate().test(pl, entity)).min(Comparator.comparing(pl -> pl.distanceToSqr(entity))).orElse(null);
+		}
+		else {
+			player = EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity));
+		}
+
+		if (player == null) {
+			BrainUtils.clearMemory(entity, MemoryModuleType.TEMPTING_PLAYER);
+		}
+		else {
+			BrainUtils.setMemory(entity, MemoryModuleType.TEMPTING_PLAYER, player);
+		}
 	}
 }
