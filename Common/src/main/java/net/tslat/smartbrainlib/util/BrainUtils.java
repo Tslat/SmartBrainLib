@@ -279,7 +279,7 @@ public final class BrainUtils {
 	 */
 	@Nullable
 	public static LivingEntity getLastAttacker(LivingEntity entity) {
-		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, null);
+		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, () -> null);
 	}
 
 	/**
@@ -314,6 +314,46 @@ public final class BrainUtils {
 			return true;
 
 		return entity.hasLineOfSight(target);
+	}
+
+	/**
+	 * Sets a {@link SBLMemoryTypes#SPECIAL_ATTACK_COOLDOWN} value for a certain length of time.<br>
+	 * This can then be checked via {@link BrainUtils#isOnSpecialCooldown(LivingEntity)} as needed.
+	 * @param entity The entity to check the brain of
+	 * @param ticks The length of time (in ticks) the cooldown should apply for
+	 */
+	public static void setSpecialCooldown(LivingEntity entity, int ticks) {
+		setForgettableMemory(entity, SBLMemoryTypes.SPECIAL_ATTACK_COOLDOWN.get(), true, ticks);
+	}
+
+	/**
+	 * Checks whether the entity has had a {@link SBLMemoryTypes#SPECIAL_ATTACK_COOLDOWN} set, and it hasn't expired.<br>
+	 * This can be used for cross-behaviour cooldowns and interactions
+	 * @param entity The entity to check the brain of
+	 * @return Whether the entity has a cooldown currently active
+	 */
+	public static boolean isOnSpecialCooldown(LivingEntity entity) {
+		return hasMemory(entity, SBLMemoryTypes.SPECIAL_ATTACK_COOLDOWN.get());
+	}
+
+	/**
+	 * Sets a {@link SBLMemoryTypes#SPECIAL_ATTACK_COOLDOWN} value for a certain length of time.<br>
+	 * This can then be checked via {@link BrainUtils#isOnSpecialCooldown(LivingEntity)} as needed.
+	 * @param entity The entity to check the brain of
+	 * @param ticks The length of time (in ticks) the cooldown should apply for
+	 */
+	public static void setSpecialCooldown(LivingEntity entity, int ticks) {
+		setForgettableMemory(entity, SBLMemoryTypes.SPECIAL_ATTACK_COOLDOWN.get(), true, ticks);
+	}
+
+	/**
+	 * Checks whether the entity has had a {@link SBLMemoryTypes#SPECIAL_ATTACK_COOLDOWN} set, and it hasn't expired.<br>
+	 * This can be used for cross-behaviour cooldowns and interactions
+	 * @param entity The entity to check the brain of
+	 * @return Whether the entity has a cooldown currently active
+	 */
+	public static boolean isOnSpecialCooldown(LivingEntity entity) {
+		return hasMemory(entity, SBLMemoryTypes.SPECIAL_ATTACK_COOLDOWN.get());
 	}
 
 	/**

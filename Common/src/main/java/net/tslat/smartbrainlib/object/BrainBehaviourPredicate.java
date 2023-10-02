@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.object;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
