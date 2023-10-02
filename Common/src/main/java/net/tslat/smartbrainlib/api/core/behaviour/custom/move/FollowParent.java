@@ -17,25 +17,25 @@ import java.util.List;
  * animal of the same class and presumes it is the parent.</p>
  */
 public class FollowParent<E extends AgeableMob> extends FollowEntity<E, AgeableMob> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
+	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
 
-    public FollowParent() {
-        following(this::getParent);
-        stopFollowingWithin(2);
-    }
+	public FollowParent() {
+		following(this::getParent);
+		stopFollowingWithin(2);
+	}
 
-    @Override
-    protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return entity.getAge() < 0 && super.checkExtraStartConditions(level, entity);
-    }
+	@Override
+	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+		return entity.getAge() < 0 && super.checkExtraStartConditions(level, entity);
+	}
 
-    @Override
-    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-        return MEMORY_REQUIREMENTS;
-    }
+	@Override
+	public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
+	}
 
-    @Nullable
-    protected AgeableMob getParent(E entity) {
-        return BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(other -> other instanceof AgeableMob mob && mob.getAge() >= 0).map(AgeableMob.class::cast).orElse(null);
-    }
+	@Nullable
+	protected AgeableMob getParent(E entity) {
+		return BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(other -> other instanceof AgeableMob mob && mob.getAge() >= 0).map(AgeableMob.class::cast).orElse(null);
+	}
 }

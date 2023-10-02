@@ -92,7 +92,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	}
 
 	@Override
-	public BrainActivityGroup<SBLSkeleton> getFightTasks() {
+	public BrainActivityGroup<? extends SBLSkeleton> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
 				new InvalidateAttackTarget<>(), 	 // Invalidate the attack target if it's no longer applicable
 				new FirstApplicableBehaviour<>( 																							  	 // Run only one of the below behaviours, trying each one in order
