@@ -14,6 +14,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Set the walk target of the entity to its current attack target.
@@ -22,15 +23,39 @@ import java.util.List;
 public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT));
 
+	@Deprecated(forRemoval = true)
 	protected float speedModifier = 1;
+	protected BiFunction<E, LivingEntity, Float> speedMod = (owner, target) -> 1f;
+	protected BiFunction<E, LivingEntity, Integer> closeEnoughWhen = (owner, target) -> 0;
 
 	/**
 	 * Set the movespeed modifier for the entity when moving to the target.
 	 * @param speedModifier The movespeed modifier/multiplier
 	 * @return this
 	 */
+	@Deprecated(forRemoval = true)
 	public SetWalkTargetToAttackTarget<E> speedMod(float speedModifier) {
-		this.speedModifier = speedModifier;
+		return speedMod((owner, target) -> speedModifier);
+	}
+
+	/**
+	 * Set the movespeed modifier for the entity when moving to the target.
+	 * @param speedModifier The movespeed modifier/multiplier
+	 * @return this
+	 */
+	public SetWalkTargetToAttackTarget<E> speedMod(BiFunction<E, LivingEntity, Float> speedModifier) {
+		this.speedMod = speedModifier;
+
+		return this;
+	}
+
+	/**
+	 * Sets the amount (in blocks) that the mob can be considered 'close enough' to their target that they can stop pathfinding
+	 * @param closeEnoughMod The distance modifier
+	 * @return this
+	 */
+	public SetWalkTargetToAttackTarget<E> closeEnoughDist(BiFunction<E, LivingEntity, Integer> closeEnoughMod) {
+		this.closeEnoughWhen = closeEnoughMod;
 
 		return this;
 	}
@@ -50,7 +75,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 		}
 		else {
 			BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedModifier, 0));
+			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedMod.apply(entity, target), this.closeEnoughWhen.apply(entity, target)));
 		}
 	}
 }

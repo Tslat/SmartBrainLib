@@ -3,10 +3,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -42,7 +39,17 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
-	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
+	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
+		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtils.getTargetOfEntity(ally) != null)
+			return false;
+
+		if (owner instanceof OwnableEntity pet && pet.getOwner() != ((OwnableEntity)ally).getOwner())
+			return false;
+
+		Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
+
+		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
+	};
 
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;

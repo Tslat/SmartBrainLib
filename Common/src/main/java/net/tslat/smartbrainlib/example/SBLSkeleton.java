@@ -19,6 +19,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.BowAttack;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.AvoidSun;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.AvoidEntity;
@@ -56,7 +57,7 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	}
 
 	@Override
-	public List<ExtendedSensor<SBLSkeleton>> getSensors() {
+	public List<? extends ExtendedSensor<? extends SBLSkeleton>> getSensors() {
 		return ObjectArrayList.of(
 				new NearbyPlayersSensor<>(), 							// Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>()
@@ -68,18 +69,18 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	}																	// Keep track of nearby entities the Skeleton is interested in
 
 	@Override
-	public BrainActivityGroup<SBLSkeleton> getCoreTasks() {
+	public BrainActivityGroup<? extends SBLSkeleton> getCoreTasks() {
 		return BrainActivityGroup.coreTasks(
 				new AvoidSun<>(),																							// Keep pathfinder avoiding the sun
 				new EscapeSun<>().cooldownFor(entity -> 20),													// Escape the sun
 				new AvoidEntity<>().avoiding(entity -> entity instanceof Wolf),												// Run away from wolves
-				new LookAtTargetSink(40, 300), 														// Look at the look target
+				new LookAtTarget<>().runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 300)), 														// Look at the look target
 				new StrafeTarget<>().stopStrafingWhen(entity -> !isHoldingBow(entity)).startCondition(SBLSkeleton::isHoldingBow),	// Strafe around target
 				new MoveToWalkTarget<>());																					// Move to the current walk target
 	}
 
 	@Override
-	public BrainActivityGroup<SBLSkeleton> getIdleTasks() {
+	public BrainActivityGroup<? extends SBLSkeleton> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
 				new FirstApplicableBehaviour<SBLSkeleton>( 				// Run only one of the below behaviours, trying each one in order. Include explicit generic typing because javac is silly
 						new TargetOrRetaliate<>(),						// Set the attack target
@@ -91,11 +92,11 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	}
 
 	@Override
-	public BrainActivityGroup<SBLSkeleton> getFightTasks() {
+	public BrainActivityGroup<? extends SBLSkeleton> getFightTasks() {
 		return BrainActivityGroup.fightTasks(
 				new InvalidateAttackTarget<>(), 	 // Invalidate the attack target if it's no longer applicable
 				new FirstApplicableBehaviour<>( 																							  	 // Run only one of the below behaviours, trying each one in order
-						new BowAttack<SBLSkeleton>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
+						new BowAttack<>(20).startCondition(SBLSkeleton::isHoldingBow),	 												 // Fire a bow, if holding one
 						new AnimatableMeleeAttack<>(0).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)))// Melee attack
 		);
 	}

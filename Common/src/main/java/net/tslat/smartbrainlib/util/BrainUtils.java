@@ -279,7 +279,7 @@ public final class BrainUtils {
 	 */
 	@Nullable
 	public static LivingEntity getLastAttacker(LivingEntity entity) {
-		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, null);
+		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, () -> null);
 	}
 
 	/**

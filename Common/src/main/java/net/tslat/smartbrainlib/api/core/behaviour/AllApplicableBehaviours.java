@@ -76,7 +76,7 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 		}
 
 		if (!stillRunning)
-			doStartCheck(level, owner, gameTime);
+			doStop(level, owner, gameTime);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 
 		for (ExtendedBehaviour<? super E> behaviour : this.behaviours) {
 			if (behaviour.getStatus() == Status.RUNNING)
-				behaviour.stop(level, entity, gameTime);
+				behaviour.doStop(level, entity, gameTime);
 		}
 	}
 

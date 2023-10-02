@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.RandomUtil;
@@ -131,9 +132,6 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		if (entity.getNavigation().isDone())
-			return false;
-
 		T target = this.followingEntityProvider.apply(entity);
 
 		if (target == null)
@@ -193,7 +191,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			if (pathTypes != BlockPathTypes.WALKABLE)
 				return false;
 
-			return level.noCollision(entity, entity.getBoundingBox().move(statePos.subtract(entityPos)));
+			return level.noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(statePos).subtract(entity.position())));
 		});
 
 		if (pos != entityPos) {
