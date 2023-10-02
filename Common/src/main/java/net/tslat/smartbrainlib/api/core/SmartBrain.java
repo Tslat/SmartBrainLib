@@ -104,9 +104,9 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		long gameTime = level.getGameTime();
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
-			for (Pair<Activity, List<BehaviorControl<? super E>>> pair : behaviourGroup.behaviours) {
+			for (Pair<Activity, List<Behavior<? super E>>> pair : behaviourGroup.behaviours) {
 				if (getActiveActivities().contains(pair.getFirst())) {
-					for (BehaviorControl<? super E> behaviour : pair.getSecond()) {
+					for (Behavior<? super E> behaviour : pair.getSecond()) {
 						if (behaviour.getStatus() == Behavior.Status.STOPPED)
 							behaviour.tryStart(level, entity, gameTime);
 					}
@@ -358,37 +358,6 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		this.schedule.scheduleTask(brainOwner, delay, (Consumer)task);
 	}
 
-	/**
-	 * Sets a {@link SmartBrainSchedule} for this brain, for scheduled functionality
-	 * @param schedule The schedule to set for the brain
-	 * @return this
-	 */
-	public SmartBrain<E> setSchedule(SmartBrainSchedule schedule) {
-		this.schedule = schedule;
-
-		return this;
-	}
-
-	/**
-	 * @return The {@link SmartBrainSchedule schedule} of this brain
-	 */
-	@Override
-	public SmartBrainSchedule getSchedule() {
-		return this.schedule;
-	}
-
-	/**
-	 * Cheekily (and conveniently) uses the {@link SmartBrainSchedule schedule} system to schedule a delayed runnable for this entity/brain.
-	 * @param delay The delay (in ticks) before running the task
-	 * @param task The task to run at the given tick
-	 */
-	public void scheduleTask(E brainOwner, int delay, Consumer<E> task) {
-		if (this.schedule == null)
-			this.schedule = new SmartBrainSchedule();
-
-		this.schedule.scheduleTask(brainOwner, delay, (Consumer)task);
-	}
-
 	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, Behavior<E> behaviour, @Nullable Behavior<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
@@ -448,13 +417,6 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		this.sensors.add(Pair.of(sensorType, sensor));
 	}
-
-	/**
-	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead
-	 */
-	@Deprecated(forRemoval = true)
-	@Override
-	public final void setSchedule(Schedule schedule) {}
 
 	/**
 	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead

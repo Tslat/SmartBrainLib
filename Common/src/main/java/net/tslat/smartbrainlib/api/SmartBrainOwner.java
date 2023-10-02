@@ -113,14 +113,6 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Use {@link SmartBrainOwner#handleAdditionalBrainSetup(SmartBrain)}
-	 */
-	@Deprecated(forRemoval = true)
-	default void handleAdditionalBrainSetup(Brain<T> brain) {
-		handleAdditionalBrainSetup((SmartBrain<T>)brain);
-	}
-
-	/**
 	 * Override this to do any additional work after the brain has been built and readied. <br>
 	 * By this stage, the brain has had all its memories, sensors, activities, and priorities set.
 	 *
