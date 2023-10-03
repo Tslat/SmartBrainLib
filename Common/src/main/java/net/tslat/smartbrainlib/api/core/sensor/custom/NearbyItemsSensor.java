@@ -29,7 +29,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class NearbyItemsSensor<E extends Mob> extends PredicateSensor<ItemEntity, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.NEARBY_ITEMS.get());
 
 	protected SquareRadius radius = new SquareRadius(32, 16);
 

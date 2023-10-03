@@ -41,9 +41,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	}
 
 	/**
-	 * Set a callback function for when the sensor completes a scan. <br>
-	 * @param callback
-	 * @return
+	 * Set a callback function for when the sensor completes a scan.
 	 */
 	public ExtendedSensor<E> afterScanning(Consumer<E> callback) {
 		this.scanCallback = callback;
