@@ -20,16 +20,9 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 /**
- * Set a random position to fly to, taking into account the entity's current heading.<br>
- * Keeps the entity roughly near ground level, encouraging hover-flight rather than floating off into the sky.<br>
- * Defaults:
- * <ul>
- *     <li>1x movespeed modifier</li>
- *     <li>10-block lateral radius</li>
- *     <li>7-block vertical radius</li>
- * </ul>
- * @param <E>
+ * Use {@link SetRandomFlyingTarget}
  */
+@Deprecated(forRemoval = true)
 public class SetRandomHoverTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
 

@@ -32,12 +32,9 @@
 
   "depends": {
     "fabricloader": ">=0.14",
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": "1.19.4",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   },
   "custom": {
     "lithium:options": {
