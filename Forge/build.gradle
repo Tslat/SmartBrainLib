@@ -2,6 +2,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'io.github.CDAGaming.cursegradle' version '1.6.1'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
@@ -48,6 +49,12 @@ minecraft {
             }
         }
     }
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
@@ -121,4 +128,14 @@ curseforge {
             it.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
         }
     }
+}
+
+modrinth {
+    token = System.getenv("modrinthKey")
+    projectId = mod_id
+    versionNumber = project.version
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["forge"]
 }
