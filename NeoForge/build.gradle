@@ -6,7 +6,7 @@ plugins {
 
 archivesBaseName = "${mod_name}-neoforge-${minecraft_version}"
 
-minecraft.accessTransformer.file = file('src/main/resources/META-INF/accesstransformer.cfg')
+minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 
 runs {
     configureEach {
@@ -18,12 +18,12 @@ runs {
     }
 
     client {
-        taskName 'Client'
+        //taskName 'Client'
     }
 
     server {
-        taskName 'Server'
-        args '--nogui'
+        //taskName 'Server'
+        //args '--nogui'
     }
 }
 
@@ -34,7 +34,7 @@ dependencies {
     compileOnly project(":Common")
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).matching(it -> !it.name.startsWith("neo")).configureEach {
     source(project(":Common").sourceSets.main.allSource)
 }
 
@@ -81,8 +81,6 @@ jar {
         ])
     }
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
