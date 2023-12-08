@@ -31,8 +31,8 @@
   "accessWidener": "smartbrainlib.accesswidener",
 
   "depends": {
-    "fabricloader": ">=0.14",
-    "fabric": "*",
+    "fabricloader": ">=0.15",
+    "fabric-api": "*",
     "minecraft": ">=1.20",
     "java": ">=17"
   },
