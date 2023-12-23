@@ -3,8 +3,12 @@ package net.tslat.smartbrainlib.api.core.behaviour;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Group behaviour that attempts to run all sub-behaviours in order, running any that apply.<br>
@@ -103,5 +107,14 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 		}
 
 		return Status.STOPPED;
+	}
+
+	@Override
+	public String toString() {
+		final Set<? extends BehaviorControl<? super E>> activeBehaviours = this.behaviours.stream()
+				.filter(behaviorControl -> behaviorControl.getStatus() == Status.RUNNING)
+				.collect(Collectors.toSet());
+
+		return "(" + getClass().getSimpleName() + "): " + activeBehaviours;
 	}
 }
