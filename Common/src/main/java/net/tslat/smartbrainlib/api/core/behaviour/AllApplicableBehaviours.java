@@ -32,11 +32,14 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 	@Nullable
 	@Override
 	protected ExtendedBehaviour<? super E> pickBehaviour(ServerLevel level, E entity, long gameTime, SBLShufflingList<ExtendedBehaviour<? super E>> extendedBehaviours) {
+		ExtendedBehaviour<? super E> lastSuccessfulBehaviour = null;
+
 		for (ExtendedBehaviour<? super E> behaviour : extendedBehaviours) {
-			behaviour.tryStart(level, entity, gameTime);
+			if (behaviour.tryStart(level, entity, gameTime))
+				lastSuccessfulBehaviour = behaviour;
 		}
 
-		return null;
+		return lastSuccessfulBehaviour;
 	}
 
 	@Override
