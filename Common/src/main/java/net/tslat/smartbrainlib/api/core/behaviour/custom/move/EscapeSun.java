@@ -33,6 +33,10 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	protected Vec3 hidePos = null;
 
+	public EscapeSun() {
+		noTimeout();
+	}
+
 	/**
 	 * Set the movespeed modifier for when the entity tries to escape the sun
 	 * @param speedMod The speed modifier
@@ -78,11 +82,6 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 			return false;
 
 		return walkTarget.getTarget().currentBlockPosition().equals(BlockPos.containing(this.hidePos)) && !entity.getNavigation().isDone();
-	}
-
-	@Override
-	protected boolean timedOut(long gameTime) {
-		return false;
 	}
 
 	@Override

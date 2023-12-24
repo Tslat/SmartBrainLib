@@ -43,3 +43,10 @@ accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
 
 # Schedule
 accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
+
+# Other
+accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
+mutable field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
+accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities lineOfSightTest Ljava/util/function/Predicate;
+mutable field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities lineOfSightTest Ljava/util/function/Predicate;
+accessible method net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities <init> ()V

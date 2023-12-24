@@ -36,6 +36,10 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	private Path runPath = null;
 
+	public AvoidEntity() {
+		noTimeout();
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
@@ -111,11 +115,6 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
 		return !this.runPath.isDone();
-	}
-
-	@Override
-	protected boolean timedOut(long gameTime) {
-		return false;
 	}
 
 	@Override
