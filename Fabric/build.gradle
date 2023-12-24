@@ -2,6 +2,7 @@ plugins {
     id 'fabric-loom' version '1.3.+'
     id 'idea'
     id 'io.github.CDAGaming.cursegradle' version '1.6.1'
+    id 'com.modrinth.minotaur' version '2.8.3'
 }
 
 archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
@@ -107,4 +108,14 @@ curseforge {
             it.displayName = "${project.mod_name} Fabric ${project.minecraft_version}-${project.version}"
         }
     }
+}
+
+modrinth {
+    token = System.getenv("modrinthKey")
+    projectId = mod_id
+    versionNumber = project.version
+    versionType = "release"
+    uploadFile = remapJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["fabric"]
 }

@@ -2,6 +2,7 @@ plugins {
     id 'net.neoforged.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'io.github.CDAGaming.cursegradle' version '1.6.1'
+    id 'com.modrinth.minotaur' version '2.8.3'
 }
 
 archivesBaseName = "${mod_name}-neoforge-${minecraft_version}"
@@ -134,4 +135,14 @@ curseforge {
             it.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
         }
     }
+}
+
+modrinth {
+    token = System.getenv("modrinthKey")
+    projectId = mod_id
+    versionNumber = project.version
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["neoforge"]
 }
