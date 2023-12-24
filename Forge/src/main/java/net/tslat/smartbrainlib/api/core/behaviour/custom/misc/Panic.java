@@ -47,6 +47,10 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	protected Vec3 targetPos = null;
 	protected int panicEndTime = 0;
 
+	public Panic() {
+		noTimeout();
+	}
+
 	/**
 	 * Set a custom predicate for if the entity should panic based on its current conditions.
 	 * @param predicate The predicate
@@ -114,11 +118,6 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		setPanicTarget(entity);
 
 		return this.targetPos != null;
-	}
-
-	@Override
-	protected boolean timedOut(long gameTime) {
-		return false;
 	}
 
 	@Override

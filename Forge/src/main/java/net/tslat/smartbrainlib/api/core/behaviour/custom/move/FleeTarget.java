@@ -32,6 +32,10 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	protected Path runPath = null;
 
+	public FleeTarget() {
+		noTimeout();
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
@@ -76,11 +80,6 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
 		return entity.getNavigation().getPath() == this.runPath && !entity.getNavigation().isDone();
-	}
-
-	@Override
-	protected boolean timedOut(long gameTime) {
-		return false;
 	}
 
 	@Override

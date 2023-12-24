@@ -131,6 +131,15 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 		return this;
 	}
 
+	/**
+	 * Defines a maximum value timeout period for this behaviour.
+	 * <p>Functionally, this means that the behaviour will not timeout, and will rely on other factors to stop (such as memory conditions failing)</p>
+	 * @return this
+	 */
+	public final ExtendedBehaviour<E> noTimeout() {
+		return runFor(entity -> Integer.MAX_VALUE);
+	}
+
 	@Override
 	public final boolean tryStart(ServerLevel level, E entity, long gameTime) {
 		if (!doStartCheck(level, entity, gameTime))

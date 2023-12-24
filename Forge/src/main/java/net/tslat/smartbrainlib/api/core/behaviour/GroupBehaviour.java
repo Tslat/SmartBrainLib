@@ -93,4 +93,9 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 		return this.runningBehaviour.getStatus();
 	}
+
+	@Override
+	public String toString() {
+		return "(" + getClass().getSimpleName() + "): " + (this.runningBehaviour == null ? this.runningBehaviour.getClass().getSimpleName() : "{}");
+	}
 }
