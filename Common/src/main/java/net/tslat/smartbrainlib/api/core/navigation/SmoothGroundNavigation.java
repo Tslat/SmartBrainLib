@@ -90,7 +90,7 @@ public class SmoothGroundNavigation extends GroundPathNavigation implements Exte
      * @return The nearest safe surface height for the entity
      */
     @Override
-    protected int getSurfaceY() {
+    public int getSurfaceY() {
         return super.getSurfaceY();
     }
 
