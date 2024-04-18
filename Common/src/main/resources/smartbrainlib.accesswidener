@@ -1,4 +1,5 @@
 accessWidener v1 named
+# Brain
 accessible field net/minecraft/world/entity/ai/Brain sensors Ljava/util/Map;
 accessible method net/minecraft/world/entity/ai/Brain memories ()Ljava/util/stream/Stream;
 accessible field net/minecraft/world/entity/ai/Brain memories Ljava/util/Map;
@@ -43,6 +44,10 @@ accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
 
 # Schedule
 accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
+
+# Navigation
+accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
+extendable method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
 
 # Other
 accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
