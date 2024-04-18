@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -31,7 +31,7 @@ public final class SBLNeoForge implements SBLLoader {
 	public static DeferredHolder<EntityType<?>, EntityType<SBLSkeleton>> SBL_SKELETON;
 
 	public void init() {
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		final IEventBus modEventBus = ModLoadingContext.get().extension();
 
 		MEMORY_TYPES.register(modEventBus);
 		SENSORS.register(modEventBus);
