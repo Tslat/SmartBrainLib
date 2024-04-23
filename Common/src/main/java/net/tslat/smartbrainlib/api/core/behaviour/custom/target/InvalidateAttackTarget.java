@@ -8,9 +8,9 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
-import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * Invalidates the current {@link MemoryModuleType#ATTACK_TARGET attack target} if the given conditions are met.<br>
@@ -23,7 +23,7 @@ import java.util.List;
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED));
 
-	protected ToBooleanBiFunction<E, LivingEntity> customPredicate = (entity, target) -> target instanceof Player pl && (pl.isCreative() || pl.isSpectator());
+	protected BiPredicate<E, LivingEntity> customPredicate = (entity, target) -> target instanceof Player pl && (pl.isCreative() || pl.isSpectator());
 	protected long pathfindingAttentionSpan = 200;
 
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -34,7 +34,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 	 * Sets a custom predicate to invalidate the attack target if none of the previous checks invalidate it first.<br>
 	 * Overrides the default player gamemode check
 	 */
-	public InvalidateAttackTarget<E> invalidateIf(ToBooleanBiFunction<E, LivingEntity> predicate) {
+	public InvalidateAttackTarget<E> invalidateIf(BiPredicate<E, LivingEntity> predicate) {
 		this.customPredicate = predicate;
 
 		return this;
@@ -65,7 +65,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 			return;
 
 		if (isTargetInvalid(entity, target) || !canAttack(entity, target) ||
-				isTiredOfPathing(entity) || this.customPredicate.applyAsBoolean(entity, target)) {
+				isTiredOfPathing(entity) || this.customPredicate.test(entity, target)) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 		}
 	}
