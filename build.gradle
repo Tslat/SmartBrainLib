@@ -8,7 +8,7 @@ subprojects {
 	apply plugin: 'idea'
 	apply plugin: 'maven-publish'
 
-	java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+	java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 	java.withSourcesJar()
 
 	repositories {
@@ -27,7 +27,7 @@ subprojects {
 
 	tasks.withType(JavaCompile).configureEach {
 		it.options.encoding = 'UTF-8'
-		it.options.release = 17
+		it.options.release = 21
 	}
 
 	tasks.withType(GenerateModuleMetadata) {

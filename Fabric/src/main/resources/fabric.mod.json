@@ -34,7 +34,7 @@
     "fabricloader": ">=0.15",
     "fabric-api": "*",
     "minecraft": ">=1.20",
-    "java": ">=17"
+    "java": ">=21"
   },
   "custom": {
     "lithium:options": {
