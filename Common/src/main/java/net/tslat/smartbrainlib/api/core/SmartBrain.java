@@ -48,8 +48,8 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	private boolean sortBehaviours = false;
 
-	public SmartBrain(List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList, boolean saveMemories) {
-		super(memories, ImmutableList.of(), ImmutableList.of(), saveMemories ? () -> Brain.codec(memories, convertSensorsToTypes(sensors)) : SmartBrain::emptyBrainCodec);
+	public SmartBrain(List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList) {
+		super(memories, ImmutableList.of(), ImmutableList.of(), SmartBrain::emptyBrainCodec);
 
 		for (ExtendedSensor<E> sensor : sensors) {
 			this.sensors.add(Pair.of((SensorType)sensor.type(), sensor));
@@ -214,7 +214,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public Brain<E> copyWithoutBehaviors() {
-		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).toList(), null, false);
+		SmartBrain<E> brain = new SmartBrain<>(this.memories.keySet().stream().toList(), this.sensors.stream().map(pair -> (ExtendedSensor<E>) pair.getSecond()).toList(), null);
 
 		for (Map.Entry<MemoryModuleType<?>, Optional<? extends ExpirableValue<?>>> entry : this.memories.entrySet()) {
 			MemoryModuleType<?> memoryType = entry.getKey();

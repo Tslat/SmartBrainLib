@@ -35,7 +35,6 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 
 	private final E owner;
 
-	private final boolean saveMemories;
 	private final boolean nonStaticMemories;
 
 	/**
@@ -51,21 +50,9 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 	 *                          sensors depending on the entity instance
 	 */
 	public SmartBrainProvider(E owner, boolean nonStaticMemories) {
-		this(owner, false, nonStaticMemories);
-	}
-
-	/**
-	 * @param owner             The owner of the brain
-	 * @param saveMemories      Whether memory states should be saved & loaded when
-	 *                          the entity is saved or loaded.
-	 * @param nonStaticMemories Whether the entity has different behaviours or
-	 *                          sensors depending on the entity instance
-	 */
-	public SmartBrainProvider(E owner, boolean saveMemories, boolean nonStaticMemories) {
 		super(List.of(), List.of());
 
 		this.owner = owner;
-		this.saveMemories = saveMemories;
 		this.nonStaticMemories = nonStaticMemories;
 	}
 
@@ -85,7 +72,7 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 				BRAIN_MEMORY_CACHE.put((EntityType<? extends LivingEntity>)this.owner.getType(), memories);
 		}
 
-		SmartBrain<E> brain = new SmartBrain(memories, sensors, taskList, this.saveMemories);
+		SmartBrain<E> brain = new SmartBrain(memories, sensors, taskList);
 
 		finaliseBrain(brain);
 
