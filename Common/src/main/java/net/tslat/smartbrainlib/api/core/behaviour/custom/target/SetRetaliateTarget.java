@@ -35,7 +35,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 
 	protected LivingEntity toTarget = null;
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
-	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY));
+	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(owner, MemoryModuleType.HURT_BY_ENTITY));
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
