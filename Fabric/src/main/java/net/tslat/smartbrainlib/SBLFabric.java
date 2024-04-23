@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 public final class SBLFabric implements SBLLoader {
 	public static EntityType<SBLSkeleton> SBL_SKELETON;
 
-	public void init() {
+	public void init(Object eventBus) {
 		SBLMemoryTypes.init();
 		SBLSensors.init();
 

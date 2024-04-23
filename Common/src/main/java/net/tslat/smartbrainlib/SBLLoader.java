@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public interface SBLLoader {
-	void init();
+	void init(Object eventBus);
 	boolean isDevEnv();
 
 	<T> Supplier<MemoryModuleType<T>> registerMemoryType(String id);
