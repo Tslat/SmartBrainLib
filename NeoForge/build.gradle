@@ -1,6 +1,6 @@
 plugins {
     id 'net.neoforged.gradle.userdev' version '7.+'
-    id 'io.github.CDAGaming.cursegradle' version '1.6.1'
+    id 'net.darkhax.curseforgegradle' version '1.1.15'
     id 'com.modrinth.minotaur' version '2.8.3'
 }
 
@@ -58,7 +58,7 @@ processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
 
-    filesMatching('META-INF/mods.toml') {
+    filesMatching(['META-INF/neoforge.mods.toml']) {
         expand replaceProperties
     }
 
@@ -92,19 +92,19 @@ publishing {
     }
 }
 
-curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN")
+task publishToCurseForge(type:  net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group = "publishing"
+    apiToken = System.getenv("CURSEFORGE_TOKEN") ?: "Invalid/No API Token Found"
 
-    project {
-        id = curseforge_id
-        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20'
-        releaseType = 'release'
-        addGameVersion minecraft_version
+    def mainFile = upload(661293, jar)
+    mainFile.releaseType = "release"
+    mainFile.addModLoader("NeoForge")
+    mainFile.addGameVersion(minecraft_version)
+    mainFile.addJavaVersion("Java 21")
+    mainFile.changelog = "https://github.com/Tslat/SmartBrainLib/commits/1.20.5"
+    mainFile.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
 
-        mainArtifact(jar) {
-            it.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
-        }
-    }
+    //https://github.com/Darkhax/CurseForgeGradle#available-properties
 }
 
 modrinth {
