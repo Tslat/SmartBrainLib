@@ -101,7 +101,7 @@ task publishToCurseForge(type:  net.darkhax.curseforgegradle.TaskPublishCurseFor
     mainFile.addModLoader("NeoForge")
     mainFile.addGameVersion(minecraft_version)
     mainFile.addJavaVersion("Java 21")
-    mainFile.changelog = "https://github.com/Tslat/SmartBrainLib/commits/1.20.5"
+    mainFile.changelog = "https://github.com/Tslat/SmartBrainLib/commits/1.20.6"
     mainFile.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
 
     //https://github.com/Darkhax/CurseForgeGradle#available-properties
