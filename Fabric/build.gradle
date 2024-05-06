@@ -17,7 +17,7 @@ dependencies {
     modLocalRuntime "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modLocalRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    compileOnly  project(":Common")
+    compileOnly project(":Common")
 }
 
 loom {
