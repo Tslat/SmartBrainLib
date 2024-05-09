@@ -3,19 +3,54 @@ package net.tslat.smartbrainlib.api.core.navigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidType;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.core.navigation.nodeevaluator.MultiFluidWalkNodeEvaluator;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
  * An extension of {@link SmoothGroundNavigation} to allow for fluid-agnostic pathfinding based on (Neo)Forge's fluid API overhaul
  * <p>
  * This allows for entities to pathfind in fluids other than water as necessary
+ *
+ * @see MultiFluidNavigationElement
  */
-public class MultiFluidSmoothGroundNavigation extends SmoothGroundNavigation {
+public class MultiFluidSmoothGroundNavigation extends SmoothGroundNavigation implements MultiFluidNavigationElement {
     public MultiFluidSmoothGroundNavigation(Mob mob, Level level) {
         super(mob, level);
+    }
+
+    /**
+     * Patch {@link Path#getEntityPosAtNode} to use a proper rounding check
+     */
+    @Override
+    protected PathFinder createPathFinder(int maxVisitedNodes) {
+        this.nodeEvaluator = new MultiFluidWalkNodeEvaluator();
+        this.nodeEvaluator.setCanPassDoors(true);
+
+        return new PathFinder(this.nodeEvaluator, maxVisitedNodes) {
+            @Nullable
+            @Override
+            public Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
+                final Path path = super.findPath(navigationRegion, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier);
+
+                return path == null ? null : new Path(path.nodes, path.getTarget(), path.canReach()) {
+                    @Override
+                    public Vec3 getEntityPosAtNode(Entity entity, int nodeIndex) {
+                        return MultiFluidSmoothGroundNavigation.this.getEntityPosAtNode(nodeIndex);
+                    }
+                };
+            }
+        };
     }
 
     /**
@@ -25,25 +60,27 @@ public class MultiFluidSmoothGroundNavigation extends SmoothGroundNavigation {
      */
     @Override
     protected boolean canUpdatePath() {
-        return this.mob.onGround() || this.mob.isInFluidType((fluidType, height) -> canSwimInFluid(fluidType), true) || this.mob.isPassenger();
+        return this.mob.onGround() || this.mob.isInFluidType((fluidType, height) -> canSwimInFluid(this.mob, fluidType, height), true) || this.mob.isPassenger();
     }
 
     /**
      * Helper override to allow end-users to modify the fluids an entity can swim in, extensibly patching in (Neo)Forge's fluid API
      * <p>
-     * Don't use this method to adjust which fluids are 'swimmable', use {@link #canSwimInFluid(FluidType)}
+     * Don't use this method to adjust which fluids are 'swimmable', use {@link MultiFluidNavigationElement#canSwimInFluid}
      *
      * @return The nearest safe surface height for the entity
      */
     @Override
     public int getSurfaceY() {
-        if (this.mob.isInFluidType((fluidType, height) -> canSwimInFluid(fluidType), true) && canFloat()) {
+        if (this.mob.isInFluidType((fluidType, height) -> canSwimInFluid(this.mob, fluidType, height), true) && canFloat()) {
             final int basePos = this.mob.getBlockY();
             BlockPos.MutableBlockPos pos = BlockPos.containing(this.mob.getX(), basePos, this.mob.getZ()).mutable();
             BlockState state = this.level.getBlockState(pos);
+            FluidState fluidState = state.getFluidState();
 
-            while (canSwimInFluid(state.getFluidState().getFluidType())) {
+            while (canSwimInFluid(this.mob, fluidState.getFluidType(), fluidState.getHeight(this.level, pos))) {
                 state = this.level.getBlockState(pos.move(Direction.UP));
+                fluidState = state.getFluidState();
 
                 if (pos.getY() - basePos > 16)
                     return basePos;
@@ -53,12 +90,5 @@ public class MultiFluidSmoothGroundNavigation extends SmoothGroundNavigation {
         }
 
         return Mth.floor(this.mob.getY() + 0.5);
-    }
-
-    /**
-     * Determine whether a given fluidType is one that the the entity this navigator represents can actively path through
-     */
-    protected boolean canSwimInFluid(FluidType fluidType) {
-        return fluidType.canSwim(this.mob);
     }
 }
