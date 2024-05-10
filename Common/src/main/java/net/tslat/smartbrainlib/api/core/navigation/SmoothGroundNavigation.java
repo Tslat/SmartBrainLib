@@ -17,11 +17,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 /**
- * Extension of the vanilla ground navigator with some tweaks for smoother pathfinding:
+ * Extension of the vanilla {@link GroundPathNavigation} with some tweaks for smoother pathfinding:
  * <ul>
- *     <li>Skip to vertical traversal first before continuing path nodes if appropriate</li>
  *     <li>Smoothed unit rounding to better accommodate edge-cases</li>
  *     <li>Patched {@link Path} implementation to use proper rounding</li>
+ *     <li>Skip to vertical traversal first before continuing path nodes if appropriate</li>
+ *     <li>Accessible {@link GroundPathNavigation#getSurfaceY()} override for extensibility</li>
  * </ul>
  * <p>
  * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a ground-based walking entity
