@@ -48,6 +48,7 @@ accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/ut
 # Navigation
 accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
 extendable method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
+accessible field net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation allowBreaching Z
 
 # Other
 accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
