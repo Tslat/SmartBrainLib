@@ -18,8 +18,6 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * <p>
  * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a water-based swimming entity
- * @see ExtendedNavigator#canPathOnto
- * @see ExtendedNavigator#canPathInto
  */
 public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation implements ExtendedNavigator {
     public SmoothWaterBoundPathNavigation(Mob mob, Level level) {

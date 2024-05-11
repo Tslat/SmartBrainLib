@@ -13,15 +13,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Extension of the vanilla {@link WallClimberNavigation} with some tweaks for smoother pathfinding:
  * <ul>
- *     <li>Smoothed unit rounding to better accommodate edge-cases</li>
  *     <li>Patched {@link Path} implementation to use proper rounding</li>
- *     <li>Skip to vertical traversal first before continuing path nodes if appropriate</li>
  *     <li>Accessible {@link GroundPathNavigation#getSurfaceY()} override for extensibility</li>
  * </ul>
  * <p>
  * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a ground-based walking entity
- * @see ExtendedNavigator#canPathOnto
- * @see ExtendedNavigator#canPathInto
  */
 public class SmoothWallClimberNavigation extends WallClimberNavigation implements ExtendedNavigator {
     public SmoothWallClimberNavigation(Mob mob, Level level) {
