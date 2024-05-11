@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * <ul>
  *     <li>Smoothed unit rounding to better accommodate edge-cases</li>
  *     <li>Patched {@link Path} implementation to use proper rounding</li>
- *     <li>Extensible constructor pattern to allow non-dolphin breaching mobs</li>
+ *     <li>Extensible {@link #canBreach()} implementation for ease-of-use</li>
  * </ul>
  * <p>
  * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a water-based swimming entity
