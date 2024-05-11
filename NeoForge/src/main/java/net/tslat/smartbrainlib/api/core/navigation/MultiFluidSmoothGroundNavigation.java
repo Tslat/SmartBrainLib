@@ -3,19 +3,13 @@ package net.tslat.smartbrainlib.api.core.navigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
-import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.navigation.nodeevaluator.MultiFluidWalkNodeEvaluator;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 /**
  * An extension of {@link SmoothGroundNavigation} to allow for fluid-agnostic pathfinding based on (Neo)Forge's fluid API overhaul
@@ -37,20 +31,7 @@ public class MultiFluidSmoothGroundNavigation extends SmoothGroundNavigation imp
         this.nodeEvaluator = new MultiFluidWalkNodeEvaluator();
         this.nodeEvaluator.setCanPassDoors(true);
 
-        return new PathFinder(this.nodeEvaluator, maxVisitedNodes) {
-            @Nullable
-            @Override
-            public Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
-                final Path path = super.findPath(navigationRegion, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier);
-
-                return path == null ? null : new Path(path.nodes, path.getTarget(), path.canReach()) {
-                    @Override
-                    public Vec3 getEntityPosAtNode(Entity entity, int nodeIndex) {
-                        return MultiFluidSmoothGroundNavigation.this.getEntityPosAtNode(nodeIndex);
-                    }
-                };
-            }
-        };
+        return createSmoothPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
 
     /**
