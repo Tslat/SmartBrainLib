@@ -22,19 +22,15 @@ import org.jetbrains.annotations.Nullable;
 public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation implements ExtendedNavigator {
     public SmoothWaterBoundPathNavigation(Mob mob, Level level) {
         super(mob, level);
-
-        this.allowBreaching = this.mob.getType() == EntityType.DOLPHIN;
     }
 
     /**
-     * Set whether the entity can breach the surface as part of its pathing
-     *
-     * @return this
+     * Determine whether the entity can breach the surface as part of its pathing
+     * <p>
+     * Defaults to false for non-dolphins
      */
-    public SmoothWaterBoundPathNavigation setCanBreach(boolean canBreach) {
-        this.allowBreaching = canBreach;
-
-        return this;
+    public boolean canBreach() {
+        return this.mob.getType() == EntityType.DOLPHIN;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation imp
      */
     @Override
     protected PathFinder createPathFinder(int maxVisitedNodes) {
-        this.nodeEvaluator = new SwimNodeEvaluator(this.allowBreaching);
+        this.nodeEvaluator = new SwimNodeEvaluator(this.allowBreaching = canBreach());
         this.nodeEvaluator.setCanPassDoors(true);
 
         return createSmoothPathFinder(this.nodeEvaluator, maxVisitedNodes);
