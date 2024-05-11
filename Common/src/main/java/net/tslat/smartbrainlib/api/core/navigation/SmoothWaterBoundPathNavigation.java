@@ -1,19 +1,13 @@
 package net.tslat.smartbrainlib.api.core.navigation;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 /**
  * Extension of the vanilla {@link WaterBoundPathNavigation} navigator with some tweaks for smoother pathfinding:
@@ -64,19 +58,6 @@ public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation imp
         this.nodeEvaluator = new SwimNodeEvaluator(this.allowBreaching);
         this.nodeEvaluator.setCanPassDoors(true);
 
-        return new PathFinder(this.nodeEvaluator, maxVisitedNodes) {
-            @Nullable
-            @Override
-            public Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
-                final Path path = super.findPath(navigationRegion, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier);
-
-                return path == null ? null : new Path(path.nodes, path.getTarget(), path.canReach()) {
-                    @Override
-                    public Vec3 getEntityPosAtNode(Entity entity, int nodeIndex) {
-                        return SmoothWaterBoundPathNavigation.this.getEntityPosAtNode(nodeIndex);
-                    }
-                };
-            }
-        };
+        return createSmoothPathFinder(this.nodeEvaluator, maxVisitedNodes);
     }
 }
