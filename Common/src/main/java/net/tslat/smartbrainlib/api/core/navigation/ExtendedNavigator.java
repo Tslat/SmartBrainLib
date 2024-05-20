@@ -3,12 +3,17 @@ package net.tslat.smartbrainlib.api.core.navigation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
  * Extracted interface to act as a helper utility for cleaner navigator implementations
@@ -84,6 +89,34 @@ public interface ExtendedNavigator {
         }
 
         return false;
+    }
+
+    /**
+     * Wrap a Path instance in a new instance, patching out the {@link Path#getEntityPosAtNode(Entity, int)} implementation for smoother pathing
+     *
+     * @return A new Path instance, or null if the input Path was null
+     */
+    @Nullable
+    default Path patchPath(@Nullable Path path) {
+        return path == null ? null : new Path(path.nodes, path.getTarget(), path.canReach()) {
+            @Override
+            public Vec3 getEntityPosAtNode(Entity entity, int nodeIndex) {
+                return ExtendedNavigator.this.getEntityPosAtNode(nodeIndex);
+            }
+        };
+    }
+
+    /**
+     * Create a PathFinder instance patching out the {@link Path#getEntityPosAtNode(Entity, int)} implementation for smoother pathing
+     */
+    default PathFinder createSmoothPathFinder(NodeEvaluator nodeEvaluator, int maxVisitedNodes) {
+        return new PathFinder(nodeEvaluator, maxVisitedNodes) {
+            @Nullable
+            @Override
+            public Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
+                return patchPath(super.findPath(navigationRegion, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier));
+            }
+        };
     }
 
     /**
