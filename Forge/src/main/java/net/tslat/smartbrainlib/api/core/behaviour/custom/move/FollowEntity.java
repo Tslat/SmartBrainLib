@@ -10,7 +10,8 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -148,25 +149,25 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		T target = this.followingEntityProvider.apply(entity);
 		double minDist = this.followDistMin.apply(entity, target);
 		float speedMod = this.speedMod.apply(entity, target);
-		this.oldWaterPathMalus = entity.getPathfindingMalus(BlockPathTypes.WATER);
+		this.oldWaterPathMalus = entity.getPathfindingMalus(PathType.WATER);
 
 		if (entity.fireImmune()) {
-			this.oldLavaPathMalus = entity.getPathfindingMalus(BlockPathTypes.LAVA);
+			this.oldLavaPathMalus = entity.getPathfindingMalus(PathType.LAVA);
 
-			entity.setPathfindingMalus(BlockPathTypes.LAVA, 0);
+			entity.setPathfindingMalus(PathType.LAVA, 0);
 		}
 
 		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target, speedMod, (int)minDist));
 		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-		entity.setPathfindingMalus(BlockPathTypes.WATER, 0);
+		entity.setPathfindingMalus(PathType.WATER, 0);
 	}
 
 	@Override
 	protected void stop(E entity) {
-		entity.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterPathMalus);
+		entity.setPathfindingMalus(PathType.WATER, this.oldWaterPathMalus);
 
 		if (entity.fireImmune())
-			entity.setPathfindingMalus(BlockPathTypes.LAVA, this.oldLavaPathMalus);
+			entity.setPathfindingMalus(PathType.LAVA, this.oldLavaPathMalus);
 
 		entity.getNavigation().stop();
 		BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
@@ -186,9 +187,9 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		BlockPos entityPos = target.blockPosition();
 
 		BlockPos pos = RandomUtil.getRandomPositionWithinRange(entityPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) -> {
-			BlockPathTypes pathTypes = entity.getNavigation().getNodeEvaluator().getBlockPathType(level, statePos.getX(), statePos.getY(), statePos.getZ());
+			PathType pathTypes = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(level, entity), statePos.getX(), statePos.getY(), statePos.getZ());
 
-			if (pathTypes != BlockPathTypes.WALKABLE)
+			if (pathTypes != PathType.WALKABLE)
 				return false;
 
 			return level.noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(statePos).subtract(entity.position())));

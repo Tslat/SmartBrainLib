@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
 
 /**
  * Functional replacement for vanilla's {@link net.minecraft.world.entity.ai.behavior.AnimalMakeLove AnimalMakeLove}.
@@ -28,6 +29,7 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.BREED_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
 
 	protected BiFunction<E, Animal, Float> speedMod = (entity, partner) -> 1f;
+	protected ToIntBiFunction<E, Animal> closeEnoughDist = (entity, partner) -> 2;
 	protected BiFunction<E, Animal, Integer> breedTime = (entity, partner) -> entity.getRandom().nextInt(60, 110);
 	protected BiPredicate<E, Animal> partnerPredicate = (entity, partner) -> entity.getType() == partner.getType() && entity.canMate(partner);
 
@@ -54,6 +56,17 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 		return this;
 	}
 
+	/**
+	 * Sets the amount (in blocks) that the animal can be considered 'close enough' to their partner that they can stop pathfinding
+	 * @param closeEnoughDist The distance function
+	 * @return this
+	 */
+	public BreedWithPartner<E> closeEnoughDist(final ToIntBiFunction<E, Animal> closeEnoughDist) {
+		this.closeEnoughDist = closeEnoughDist;
+
+		return this;
+	}
+
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		if (!entity.isInLove())
@@ -75,12 +88,12 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 
 		BrainUtils.setMemory(entity, MemoryModuleType.BREED_TARGET, this.partner);
 		BrainUtils.setMemory(this.partner, MemoryModuleType.BREED_TARGET, entity);
-		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedMod.apply(entity, this.partner));
+		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedMod.apply(entity, this.partner), this.closeEnoughDist.applyAsInt(entity, this.partner));
 	}
 
 	@Override
 	protected void tick(E entity) {
-		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedMod.apply(entity, this.partner));
+		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedMod.apply(entity, this.partner), this.closeEnoughDist.applyAsInt(entity, this.partner));
 
 		if (entity.closerThan(this.partner, 3) && entity.tickCount == this.childBreedTick) {
 			entity.spawnChildFromBreeding((ServerLevel)entity.level(), this.partner);

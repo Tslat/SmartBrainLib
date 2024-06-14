@@ -7,10 +7,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.level.pathfinder.NodeEvaluator;
-import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -37,7 +34,7 @@ public interface ExtendedNavigator {
     /**
      * @return Whether the given path type can be pathed onto, or otherwise be considered a pathable surface
      */
-    default boolean canPathOnto(BlockPathTypes pathType) {
+    default boolean canPathOnto(PathType pathType) {
         return switch (pathType) {
             case WATER, LAVA, OPEN -> false;
             default -> true;
@@ -47,7 +44,7 @@ public interface ExtendedNavigator {
     /**
      * @return Whether the given path type should be considered safe to path into, or is otherwise a pathable free space
      */
-    default boolean canPathInto(BlockPathTypes pathType) {
+    default boolean canPathInto(PathType pathType) {
         return switch (pathType) {
             case DAMAGE_FIRE, DANGER_FIRE, DAMAGE_OTHER -> true;
             default -> false;
@@ -215,14 +212,14 @@ public interface ExtendedNavigator {
                 for (int x = xBound; x != xStepBound; x += xStep) {
                     for (int z = zBound; z != zStepBound; z += zStep) {
                         for (int y = yBound; y != yStepBound; y += yStep) {
-                            if (!sectionAccess.getBlockState(pos.set(x, y, z)).isPathfindable(level, pos, PathComputationType.LAND))
+                            if (!sectionAccess.getBlockState(pos.set(x, y, z)).isPathfindable(PathComputationType.LAND))
                                 return false;
                         }
 
-                        if (!canPathOnto(nodeEvaluator.getBlockPathType(level, x, yBound - 1, z)))
+                        if (!canPathOnto(nodeEvaluator.getPathType(new PathfindingContext(level, mob), x, yBound - 1, z)))
                             return false;
 
-                        final BlockPathTypes insidePathType = nodeEvaluator.getBlockPathType(level, x, yBound, z);
+                        final PathType insidePathType = nodeEvaluator.getPathType(new PathfindingContext(level, mob), x, yBound, z);
                         final float pathMalus = mob.getPathfindingMalus(insidePathType);
 
                         if (pathMalus < 0 || pathMalus >= 8)

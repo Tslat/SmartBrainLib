@@ -1,7 +1,7 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'io.github.CDAGaming.cursegradle' version '1.6.1'
+    id 'net.darkhax.curseforgegradle' version '1.1.24'
     id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -10,6 +10,9 @@ archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 minecraft {
     mappings channel: mappings_channel, version: "${mappings_version}-${minecraft_version}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    reobf = false
+    copyIdeResources = true
 
     runs {
         client {
@@ -61,6 +64,7 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
@@ -98,12 +102,11 @@ jar {
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 'Timestamp'              : System.currentTimeMillis(),
                 'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                'Built-On-Minecraft'      : minecraft_version
+                'Built-On-Minecraft'      : minecraft_version,
+                "MixinConfigs"          : "${mod_id}.mixins.json"
         ])
     }
 }
-
-jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
@@ -115,19 +118,19 @@ publishing {
     }
 }
 
-curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN")
+task publishToCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    group = "publishing"
+    apiToken = System.getenv("CURSEFORGE_TOKEN") ?: "Invalid/No API Token Found"
 
-    project {
-        id = curseforge_id
-        changelog = 'https://github.com/Tslat/SmartBrainLib/commits/1.20-Forge'
-        releaseType = 'release'
-        addGameVersion minecraft_version
+    def mainFile = upload(curseforge_id, jar)
+    mainFile.releaseType = "release"
+    mainFile.addModLoader("Forge")
+    mainFile.addGameVersion(minecraft_version)
+    mainFile.addJavaVersion("Java 21")
+    mainFile.changelog = "https://github.com/Tslat/SmartBrainLib/commits/1.21-Forge"
+    mainFile.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
 
-        mainArtifact(jar) {
-            it.displayName = "${project.mod_name} Forge ${project.minecraft_version}-${project.version}"
-        }
-    }
+    //https://github.com/Darkhax/CurseForgeGradle#available-properties
 }
 
 modrinth {
