@@ -1,29 +1,36 @@
 plugins {
-    id 'net.neoforged.gradle.userdev' version '7.0.122'
-    id 'net.darkhax.curseforgegradle' version '1.1.15'
-    id 'com.modrinth.minotaur' version '2.8.3'
+    id 'ml-platform-config'
+    id 'net.neoforged.gradle.userdev' version '7.0.142'
+    id 'net.darkhax.curseforgegradle' version '1.1.24'
+    id 'com.modrinth.minotaur' version '2.8.7'
 }
 
-archivesBaseName = "${mod_name}-neoforge-${minecraft_version}"
+def accessTransformersFile = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
+if (accessTransformersFile.exists())
+    minecraft.accessTransformers.file accessTransformersFile
+
+subsystems {
+    parchment {
+        minecraftVersion = project.mappings_mc_version
+        mappingsVersion = project.mappings_version
+    }
+}
 
 runs {
     configureEach {
         systemProperty 'forge.logging.console.level', 'debug'
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
 
-        modSource project.sourceSets.main
-        modSource project(":Common").sourceSets.main
+        modSources {
+            add(project.sourceSets.getByName("main"))
+        }
     }
 
-    client {
-        //taskName 'Client'
-    }
+    client {}
 
     server {
-        //taskName 'Server'
-        //args '--nogui'
+        programArgument '--nogui'
     }
 }
 
@@ -31,65 +38,10 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
-    compileOnly project(":Common")
 }
-
-tasks.withType(JavaCompile).matching(it -> !it.name.startsWith("neo")).configureEach {
-    source(project(":Common").sourceSets.main.allSource)
-}
-
-sourcesJar {
-    from(project(":Common").sourceSets.main.allSource)
-}
-
-def replaceProperties = [
-        mod_id                 : mod_id,
-        mod_name               : mod_name,
-        mod_version            : version,
-        minecraft_version      : minecraft_version,
-        minecraft_version_range: minecraft_version_range,
-        neoforge_version       : neoforge_version,
-        neoforge_version_range : neoforge_version_range,
-        neoforge_loader_version_range   : neoforge_loader_version_range
-]
 
 processResources {
-    from project(":Common").sourceSets.main.resources
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties
-    }
-
     exclude '**/*.accesswidener'
-}
-
-jar {
-    manifest {
-        attributes([
-                'Specification-Title'     : mod_name,
-                'Specification-Vendor'    : mod_author,
-                'Specification-Version'   : project.jar.archiveVersion,
-                'Implementation-Title'    : project.name,
-                'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : mod_author,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                'Timestamp'              : System.currentTimeMillis(),
-                'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                'Built-On-Minecraft'      : minecraft_version
-        ])
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifactId = archivesBaseName
-            artifact jar
-            artifact sourcesJar
-        }
-    }
 }
 
 task publishToCurseForge(type:  net.darkhax.curseforgegradle.TaskPublishCurseForge) {
@@ -101,7 +53,7 @@ task publishToCurseForge(type:  net.darkhax.curseforgegradle.TaskPublishCurseFor
     mainFile.addModLoader("NeoForge")
     mainFile.addGameVersion(minecraft_version)
     mainFile.addJavaVersion("Java 21")
-    mainFile.changelog = "https://github.com/Tslat/SmartBrainLib/commits/1.20.6"
+    mainFile.changelog = "${changelog_url}"
     mainFile.displayName = "${project.mod_name} NeoForge ${project.minecraft_version}-${project.version}"
 
     //https://github.com/Darkhax/CurseForgeGradle#available-properties

@@ -1,17 +1,17 @@
 modLoader="javafml"
 loaderVersion="${neoforge_loader_version_range}"
-license="MPL-2.0"
-issueTrackerURL="https://github.com/Tslat/SmartBrainLib/issues"
+license="${license}"
+issueTrackerURL="${issues_url}"
 
 [[mods]]
 modId="${mod_id}"
-version="${mod_version}"
+version="${version}"
 displayName="${mod_name}"
 logoFile="logo.png"
 authors="Tslat"
 displayTest="IGNORE_SERVER_VERSION"
 description='''
-A library mod for smarter Brains and easier usage of the Brain system.
+${description}
 '''
 
 [[dependencies.${mod_id}]]

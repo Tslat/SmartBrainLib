@@ -4,16 +4,16 @@
   "version": "${version}",
 
   "name": "SmartBrainLib",
-  "description": "A library mod for smarter Brains and easier usage of the Brain system.",
+  "description": "${description}",
   "authors": [
     "Tslat"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/smartbrainlib",
-    "sources": "https://github.com/Tslat/SmartBrainLib"
+    "homepage": "${homepage_url}",
+    "sources": "${sources_url}"
   },
 
-  "license": "MPL-2.0",
+  "license": "${license}",
   "icon": "logo.png",
 
   "environment": "*",
@@ -25,9 +25,6 @@
       "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
     ]
   },
-  "mixins": [
-    "smartbrainlib.mixins.json"
-  ],
   "accessWidener": "smartbrainlib.accesswidener",
 
   "depends": {

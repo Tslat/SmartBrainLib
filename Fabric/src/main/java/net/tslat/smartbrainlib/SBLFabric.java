@@ -15,12 +15,10 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.example.SBLSkeleton;
-import net.tslat.smartbrainlib.mixin.MemoryTypesInvoker;
-import net.tslat.smartbrainlib.mixin.SensorTypeInvoker;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class SBLFabric implements SBLLoader {
@@ -45,21 +43,21 @@ public final class SBLFabric implements SBLLoader {
 	}
 
 	@Override
-	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, @Nullable Codec<T> codec) {
-		MemoryModuleType<T> memoryType = MemoryTypesInvoker.invokeRegister(SBLConstants.MOD_ID + ":" + id);
+	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, Optional<Codec<T>> codec) {
+		MemoryModuleType<T> memoryType = Registry.register(BuiltInRegistries.MEMORY_MODULE_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, id), new MemoryModuleType<>(codec));
 
 		return () -> memoryType;
 	}
 
 	@Override
 	public <T extends ExtendedSensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<T> sensor) {
-		SensorType<T> sensorType = Registry.register(BuiltInRegistries.SENSOR_TYPE, new ResourceLocation(SBLConstants.MOD_ID, id), SensorTypeInvoker.createSensorType(sensor));
+		SensorType<T> sensorType = Registry.register(BuiltInRegistries.SENSOR_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, id), new SensorType<>(sensor));
 
 		return () -> sensorType;
 	}
 
 	private static void registerEntities() {
-		SBL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(SBLConstants.MOD_ID, "sbl_skeleton"), FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new).dimensions(EntityDimensions.scalable(0.6f, 1.99f)).build());
+		SBL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, "sbl_skeleton"), FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new).dimensions(EntityDimensions.scalable(0.6f, 1.99f)).build());
 
 		FabricDefaultAttributeRegistry.register(SBL_SKELETON, Skeleton.createAttributes());
 	}
