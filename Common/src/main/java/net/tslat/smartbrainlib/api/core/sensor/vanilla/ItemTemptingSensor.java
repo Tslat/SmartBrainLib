@@ -71,7 +71,7 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	/**
 	 * Set the items to temptable items for the entity.
 	 *
-	 * @param temptingItems An ingredient representing the temptations for the
+	 * @param predicate An ingredient representing the temptations for the
 	 *                      entity
 	 * @return this
 	 */

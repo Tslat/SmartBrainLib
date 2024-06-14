@@ -15,7 +15,7 @@ public interface BrainBehaviourConsumer {
 	 * @param priority The priority the behaviour is nested under
 	 * @param activity The activity category the behaviour is under
 	 * @param behaviour The behaviour
-	 * @param parentBehaviour The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
+	 * @param parent The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
 	 *                        the behaviour is a child of, if applicable
 	 */
 	void consume(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parent);
