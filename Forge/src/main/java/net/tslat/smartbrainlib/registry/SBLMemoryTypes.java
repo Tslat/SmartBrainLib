@@ -8,9 +8,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.SBLConstants;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -26,10 +26,10 @@ public final class SBLMemoryTypes {
 	public static final Supplier<MemoryModuleType<List<ItemEntity>>> NEARBY_ITEMS = register("nearby_items");
 
 	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
-		return register(id, null);
+		return register(id, Optional.empty());
 	}
 
-	private static <T> Supplier<MemoryModuleType<T>> register(String id, @Nullable Codec<T> codec) {
+	private static <T> Supplier<MemoryModuleType<T>> register(String id, Optional<Codec<T>> codec) {
 		return SBLConstants.SBL_LOADER.registerMemoryType(id, codec);
 	}
 }

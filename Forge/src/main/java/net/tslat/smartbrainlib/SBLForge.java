@@ -18,7 +18,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.example.SBLSkeleton;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -49,16 +49,19 @@ public final class SBLForge implements SBLLoader {
 	}
 
 	@Override
+	@ApiStatus.Internal
 	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id) {
-		return registerMemoryType(id, null);
+		return registerMemoryType(id, Optional.empty());
 	}
 
 	@Override
-	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, @Nullable Codec<T> codec) {
-		return MEMORY_TYPES.register(id, () -> new MemoryModuleType<T>(Optional.ofNullable(codec)));
+	@ApiStatus.Internal
+	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, Optional<Codec<T>> codec) {
+		return MEMORY_TYPES.register(id, () -> new MemoryModuleType<>(codec));
 	}
 
 	@Override
+	@ApiStatus.Internal
 	public <T extends ExtendedSensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<T> sensor) {
 		return SENSORS.register(id, () -> new SensorType<>(sensor));
 	}
