@@ -48,7 +48,7 @@ public final class SBLNeoForge implements SBLLoader {
 
 	@Override
 	public <T> Supplier<MemoryModuleType<T>> registerMemoryType(String id) {
-		return registerMemoryType(id, null);
+		return registerMemoryType(id, Optional.empty());
 	}
 
 	@Override
