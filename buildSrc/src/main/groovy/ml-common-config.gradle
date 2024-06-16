@@ -109,8 +109,7 @@ jar {
                 'Implementation-Title'  : project.name,
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : authors,
-                'Built-On-Minecraft'    : minecraft_version,
-                "MixinConfigs"          : "${mod_id}.mixins.json"
+                'Built-On-Minecraft'    : minecraft_version
         ])
     }
 }
