@@ -49,6 +49,10 @@ public class SBLShufflingList<T> implements Iterable<T> {
 		return this.entries.get(index).get();
 	}
 
+	public int size() {
+		return this.entries.size();
+	}
+
 	@NotNull
 	@Override
 	public Iterator<T> iterator() {
