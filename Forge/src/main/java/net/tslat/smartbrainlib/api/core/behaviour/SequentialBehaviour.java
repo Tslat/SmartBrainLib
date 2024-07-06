@@ -14,7 +14,6 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public final class SequentialBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
-	private Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
 	private int runningIndex = 0;
 
 	public SequentialBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
@@ -27,10 +26,10 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 
 	/**
 	 * Adds an early short-circuit predicate to reset back to the start of the child behaviours at any time
+	 * @deprecated Use {@link ExtendedBehaviour#stopIf(Predicate)}
 	 */
+	@Deprecated(forRemoval = true)
 	public SequentialBehaviour<E> resetIf(Predicate<ExtendedBehaviour<? super E>> predicate) {
-		this.earlyResetPredicate = predicate;
-
 		return this;
 	}
 
