@@ -25,14 +25,6 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 		super(behaviours);
 	}
 
-	@Override
-	protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
-		if (this.cooldownFinishedAt > gameTime || !hasRequiredMemories(entity) || !this.startCondition.test(entity) || !checkExtraStartConditions(level, entity))
-			return false;
-
-		return (this.runningBehaviour = pickBehaviour(level, entity, gameTime, this.behaviours)) != null;
-	}
-
 	@Nullable
 	@Override
 	protected ExtendedBehaviour<? super E> pickBehaviour(ServerLevel level, E entity, long gameTime, SBLShufflingList<ExtendedBehaviour<? super E>> extendedBehaviours) {
