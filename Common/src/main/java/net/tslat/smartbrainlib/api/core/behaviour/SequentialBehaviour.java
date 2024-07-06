@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  */
 public final class SequentialBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
 	private Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
-	private ExtendedBehaviour<? super E> lastRun = null;
+	private int runningIndex = 0;
 
 	public SequentialBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
@@ -34,33 +34,45 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 		return this;
 	}
 
+	@Override
+	protected boolean shouldKeepRunning(E entity) {
+		return this.runningBehaviour != null && this.runningBehaviour.getStatus() != Status.STOPPED;
+	}
+
+	@Override
+	protected void tick(ServerLevel level, E owner, long gameTime) {
+		this.runningBehaviour.tickOrStop(level, owner, gameTime);
+
+		if (this.runningBehaviour.getStatus() == Status.STOPPED) {
+			if (pickBehaviour(level, owner, gameTime, this.behaviours) != null)
+				return;
+
+			doStop(level, owner, gameTime);
+		}
+	}
+
 	@Nullable
 	@Override
 	protected ExtendedBehaviour<? super E> pickBehaviour(ServerLevel level, E entity, long gameTime, SBLShufflingList<ExtendedBehaviour<? super E>> extendedBehaviours) {
-		boolean pickNext = this.lastRun == null;
+		if (this.runningIndex >= extendedBehaviours.size())
+			return null;
 
-		if (this.lastRun != null && this.earlyResetPredicate.test(this.lastRun)) {
-			pickNext = true;
-			this.lastRun = null;
+		ExtendedBehaviour<? super E> first = extendedBehaviours.get(this.runningIndex);
+
+		if (first != null && first.tryStart(level, entity, gameTime)) {
+			this.runningBehaviour = first;
+			this.runningIndex++;
+
+			return this.runningBehaviour;
 		}
-
-		for (ExtendedBehaviour<? super E> behaviour : extendedBehaviours) {
-			if (pickNext) {
-				if (behaviour.tryStart(level, entity, gameTime)) {
-					this.lastRun = behaviour;
-
-					return behaviour;
-				}
-
-				return null;
-			}
-
-			if (behaviour == this.lastRun)
-				pickNext = true;
-		}
-
-		this.lastRun = null;
 
 		return null;
+	}
+
+	@Override
+	protected void stop(ServerLevel level, E entity, long gameTime) {
+		super.stop(level, entity, gameTime);
+
+		this.runningIndex = 0;
 	}
 }
