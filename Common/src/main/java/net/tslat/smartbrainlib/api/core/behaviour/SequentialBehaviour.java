@@ -40,6 +40,11 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 	}
 
 	@Override
+	protected boolean timedOut(long gameTime) {
+		return this.runningBehaviour == null || (this.runningBehaviour.timedOut(gameTime) && this.runningIndex >= this.behaviours.size());
+	}
+
+	@Override
 	protected void tick(ServerLevel level, E owner, long gameTime) {
 		this.runningBehaviour.tickOrStop(level, owner, gameTime);
 
