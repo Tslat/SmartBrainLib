@@ -25,6 +25,8 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 	public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		this.behaviours = new SBLShufflingList<>(behaviours);
+
+		noTimeout();
 	}
 
 	public GroupBehaviour(ExtendedBehaviour<? super E>... behaviours) {
@@ -33,6 +35,8 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 		for (ExtendedBehaviour<? super E> behaviour : behaviours) {
 			this.behaviours.add(behaviour, 1);
 		}
+
+		noTimeout();
 	}
 
 	@Override
