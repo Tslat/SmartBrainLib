@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +24,7 @@ import java.util.List;
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryStatus.REGISTERED));
 
-	protected ToBooleanBiFunction<E, LivingEntity> customPredicate = (entity, target) -> target instanceof Player pl && (pl.isCreative() || pl.isSpectator());
+	protected ToBooleanBiFunction<E, LivingEntity> customPredicate = (entity, target) -> (target instanceof Player player && player.getAbilities().invulnerable) || (entity.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) && entity.distanceToSqr(target) >= Math.pow(entity.getAttributeValue(Attributes.FOLLOW_RANGE), 2));
 	protected long pathfindingAttentionSpan = 200;
 
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
