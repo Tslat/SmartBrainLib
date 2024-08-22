@@ -42,7 +42,7 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 	public FollowTemptation() {
 		super();
 
-		this.runFor(entity -> Integer.MAX_VALUE);
+		noTimeout();
 	}
 
 	@Override
