@@ -35,14 +35,14 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.IS_TEMPTED, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.BREED_TARGET, MemoryStatus.REGISTERED));
 
 	protected BiFunction<E, Player, Float> speedMod = (entity, temptingPlayer) -> 1f;
-	protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> (!(entity instanceof Animal animal) || animal.getAge() == 0) && !BrainUtils.hasMemory(entity, MemoryModuleType.IS_PANICKING);
+	protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> (!(entity instanceof Animal animal) || animal.getAge() == 0) && !BrainUtils.memoryOrDefault(entity, MemoryModuleType.IS_PANICKING, () -> false);
 	protected BiFunction<E, Player, Float> closeEnoughWhen = (owner, temptingPlayer) -> 2.5f;
 	protected Object2IntFunction<E> temptationCooldown = entity -> 100;
 
 	public FollowTemptation() {
 		super();
 
-		this.runFor(entity -> Integer.MAX_VALUE);
+		noTimeout();
 	}
 
 	@Override
