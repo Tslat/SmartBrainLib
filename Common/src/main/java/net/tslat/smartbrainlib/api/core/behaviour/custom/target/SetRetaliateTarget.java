@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -31,11 +31,21 @@ import java.util.function.Predicate;
 public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.HURT_BY_ENTITY, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT));
 
-	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.isCreative());
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 
 	protected LivingEntity toTarget = null;
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
-	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> owner.getClass().isAssignableFrom(ally.getClass()) && BrainUtils.getTargetOfEntity(ally) == null && (!(owner instanceof TamableAnimal pet) || pet.getOwner() == ((TamableAnimal)ally).getOwner()) && !ally.isAlliedTo(BrainUtils.getMemory(owner, MemoryModuleType.HURT_BY_ENTITY));
+	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
+		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtils.getTargetOfEntity(ally) != null)
+			return false;
+
+		if (owner instanceof OwnableEntity pet && pet.getOwner() != ((OwnableEntity)ally).getOwner())
+			return false;
+
+		Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
+
+		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
+	};
 
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
