@@ -13,6 +13,7 @@ import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.util.SensoryUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -28,7 +29,7 @@ import java.util.List;
  * attribute</li>
  * <li>No spectators</li>
  * </ul>
- * 
+ *
  * @param <E> The entity
  */
 public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
@@ -43,7 +44,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 
 	/**
 	 * Set the radius for the sensor to scan.
-	 * 
+	 *
 	 * @param radius The coordinate radius, in blocks
 	 * @return this
 	 */
@@ -53,7 +54,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 
 	/**
 	 * Set the radius for the sensor to scan.
-	 * 
+	 *
 	 * @param xz The X/Z coordinate radius, in blocks
 	 * @param y  The Y coordinate radius, in blocks
 	 * @return this
@@ -94,7 +95,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 
 		List<Player> attackablePlayers = new ObjectArrayList<>(targetablePlayers);
 
-		attackablePlayers.removeIf(pl -> !isEntityAttackable(entity, pl));
+		attackablePlayers.removeIf(pl -> !SensoryUtils.isEntityAttackable(entity, pl));
 
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_PLAYERS, players);
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER, targetablePlayers.isEmpty() ? null : targetablePlayers.get(0));

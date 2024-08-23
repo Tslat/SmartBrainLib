@@ -15,7 +15,7 @@ public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBeha
 	protected int runningTime = 0;
 
 	public HeldBehaviour() {
-		runFor(entity -> Integer.MAX_VALUE);
+		noTimeout();
 	}
 
 	/**

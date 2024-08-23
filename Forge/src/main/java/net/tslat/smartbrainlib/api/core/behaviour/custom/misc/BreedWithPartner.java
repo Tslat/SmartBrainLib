@@ -35,7 +35,7 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 	protected Animal partner = null;
 
 	public BreedWithPartner() {
-		runFor(entity -> Integer.MAX_VALUE);
+		noTimeout();
 	}
 
 	@Override
