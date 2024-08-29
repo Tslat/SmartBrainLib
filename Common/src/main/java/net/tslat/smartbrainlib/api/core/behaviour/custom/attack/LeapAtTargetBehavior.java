@@ -45,11 +45,13 @@ public class LeapAtTargetBehavior<E extends Mob> extends AnimatableMeleeAttack<E
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
 
-        return entity.getSensing().hasLineOfSight(this.target) && entity.onGround() && entity.position().distanceToSqr(this.target.position()) <= this.jumpDistanceSupplier.apply(entity);
+        float dist = this.jumpDistanceSupplier.apply(entity);
+        return entity.getSensing().hasLineOfSight(this.target) && entity.onGround() && entity.position().distanceToSqr(this.target.position()) <= dist * dist;
     }
 
     @Override
     protected void start(E entity) {
+        super.start(entity);
         Vec3 vec3 = entity.getDeltaMovement();
         Vec3 vec32 = new Vec3(this.target.getX() - entity.getX(), 0.0, this.target.getZ() - entity.getZ());
         if (vec32.lengthSqr() > 1.0E-7) {
