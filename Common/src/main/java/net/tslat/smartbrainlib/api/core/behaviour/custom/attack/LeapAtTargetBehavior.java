@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -12,20 +13,33 @@ import java.util.function.Function;
  * @param <E>
  */
 public class LeapAtTargetBehavior<E extends Mob> extends AnimatableMeleeAttack<E> {
-    protected Function<E, Float> jumpHeightSupplier = entity -> 0.3F;
+    protected Function<E, Float> vertJumpStrengthSupplier = entity -> 0.3F;
     protected Function<E, Float> jumpDistanceSupplier = entity -> 8F;
+    protected Function<E, Float> jumpStrengthSupplier = entity -> 0.4F;
+    protected BiFunction<E, Vec3, Float> speedModifier = (entity, vec3) -> 0.2F;
 
     public LeapAtTargetBehavior(int delayTicks) {
         super(delayTicks);
     }
 
     /**
-     * Set the jump strength.
+     * Sets the jump strength.
      * @param supplier The jump strength value provider
      * @return this
      */
-    public LeapAtTargetBehavior<E> jumpHeight(Function<E, Float> supplier) {
-        this.jumpHeightSupplier = supplier;
+    public LeapAtTargetBehavior<E> jumpStrength(Function<E, Float> supplier) {
+        this.jumpStrengthSupplier = supplier;
+
+        return this;
+    }
+
+    /**
+     * Sets the vertical jump strength.
+     * @param supplier The vertical jump strength value provider
+     * @return this
+     */
+    public LeapAtTargetBehavior<E> verticalJumpStrength(Function<E, Float> supplier) {
+        this.vertJumpStrengthSupplier = supplier;
 
         return this;
     }
@@ -41,6 +55,26 @@ public class LeapAtTargetBehavior<E extends Mob> extends AnimatableMeleeAttack<E
         return this;
     }
 
+    /**
+     * Set the jumpspeed modifier for when the entity is leaping
+     * @param modifier The jumpspeed modifier/multiplier
+     * @return this
+     */
+    public LeapAtTargetBehavior<E> speedModifier(float modifier) {
+        return speedModifier((entity, targetPos) -> modifier);
+    }
+
+    /**
+     * Set the jumpspeed modifier for when the entity is leaping
+     * @param function The jumpspeed modifier/multiplier function
+     * @return this
+     */
+    public LeapAtTargetBehavior<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+        this.speedModifier = function;
+
+        return this;
+    }
+
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
@@ -52,11 +86,11 @@ public class LeapAtTargetBehavior<E extends Mob> extends AnimatableMeleeAttack<E
     @Override
     protected void start(E entity) {
         super.start(entity);
-        Vec3 vec3 = entity.getDeltaMovement();
-        Vec3 vec32 = new Vec3(this.target.getX() - entity.getX(), 0.0, this.target.getZ() - entity.getZ());
-        if (vec32.lengthSqr() > 1.0E-7) {
-            vec32 = vec32.normalize().scale(0.4).add(vec3.scale(0.2));
-        }
-        entity.setDeltaMovement(vec32.x, this.jumpHeightSupplier.apply(entity), vec32.z);
+        Vec3 speed = entity.getDeltaMovement();
+        Vec3 targetVec = new Vec3(this.target.getX() - entity.getX(), 0.0, this.target.getZ() - entity.getZ());
+        if (targetVec.lengthSqr() > 1.0E-7)
+            targetVec = targetVec.normalize().scale(this.jumpStrengthSupplier.apply(entity)).add(speed.scale(this.speedModifier.apply(entity, this.target.position())));
+
+        entity.setDeltaMovement(targetVec.x, this.vertJumpStrengthSupplier.apply(entity), targetVec.z);
     }
 }
