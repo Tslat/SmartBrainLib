@@ -91,7 +91,7 @@ public class MemoryTest extends ObjectArrayList<Pair<MemoryModuleType<?>, Memory
      */
     public MemoryTest usesMemories(MemoryModuleType<?>... memories) {
         for (MemoryModuleType<?> memory : memories) {
-            hasMemory(memory);
+            usesMemory(memory);
         }
 
         return this;
