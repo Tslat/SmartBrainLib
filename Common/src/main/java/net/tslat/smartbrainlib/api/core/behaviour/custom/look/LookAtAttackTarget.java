@@ -31,7 +31,7 @@ public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return !(BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker) || entityTracker.getEntity() != this.target;
+		return !(BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker) || (entityTracker.getEntity() != this.target && entityTracker.getEntity().isAlive());
 	}
 
 	@Override
