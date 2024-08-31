@@ -88,6 +88,7 @@ processResources {
             "minecraft_version_range"		: project.minecraft_version_range,
             "fabric_api_version"			: project.fabric_api_version,
             "fabric_loader_version"			: project.fabric_loader_version,
+            "fabric_loader_version_range"	: project.fabric_loader_version_range,
             "neoforge_version"				: project.neoforge_version,
             "neoforge_version_range"		: project.neoforge_version_range,
             "neoforge_loader_version_range"	: project.neoforge_loader_version_range
