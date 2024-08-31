@@ -28,9 +28,9 @@
   "accessWidener": "smartbrainlib.accesswidener",
 
   "depends": {
-    "fabricloader": ">=0.16",
+    "fabricloader": ">=${fabric_loader_version_range}",
     "fabric-api": "*",
-    "minecraft": ">=1.21",
+    "minecraft": ">=${minecraft_version}",
     "java": ">=21"
   },
   "custom": {
