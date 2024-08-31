@@ -62,13 +62,18 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 		if (this.runningIndex >= extendedBehaviours.size())
 			return null;
 
-		ExtendedBehaviour<? super E> first = extendedBehaviours.get(this.runningIndex);
+		ExtendedBehaviour<? super E> next = extendedBehaviours.get(this.runningIndex);
 
-		if (first != null && first.tryStart(level, entity, gameTime)) {
-			this.runningBehaviour = first;
-			this.runningIndex++;
+		if (next != null) {
+			if (this.runningBehaviour != null && this.earlyResetPredicate.test(next))
+				return null;
 
-			return this.runningBehaviour;
+			if (next.tryStart(level, entity, gameTime)) {
+				this.runningBehaviour = next;
+				this.runningIndex++;
+
+				return this.runningBehaviour;
+			}
 		}
 
 		return null;
