@@ -20,7 +20,7 @@ import java.util.List;
 public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED));
 
-	private LivingEntity target = null;
+	protected LivingEntity target = null;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
