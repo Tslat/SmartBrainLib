@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2FloatFunction;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +37,7 @@ import java.util.function.BiPredicate;
  * @param <E> The entity
  */
 public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.HURT_BY).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_PANICKING);
 
 	protected BiPredicate<E, DamageSource> shouldPanicPredicate = (entity, damageSource) -> entity.isFreezing() || entity.isOnFire() || damageSource.getEntity() instanceof LivingEntity;
 	protected Object2FloatFunction<E> speedMod = entity -> 1.25f;

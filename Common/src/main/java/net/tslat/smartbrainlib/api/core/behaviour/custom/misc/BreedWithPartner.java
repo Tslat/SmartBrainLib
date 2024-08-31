@@ -1,13 +1,13 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.animal.Animal;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ import java.util.function.ToIntBiFunction;
  * </ul>
  */
 public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.BREED_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).noMemory(MemoryModuleType.BREED_TARGET).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
 
 	protected BiFunction<E, Animal, Float> speedMod = (entity, partner) -> 1f;
 	protected ToIntBiFunction<E, Animal> closeEnoughDist = (entity, partner) -> 2;
@@ -38,11 +38,6 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 
 	public BreedWithPartner() {
 		noTimeout();
-	}
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
 	}
 
 	/**
@@ -65,6 +60,11 @@ public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
 		this.closeEnoughDist = closeEnoughDist;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

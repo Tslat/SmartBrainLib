@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import java.util.List;
  * @param <E> The entity
  */
 public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.WALK_TARGET);
 
 	protected float speedModifier = 1;
 

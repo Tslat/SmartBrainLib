@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntFunction;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.behavior.EntityTracker;
@@ -12,6 +11,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.function.BiPredicate;
  * </ul>
  */
 public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryStatus.VALUE_ABSENT), Pair.of(MemoryModuleType.IS_TEMPTED, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.TEMPTING_PLAYER, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.BREED_TARGET, MemoryStatus.REGISTERED));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
 
 	protected BiFunction<E, Player, Float> speedMod = (entity, temptingPlayer) -> 1f;
 	protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> (!(entity instanceof Animal animal) || animal.getAge() == 0) && !BrainUtils.memoryOrDefault(entity, MemoryModuleType.IS_PANICKING, () -> false);
@@ -43,11 +43,6 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 		super();
 
 		noTimeout();
-	}
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
 	}
 
 	/**
@@ -93,6 +88,11 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 		this.temptationCooldown = cooldownFunction;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

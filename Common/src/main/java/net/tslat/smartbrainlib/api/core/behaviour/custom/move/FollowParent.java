@@ -1,11 +1,11 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ import java.util.function.BiPredicate;
  * animal of the same class and presumes it is the parent.</p>
  */
 public class FollowParent<E extends AgeableMob> extends FollowEntity<E, AgeableMob> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryStatus.VALUE_PRESENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	private BiPredicate<E, AgeableMob> parentPredicate = (entity, other) -> entity.getClass() == other.getClass() && other.getAge() >= 0;
 
@@ -37,13 +37,13 @@ public class FollowParent<E extends AgeableMob> extends FollowEntity<E, AgeableM
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		return entity.getAge() < 0 && super.checkExtraStartConditions(level, entity);
+	public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
-	public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
+	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+		return entity.getAge() < 0 && super.checkExtraStartConditions(level, entity);
 	}
 
 	@Nullable

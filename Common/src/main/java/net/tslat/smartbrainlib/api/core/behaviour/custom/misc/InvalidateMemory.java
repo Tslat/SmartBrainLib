@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -28,20 +29,17 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 		super();
 
 		this.memory = memory;
-		this.memoryRequirements = List.of(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT));
-	}
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return this.memoryRequirements == null ? List.of() : this.memoryRequirements;
+		this.memoryRequirements = MemoryTest.builder(1).hasMemory(this.memory);
 	}
 
 	/**
 	 * Sets the {@link MemoryModuleType memory} to check and invalidate.
+	 * @deprecated Use the constructor
 	 */
+	@Deprecated(forRemoval = true)
 	public InvalidateMemory<E, M> forMemory(MemoryModuleType<M> memory) {
 		this.memory = memory;
-		this.memoryRequirements = List.of(Pair.of(this.memory, MemoryStatus.VALUE_PRESENT));
+		this.memoryRequirements = MemoryTest.builder(1).hasMemory(memory);
 
 		return this;
 	}
@@ -53,6 +51,11 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 		this.customPredicate = predicate;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return this.memoryRequirements == null ? List.of() : this.memoryRequirements;
 	}
 
 	@Override

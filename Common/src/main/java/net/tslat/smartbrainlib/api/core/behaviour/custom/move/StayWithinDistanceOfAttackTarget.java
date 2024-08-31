@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -32,18 +32,13 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected BiFunction<E, LivingEntity, Float> distMax = (entity, target) -> 20f;
 	protected BiFunction<E, LivingEntity, Float> distMin = (entity, target) -> 5f;
 	protected Predicate<E> stopWhen = entity -> false;
 	protected float speedMod = 1;
 	protected float repositionSpeedMod = 1.3f;
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
 
 	/**
 	 * Set how far the entity should attempt to stay away from the target at a minimum.
@@ -105,6 +100,11 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 		this.speedMod = modifier;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

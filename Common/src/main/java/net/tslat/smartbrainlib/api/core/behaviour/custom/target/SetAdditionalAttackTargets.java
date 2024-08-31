@@ -38,11 +38,6 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	protected TriConsumer<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> targetCallback = (owner, memory, target) -> {};
 	protected boolean avoidDuplicateTargets = true;
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
-	}
-
 	/**
 	 * Set the predicate to determine whether a given entity should be targeted or not.
 	 * @param predicate The predicate
@@ -80,6 +75,11 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 		this.avoidDuplicateTargets = false;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return List.of();
 	}
 
 	@Override

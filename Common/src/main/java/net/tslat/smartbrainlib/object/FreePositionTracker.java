@@ -14,12 +14,12 @@ public class FreePositionTracker implements PositionTracker {
 
 	@Override
 	public Vec3 currentPosition() {
-		return pos;
+		return this.pos;
 	}
 
 	@Override
 	public BlockPos currentBlockPosition() {
-		return BlockPos.containing(pos);
+		return BlockPos.containing(this.pos);
 	}
 
 	@Override

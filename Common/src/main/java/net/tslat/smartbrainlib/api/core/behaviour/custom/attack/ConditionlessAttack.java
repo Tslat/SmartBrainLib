@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +9,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
 	protected boolean requireTarget = false;

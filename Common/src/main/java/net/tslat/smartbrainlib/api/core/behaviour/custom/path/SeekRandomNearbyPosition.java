@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,9 +10,10 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.util.RandomUtil;
-import net.tslat.smartbrainlib.object.SquareRadius;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected BiPredicate<E, BlockState> validPosition = (entity, state) -> false;
 	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
@@ -116,7 +116,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORIES;
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

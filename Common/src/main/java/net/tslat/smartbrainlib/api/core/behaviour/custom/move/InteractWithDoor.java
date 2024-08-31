@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -37,18 +37,13 @@ import java.util.function.ToIntFunction;
  * </ul>
  */
 public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<E> {
-    private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.PATH, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.DOORS_TO_CLOSE, MemoryStatus.REGISTERED), Pair.of(MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryStatus.REGISTERED));
+    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.PATH).usesMemories(MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_LIVING_ENTITIES);
 
     protected ToIntFunction<E> doorInteractionDelay = entity -> 20;
     protected TriPredicate<E, LivingEntity, BlockPos> holdDoorsOpenFor = (entity, other, doorPos) -> entity.getType() == other.getType() && doorPos.closerToCenterThan(other.position(), 2);
 
     protected int doorCloseCooldown = -1;
     protected Node lastNode = null;
-
-    @Override
-    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-        return MEMORY_REQUIREMENTS;
-    }
 
     /**
      * Set the predicate that determines what other entities this entity will hold open a door for and under what conditions
@@ -74,6 +69,11 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
         this.doorInteractionDelay = delay;
 
         return this;
+    }
+
+    @Override
+    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+        return MEMORY_REQUIREMENTS;
     }
 
     @Override
