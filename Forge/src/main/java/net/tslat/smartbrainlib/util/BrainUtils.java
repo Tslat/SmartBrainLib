@@ -64,6 +64,36 @@ public final class BrainUtils {
 	}
 
 	/**
+	 * Get a memory value from a brain, or insert a new value if not already present
+	 *
+	 * @param entity The entity
+	 * @param memory Memory type to get the value for
+	 * @param fallback Fallback value if no memory value is present
+	 * @return The stored memory, or fallback value if no memory was stored
+	 */
+	public static <T> T computeMemoryIfAbsent(LivingEntity entity, MemoryModuleType<T> memory, Supplier<T> fallback) {
+		return computeMemoryIfAbsent(entity.getBrain(), memory, fallback);
+	}
+
+	/**
+	 * Get a memory value from a brain, or insert a new value if not already present
+	 *
+	 * @param brain The brain
+	 * @param memory Memory type to get the value for
+	 * @param fallback Fallback value if no memory value is present
+	 * @return The stored memory, or fallback value if no memory was stored
+	 */
+	public static <T> T computeMemoryIfAbsent(Brain<?> brain, MemoryModuleType<T> memory, Supplier<T> fallback) {
+		return brain.getMemory(memory).orElseGet(() -> {
+			T newMemory = fallback.get();
+
+			brain.setMemory(memory, newMemory);
+
+			return newMemory;
+		});
+	}
+
+	/**
 	 * Get a memory value from an entity, or null if no memory is present
 	 *
 	 * @param entity The entity
@@ -303,7 +333,7 @@ public final class BrainUtils {
 	}
 	
 	/**
-	 * Replacement of {@link net.minecraft.world.entity.ai.behavior.BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
+	 * Replacement of {@link BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
 	 * @param entity The entity to check the brain of
 	 * @param target The target entity
 	 * @return Whether the target entity is known to be visible or not
@@ -314,7 +344,7 @@ public final class BrainUtils {
 		if (BehaviorUtils.entityIsVisible(brain, target))
 			return true;
 
-		return entity.hasLineOfSight(target);
+		return entity instanceof Mob mob ? mob.getSensing().hasLineOfSight(target) : entity.hasLineOfSight(target);
 	}
 
 	/**
@@ -518,7 +548,7 @@ public final class BrainUtils {
 	}
 
 	/**
-	 * Adds the given scheduled activity transition to the provided brain's {@link net.minecraft.world.entity.schedule.Schedule schedule}, creating a new schedule if required.
+	 * Adds the given scheduled activity transition to the provided brain's {@link Schedule schedule}, creating a new schedule if required.
 	 * @param brain The brain the schedule belongs to
 	 * @param activity The activity to transition to
 	 * @param tickTime The tick-time the activity transition should happen

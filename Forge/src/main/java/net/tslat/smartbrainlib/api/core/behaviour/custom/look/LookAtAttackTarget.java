@@ -1,13 +1,13 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.look;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
  * @param <E> The entity
  */
 public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.REGISTERED));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET);
 
-	private LivingEntity target = null;
+	protected LivingEntity target = null;
 
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
@@ -31,7 +31,7 @@ public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		this.target = BrainUtils.getTargetOfEntity(entity);
 
-		return !(BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker) || entityTracker.getEntity() != this.target;
+		return !(BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker) || (entityTracker.getEntity() != this.target && entityTracker.getEntity().isAlive());
 	}
 
 	@Override

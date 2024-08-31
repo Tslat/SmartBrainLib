@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
@@ -11,6 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
@@ -23,18 +23,13 @@ import java.util.function.BiPredicate;
  * @param <E> The entity
  */
 public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryStatus.VALUE_PRESENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (entity, block) -> true;
 	protected BiFunction<E, Pair<BlockPos, BlockState>, Float> speedMod = (owner, pos) -> 1f;
 	protected BiFunction<E, Pair<BlockPos, BlockState>, Integer> closeEnoughDist = (entity, pos) -> 2;
 
 	protected Pair<BlockPos, BlockState> target = null;
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
 
 	/**
 	 * Set the predicate to determine whether a given position/state should be the target path
@@ -67,6 +62,11 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 		this.closeEnoughDist = function;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

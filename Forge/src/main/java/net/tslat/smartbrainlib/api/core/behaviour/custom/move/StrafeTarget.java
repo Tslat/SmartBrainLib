@@ -1,12 +1,12 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected boolean strafingLaterally = false;
 	protected boolean strafingBack = false;
@@ -30,11 +30,6 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	protected float strafeDistanceSqr = 244;
 	protected Predicate<E> stopStrafingWhen = entity -> false;
 	protected float speedMod = 1;
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
 
 	/**
 	 * Set a custom condition for when the strafing should end.
@@ -67,6 +62,11 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 		this.speedMod = modifier;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

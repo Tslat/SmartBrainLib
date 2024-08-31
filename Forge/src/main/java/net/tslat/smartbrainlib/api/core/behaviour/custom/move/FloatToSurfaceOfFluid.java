@@ -22,11 +22,6 @@ import java.util.List;
 public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	protected float riseChance = 0.8f;
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
-	}
-
 	/**
 	 * Set the chance per tick that the entity will 'jump' in water, rising up towards the surface.
 	 * @param chance The chance, between 0 and 1 (inclusive)
@@ -36,6 +31,11 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 		this.riseChance = chance;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return List.of();
 	}
 
 	@Override

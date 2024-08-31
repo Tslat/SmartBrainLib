@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.path;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -10,8 +9,9 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,17 +31,12 @@ import java.util.function.Predicate;
  * @param <E>
  */
 public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
 	protected Predicate<E> avoidWaterPredicate = entity -> true;
 	protected SquareRadius radius = new SquareRadius(10, 7);
 	protected BiPredicate<E, Vec3> positionPredicate = (entity, pos) -> true;
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORY_REQUIREMENTS;
-	}
 
 	/**
 	 * Set the radius in which to look for walk positions.
@@ -113,6 +108,11 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 		this.avoidWaterPredicate = predicate;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override

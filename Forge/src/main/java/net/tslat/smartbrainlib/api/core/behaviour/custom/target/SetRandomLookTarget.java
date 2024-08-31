@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.ConstantFloat;
@@ -10,8 +9,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 import java.util.function.Function;
@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = ObjectArrayList.of(Pair.of(MemoryModuleType.LOOK_TARGET, MemoryStatus.VALUE_ABSENT));
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected FloatProvider runChance = ConstantFloat.of(0.02f);
 	protected Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
@@ -49,6 +49,11 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return MEMORY_REQUIREMENTS;
+	}
+
+	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		return entity.getRandom().nextFloat() < this.runChance.sample(entity.getRandom());
 	}
@@ -58,10 +63,5 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 		double angle = Mth.TWO_PI * entity.getRandom().nextDouble();
 
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
-	}
-
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return MEMORIES;
 	}
 }

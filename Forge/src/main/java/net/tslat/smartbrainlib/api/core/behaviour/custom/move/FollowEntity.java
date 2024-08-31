@@ -43,11 +43,6 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected float oldWaterPathMalus = 0;
 	protected float oldLavaPathMalus = 0;
 
-	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-		return List.of();
-	}
-
 	/**
 	 * Determines the entity that the brain owner should follow.
 	 * @param following The function that provides the entity to follow
@@ -117,6 +112,11 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		this.speedMod = modifier;
 
 		return this;
+	}
+
+	@Override
+	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+		return List.of();
 	}
 
 	@Override

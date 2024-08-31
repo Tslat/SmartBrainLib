@@ -10,10 +10,11 @@ import java.util.function.Predicate;
 
 /**
  * Group behaviour that runs all child behaviours in order, one after another.<br>
- * Restarts from the first behaviour upon reaching the end of the list or failing to continue the current behaviour
+ * Restarts from the first behaviour upon reaching the end of the list
  * @param <E> The entity
  */
 public final class SequentialBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
+	private Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
 	private int runningIndex = 0;
 
 	public SequentialBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
@@ -26,10 +27,10 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 
 	/**
 	 * Adds an early short-circuit predicate to reset back to the start of the child behaviours at any time
-	 * @deprecated Use {@link ExtendedBehaviour#stopIf(Predicate)}
 	 */
-	@Deprecated(forRemoval = true)
 	public SequentialBehaviour<E> resetIf(Predicate<ExtendedBehaviour<? super E>> predicate) {
+		this.earlyResetPredicate = predicate;
+
 		return this;
 	}
 
@@ -61,13 +62,18 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 		if (this.runningIndex >= extendedBehaviours.size())
 			return null;
 
-		ExtendedBehaviour<? super E> first = extendedBehaviours.get(this.runningIndex);
+		ExtendedBehaviour<? super E> next = extendedBehaviours.get(this.runningIndex);
 
-		if (first != null && first.tryStart(level, entity, gameTime)) {
-			this.runningBehaviour = first;
-			this.runningIndex++;
+		if (next != null) {
+			if (this.runningBehaviour != null && this.earlyResetPredicate.test(next))
+				return null;
 
-			return this.runningBehaviour;
+			if (next.tryStart(level, entity, gameTime)) {
+				this.runningBehaviour = next;
+				this.runningIndex++;
+
+				return this.runningBehaviour;
+			}
 		}
 
 		return null;
