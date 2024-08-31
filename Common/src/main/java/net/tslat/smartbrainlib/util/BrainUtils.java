@@ -64,6 +64,36 @@ public final class BrainUtils {
 	}
 
 	/**
+	 * Get a memory value from a brain, or insert a new value if not already present
+	 *
+	 * @param entity The entity
+	 * @param memory Memory type to get the value for
+	 * @param fallback Fallback value if no memory value is present
+	 * @return The stored memory, or fallback value if no memory was stored
+	 */
+	public static <T> T computeMemoryIfAbsent(LivingEntity entity, MemoryModuleType<T> memory, Supplier<T> fallback) {
+		return computeMemoryIfAbsent(entity.getBrain(), memory, fallback);
+	}
+
+	/**
+	 * Get a memory value from a brain, or insert a new value if not already present
+	 *
+	 * @param brain The brain
+	 * @param memory Memory type to get the value for
+	 * @param fallback Fallback value if no memory value is present
+	 * @return The stored memory, or fallback value if no memory was stored
+	 */
+	public static <T> T computeMemoryIfAbsent(Brain<?> brain, MemoryModuleType<T> memory, Supplier<T> fallback) {
+		return brain.getMemory(memory).orElseGet(() -> {
+			T newMemory = fallback.get();
+
+			brain.setMemory(memory, newMemory);
+
+			return newMemory;
+		});
+	}
+
+	/**
 	 * Get a memory value from an entity, or null if no memory is present
 	 *
 	 * @param entity The entity
