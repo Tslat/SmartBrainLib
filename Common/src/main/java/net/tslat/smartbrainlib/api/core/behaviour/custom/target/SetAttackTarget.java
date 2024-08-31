@@ -23,7 +23,7 @@ import java.util.function.Predicate;
  */
 public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.NEAREST_ATTACKABLE).noMemory(MemoryModuleType.ATTACK_TARGET);
-	private static final MemoryTest CUSTOM_TARGETING_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.ATTACK_TARGET);
+	private static final MemoryTest CUSTOM_TARGETING_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected final boolean usingNearestAttackable;
 	protected Predicate<E> canAttackPredicate = entity -> true;
