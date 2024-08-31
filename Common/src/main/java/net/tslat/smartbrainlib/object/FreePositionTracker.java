@@ -5,6 +5,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.phys.Vec3;
 
+/**
+ * PositionTracker implementation that takes a raw {@link Vec3} for precision
+ */
 public class FreePositionTracker implements PositionTracker {
 	private final Vec3 pos;
 
@@ -25,5 +28,10 @@ public class FreePositionTracker implements PositionTracker {
 	@Override
 	public boolean isVisibleBy(LivingEntity entity) {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "FreePositionTracker{pos=" + this.pos + "}";
 	}
 }
