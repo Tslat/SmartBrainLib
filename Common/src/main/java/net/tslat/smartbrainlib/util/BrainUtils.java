@@ -344,7 +344,7 @@ public final class BrainUtils {
 		if (BehaviorUtils.entityIsVisible(brain, target))
 			return true;
 
-		return entity.hasLineOfSight(target);
+		return entity instanceof Mob mob ? mob.getSensing().hasLineOfSight(target) : entity.hasLineOfSight(target);
 	}
 
 	/**
