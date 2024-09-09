@@ -60,6 +60,11 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	}
 
 	@Override
+	protected boolean shouldKeepRunning(E entity) {
+		return this.delayFinishedAt >= entity.level().getGameTime() - this.attackIntervalSupplier.apply(entity);
+	}
+
+	@Override
 	protected void start(E entity) {
 		entity.swing(InteractionHand.MAIN_HAND);
 		BehaviorUtils.lookAtEntity(entity, this.target);

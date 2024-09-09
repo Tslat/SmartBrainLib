@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected final int delayTime;
 	protected long delayFinishedAt = 0;
+	protected boolean delayFinished;
 	protected Consumer<E> delayedCallback = entity -> {};
 
 	public DelayedBehaviour(int delayTicks) {
@@ -62,9 +63,10 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 	protected final void tick(ServerLevel level, E entity, long gameTime) {
 		super.tick(level, entity, gameTime);
 
-		if (this.delayFinishedAt <= gameTime) {
+		if (!this.delayFinished && this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);
+			this.delayFinished = true;
 		}
 	}
 

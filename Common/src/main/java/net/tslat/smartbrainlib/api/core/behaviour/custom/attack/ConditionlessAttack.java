@@ -85,6 +85,11 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 	}
 
 	@Override
+	protected boolean shouldKeepRunning(E entity) {
+		return this.delayFinishedAt >= entity.level().getGameTime() - this.attackIntervalSupplier.apply(entity);
+	}
+
+	@Override
 	protected void start(E entity) {
 		entity.swing(InteractionHand.MAIN_HAND);
 
