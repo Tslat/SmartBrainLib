@@ -27,12 +27,16 @@ public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviou
     public RepeatingBehaviour(ExtendedBehaviour<E> child) {
         this.child = child;
 
+        for (Pair<MemoryModuleType<?>, MemoryStatus> memoryReq : getMemoryRequirements()) {
+            this.entryCondition.put(memoryReq.getFirst(), memoryReq.getSecond());
+        }
+
         noTimeout();
     }
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-        return child.getMemoryRequirements();
+        return child == null ? List.of() : child.getMemoryRequirements();
     }
 
     /**
