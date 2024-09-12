@@ -312,14 +312,6 @@ public final class EntityRetrievalUtil {
 	 * @param <T> The output entity subtype
 	 */
 	public static <T> List<T> getEntities(Level level, AABB area, Predicate<? extends Entity> predicate) {
-		Predicate<Entity> typeSafePredicate = (Predicate<Entity>) predicate;
-		List<T> entities = new ObjectArrayList<>();
-
-		level.getEntities().get(area, entity -> {
-			if (typeSafePredicate.test(entity))
-				entities.add((T) entity);
-		});
-
-		return entities;
+		return (List<T>)level.getEntities((Entity)null, area, (Predicate<Entity>)predicate);
 	}
 }
