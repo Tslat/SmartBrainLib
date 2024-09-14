@@ -38,6 +38,9 @@ accessible field net/minecraft/world/entity/ai/sensing/Sensor RANDOM Lnet/minecr
 # World
 accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
 accessible method net/minecraft/client/multiplayer/ClientLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+accessible field net/minecraft/world/level/entity/LevelEntityGetterAdapter sectionStorage Lnet/minecraft/world/level/entity/EntitySectionStorage;
+accessible field net/minecraft/world/level/entity/EntitySectionStorage sectionIds Lit/unimi/dsi/fastutil/longs/LongSortedSet;
+accessible field net/minecraft/world/level/entity/EntitySection storage Lnet/minecraft/util/ClassInstanceMultiMap;
 
 # Entities
 accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
