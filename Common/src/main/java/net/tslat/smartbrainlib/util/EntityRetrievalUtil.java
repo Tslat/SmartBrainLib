@@ -75,7 +75,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return (Optional<T>)getNearestEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, entity -> entity != origin);
+		return Optional.ofNullable((T)getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin));
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius) {
@@ -83,21 +83,25 @@ public final class EntityRetrievalUtil {
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return (Optional<T>)getNearestEntity(level, origin, radiusX, radiusY, radiusZ, Entity.class);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin);
+	}
+
+	public static <T extends Entity> Optional<T> getNearestEntity(Level level, AABB bounds, Vec3 origin) {
+		return (Optional<T>)getNearestEntity(level, bounds, origin, Entity.class);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radius, Class<T> minimumClass) {
-		return getNearestEntity(origin, radius, radius, radius, minimumClass, entity -> entity != origin);
+		return getNearestEntity(origin, radius, radius, radius, minimumClass);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return getNearestEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, entity -> entity != origin);
+		return getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), minimumClass, entity -> entity != origin);
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius, Class<T> minimumClass) {
@@ -105,7 +109,11 @@ public final class EntityRetrievalUtil {
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, minimumClass, entity -> true);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, minimumClass);
+	}
+
+	public static <T extends Entity> Optional<T> getNearestEntity(Level level, AABB bounds, Vec3 origin, Class<T> minimumClass) {
+		return getNearestEntity(level, bounds, origin, minimumClass, entity -> true);
 	}
 
 	/**
@@ -119,7 +127,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> T getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
-		return (T)getNearestEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate)).orElse(null);
+		return getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
@@ -146,7 +154,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<T> predicate) {
-		return getNearestEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
+		return getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<T> predicate) {
@@ -197,14 +205,14 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Player> T getNearestPlayer(Entity origin, double radius) {
-		return (T)getNearestPlayer(origin, radius, radius, radius, entity -> entity != origin);
+		return getNearestPlayer(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Player> T getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return getNearestPlayer(origin.level(), origin.position(), radiusX, radiusY, radiusZ, entity -> entity != origin);
+		return (T)getNearestPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin);
 	}
 
 	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radius) {
@@ -230,7 +238,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static Player getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getNearestPlayer(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Player>)entity -> entity != origin).and(predicate));
+		return getNearestPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), ((Predicate<Player>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
@@ -277,14 +285,14 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static List<Player> getPlayers(Entity origin, double radius) {
-		return getPlayers(origin, radius, radius, radius, entity -> entity != origin);
+		return getPlayers(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return getPlayers(origin.level(), origin.position(), radiusX, radiusY, radiusZ, entity -> entity != origin);
+		return getPlayers(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), entity -> entity != origin);
 	}
 
 	public static <T extends Player> List<T> getPlayers(Level level, Vec3 origin, double radius) {
@@ -314,7 +322,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getPlayers(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Player>)entity -> entity != origin).and(predicate));
+		return getPlayers(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Player>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Player> List<T> getPlayers(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
@@ -357,14 +365,14 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T> List<T> getEntities(Entity origin, double radius) {
-		return getEntities(origin, radius, radius, radius, entity -> entity != origin);
+		return getEntities(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return (List<T>)getEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, entity -> entity != origin);
+		return (List<T>)getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), entity -> entity != origin);
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius) {
@@ -387,14 +395,14 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> getEntities(Entity origin, double radius, Class<T> minimumClass) {
-		return getEntities(origin, radius, radius, radius, minimumClass, entity -> entity != origin);
+		return getEntities(origin, radius, radius, radius, minimumClass);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return getEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, entity -> entity != origin);
+		return getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), minimumClass, entity -> entity != origin);
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass) {
@@ -424,7 +432,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
-		return (List<T>)getEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
+		return (List<T>)getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
@@ -454,7 +462,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<T> predicate) {
-		return getEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
+		return getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<T> predicate) {
@@ -513,7 +521,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Player> Optional<T> findPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return findPlayer(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Player>)entity -> entity != origin).and(predicate));
+		return findPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Player>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Player> Optional<T> findPlayer(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
@@ -558,7 +566,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> Optional<T> findEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Entity> predicate) {
-		return findEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, ((Predicate<Entity>)entity -> entity != origin).and(predicate));
+		return findEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Entity>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> Optional<T> findEntity(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
@@ -588,7 +596,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> Optional<T> findEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<T> predicate) {
-		return findEntity(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
+		return findEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), minimumClass, ((Predicate<T>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> Optional<T> findEntity(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<T> predicate) {
@@ -653,18 +661,18 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> findEntities(Entity origin, double radius, int max, Predicate<Entity> predicate) {
-		return (List<T>)findEntities(origin, radius, radius, radius, Entity.class, max, predicate);
+		return findEntities(origin, radius, radius, radius, max, predicate);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> findEntities(Entity origin, double radiusX, double radiusY, double radiusZ, int max, Predicate<Entity> predicate) {
-		return (List<T>)findEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, Entity.class, max, ((Predicate<Entity>)entity -> entity != origin).and(predicate));
+		return (List<T>)findEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), Entity.class, max, ((Predicate<Entity>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> List<T> findEntities(Level level, Vec3 origin, double radius, int max, Predicate<Entity> predicate) {
-		return (List<T>)findEntities(level, AABB.ofSize(origin, radius, radius, radius), Entity.class, max, predicate);
+		return findEntities(level, origin, radius, radius, radius, max, predicate);
 	}
 
 	public static <T extends Entity> List<T> findEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, int max, Predicate<Entity> predicate) {
@@ -686,7 +694,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
 	public static <T extends Entity> List<T> findEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, int max, Predicate<? super T> predicate) {
-		return findEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass, max, ((Predicate<T>)entity -> entity != origin).and(predicate));
+		return findEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), minimumClass, max, ((Predicate<T>)entity -> entity != origin).and(predicate));
 	}
 
 	public static <T extends Entity> List<T> findEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass, int max, Predicate<? super T> predicate) {
@@ -761,7 +769,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The returned stream may include the origin entity in its contents
 	 */
 	public static Stream<Entity> streamEntities(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return streamEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ);
+		return streamEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), Entity.class);
 	}
 
 	public static Stream<Entity> streamEntities(Level level, Vec3 origin, double radius) {
@@ -787,7 +795,7 @@ public final class EntityRetrievalUtil {
 	 * NOTE: The returned stream may include the origin entity in its contents
 	 */
 	public static <T extends Entity> Stream<T> streamEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return streamEntities(origin.level(), origin.position(), radiusX, radiusY, radiusZ, minimumClass);
+		return streamEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), minimumClass);
 	}
 
 	public static <T extends Entity> Stream<T> streamEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass) {
