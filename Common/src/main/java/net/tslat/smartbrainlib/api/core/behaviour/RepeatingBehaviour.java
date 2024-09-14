@@ -36,7 +36,7 @@ public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviou
 
     @Override
     protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
-        return child == null ? List.of() : child.getMemoryRequirements();
+        return this.child == null ? List.of() : this.child.getMemoryRequirements();
     }
 
     /**
