@@ -111,8 +111,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected void alertAllies(ServerLevel level, E owner) {
 		double followRange = owner.getAttributeValue(Attributes.FOLLOW_RANGE);
 
-		for (LivingEntity ally : EntityRetrievalUtil.<LivingEntity>getEntities(level, owner.getBoundingBox().inflate(followRange, 10, followRange),
-				entity -> entity != owner && entity instanceof LivingEntity livingEntity && this.allyPredicate.test(owner, livingEntity))) {
+		for (LivingEntity ally : EntityRetrievalUtil.getEntities(owner, followRange, 10, followRange, LivingEntity.class, entity -> this.allyPredicate.test(owner, entity))) {
 			BrainUtils.setTargetOfEntity(ally, this.toTarget);
 		}
 	}

@@ -85,7 +85,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 			radius = new SquareRadius(dist, dist);
 		}
 
-		List<Player> players = EntityRetrievalUtil.getPlayers(level, radius.inflateAABB(entity.getBoundingBox()), player -> predicate().test(player, entity));
+		List<Player> players = EntityRetrievalUtil.getPlayers(entity, radius.xzRadius(), radius.yRadius(), radius.xzRadius(), player -> predicate().test(player, entity));
 
 		players.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
@@ -98,7 +98,7 @@ public class NearbyPlayersSensor<E extends LivingEntity> extends PredicateSensor
 		attackablePlayers.removeIf(pl -> !SensoryUtils.isEntityAttackable(entity, pl));
 
 		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_PLAYERS, players);
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER, targetablePlayers.isEmpty() ? null : targetablePlayers.get(0));
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, attackablePlayers.isEmpty() ? null : attackablePlayers.get(0));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_PLAYER, targetablePlayers.isEmpty() ? null : targetablePlayers.getFirst());
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, attackablePlayers.isEmpty() ? null : attackablePlayers.getFirst());
 	}
 }

@@ -74,7 +74,7 @@ public class NearbyItemsSensor<E extends Mob> extends PredicateSensor<ItemEntity
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, SBLMemoryTypes.NEARBY_ITEMS.get(), EntityRetrievalUtil.getEntities(level, this.radius.inflateAABB(entity.getBoundingBox()), obj -> obj instanceof ItemEntity item && predicate().test(item, entity)));
+		BrainUtils.setMemory(entity, SBLMemoryTypes.NEARBY_ITEMS.get(), EntityRetrievalUtil.getEntities(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), ItemEntity.class, item -> predicate().test(item, entity)));
 	}
 }
 
