@@ -1,11 +1,15 @@
 package net.tslat.smartbrainlib;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,7 +24,9 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class SBLForge implements SBLLoader {
@@ -46,6 +52,11 @@ public final class SBLForge implements SBLLoader {
 	@Override
 	public boolean isDevEnv() {
 		return !FMLLoader.isProduction();
+	}
+
+	@Override
+	public Pair<Collection<? extends Entity>, Function<Entity, ? extends Entity>> getPartEntities(Level level) {
+		return Pair.of(level.getPartEntities(), entity -> ((PartEntity<?>)entity).getParent());
 	}
 
 	@Override

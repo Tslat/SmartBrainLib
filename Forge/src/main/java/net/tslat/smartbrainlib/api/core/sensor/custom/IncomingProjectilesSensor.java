@@ -51,7 +51,7 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(7), target -> target instanceof Projectile projectile && predicate().test(projectile, entity));
+		List<Projectile> projectiles = EntityRetrievalUtil.getEntities(entity, 7, Projectile.class, projectile -> predicate().test(projectile, entity));
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));

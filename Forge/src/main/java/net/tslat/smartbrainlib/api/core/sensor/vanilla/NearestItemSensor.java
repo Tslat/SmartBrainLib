@@ -73,6 +73,6 @@ public class NearestItemSensor<E extends Mob> extends PredicateSensor<ItemEntity
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, EntityRetrievalUtil.getNearestEntity(level, this.radius.inflateAABB(entity.getBoundingBox()), entity.position(), obj -> obj instanceof ItemEntity item && predicate().test(item, entity)));
+		BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM, EntityRetrievalUtil.getNearestEntity(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), ItemEntity.class, item -> predicate().test(item, entity)).orElse(null));
 	}
 }

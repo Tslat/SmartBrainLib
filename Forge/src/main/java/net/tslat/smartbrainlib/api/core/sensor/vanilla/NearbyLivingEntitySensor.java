@@ -85,7 +85,7 @@ public class NearbyLivingEntitySensor<E extends LivingEntity> extends PredicateS
 			radius = new SquareRadius(dist, dist);
 		}
 
-		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(level, entity.getBoundingBox().inflate(radius.xzRadius(), radius.yRadius(), radius.xzRadius()), obj -> obj instanceof LivingEntity livingEntity && predicate().test(livingEntity, entity));
+		List<LivingEntity> entities = EntityRetrievalUtil.getEntities(entity, radius.xzRadius(), radius.yRadius(), radius.xzRadius(), LivingEntity.class, livingEntity -> predicate().test(livingEntity, entity));
 
 		entities.sort(Comparator.comparingDouble(entity::distanceToSqr));
 
