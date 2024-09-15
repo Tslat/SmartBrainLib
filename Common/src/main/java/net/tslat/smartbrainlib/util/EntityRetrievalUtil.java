@@ -179,7 +179,6 @@ public final class EntityRetrievalUtil {
 	 * @return           The closest entity found that meets the given criteria, or null if none found
 	 * @param <T>        The class in which all checked entities should be or extend. More specific typings are more efficient
 	 */
-	@Nullable
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, AABB bounds, Vec3 origin, Class<T> minimumClass, Predicate<T> predicate) {
 		final MutableDouble dist = new MutableDouble(Double.MAX_VALUE);
 		final MutableObject<T> closest = new MutableObject<>(null);
