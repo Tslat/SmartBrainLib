@@ -95,6 +95,7 @@ tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
     apiToken = System.getenv("curseforge.apitoken") ?: "Invalid/No API Token Found"
 
     val mainFile = upload(modCurseforgeId, tasks.jar)
+    mainFile.displayName = "${modDisplayName} NeoForge ${mcVersion} ${version}"
     mainFile.releaseType = "release"
     mainFile.addModLoader("NeoForge")
     mainFile.addGameVersion(mcVersion)
