@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+
+  "name": "${mod_display_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contact": {
+    "homepage": "${homepage_url}",
+    "sources": "${sources_url}"
+  },
+
+  "license": "${mod_license}",
+  "icon": "logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.tslat.smartbrainlib.SmartBrainLib"
+    ],
+    "client": [
+      "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
+    ]
+  },
+  "accessWidener": "smartbrainlib.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version_range}",
+    "fabric-api": "*",
+    "minecraft": ">=${minecraft_version}",
+    "java": ">=${java_version}"
+  },
+  "custom": {
+    "lithium:options": {
+      "mixin.ai.task.memory_change_counting": false
+    }
+  }
+}
