@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -68,7 +70,8 @@ public final class SBLFabric implements SBLLoader {
 	}
 
 	private static void registerEntities() {
-		SBL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, "sbl_skeleton"), FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new).dimensions(EntityDimensions.scalable(0.6f, 1.99f)).build());
+		ResourceLocation id = ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, "sbl_skeleton");
+		SBL_SKELETON = Registry.register(BuiltInRegistries.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(MobCategory.MONSTER, SBLSkeleton::new).dimensions(EntityDimensions.scalable(0.6f, 1.99f)).build(ResourceKey.create(Registries.ENTITY_TYPE, id)));
 
 		FabricDefaultAttributeRegistry.register(SBL_SKELETON, Skeleton.createAttributes());
 	}
