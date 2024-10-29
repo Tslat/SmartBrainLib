@@ -53,7 +53,7 @@ dependencies {
 loom {
     accessWidenerPath = file("src/main/resources/${modId}.accesswidener")
 
-    mixin.defaultRefmapName.set("${modId}.refmap.json")
+    //mixin.defaultRefmapName.set("${modId}.refmap.json")
 
     runs {
         named("client") {

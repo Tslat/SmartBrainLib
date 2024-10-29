@@ -104,8 +104,8 @@ tasks.withType<Jar>().configureEach {
             "Implementation-Title"    to modDisplayName,
             "Implementation-Version"  to modVersion,
             "Implementation-Vendor"   to modAuthors,
-            "Built-On-Minecraft"      to mcVersion,
-            "MixinConfigs"            to "$modId.mixins.json"
+            "Built-On-Minecraft"      to mcVersion/*,
+            "MixinConfigs"            to "$modId.mixins.json"*/
         ))
     }
 }
