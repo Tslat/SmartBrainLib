@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.SensoryUtils;
+import net.tslat.smartbrainlib.util.SensoryUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
@@ -16,7 +16,7 @@ import java.util.function.BiPredicate;
  * Sets the {@link MemoryModuleType#NEAREST_ATTACKABLE} memory based on visible nearby entities. <br>
  * Defaults:
  * <ul>
- *     <li>Only targets that {@link SensoryUtils#isEntityAttackable(LivingEntity, LivingEntity)} passes.</li>
+ *     <li>Only targets that {@link SensoryUtil#isEntityAttackable(LivingEntity, LivingEntity)} passes.</li>
  * </ul>
  * @param <E>
  */
@@ -28,7 +28,7 @@ public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFil
 
 	@Override
 	protected BiPredicate<LivingEntity, E> predicate() {
-		return (target, entity) -> SensoryUtils.isEntityAttackable(entity, target);
+		return (target, entity) -> SensoryUtil.isEntityAttackable(entity, target);
 	}
 
 	@Nullable

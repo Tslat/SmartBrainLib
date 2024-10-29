@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -88,10 +88,10 @@ public class SecondaryPoiSensor<E extends Villager> extends ExtendedSensor<E> {
 		}
 
 		if (poiPositions.isEmpty()) {
-			BrainUtils.clearMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE);
+			BrainUtil.clearMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE);
 		}
 		else {
-			BrainUtils.setMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE, poiPositions);
+			BrainUtil.setMemory(entity, MemoryModuleType.SECONDARY_JOB_SITE, poiPositions);
 		}
 	}
 }

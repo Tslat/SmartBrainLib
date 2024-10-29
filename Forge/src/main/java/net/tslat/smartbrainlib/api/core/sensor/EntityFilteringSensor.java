@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,11 +35,11 @@ public abstract class EntityFilteringSensor<P, E extends LivingEntity> extends P
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, getMemory(), testForEntity(entity));
+		BrainUtil.setMemory(entity, getMemory(), testForEntity(entity));
 	}
 
 	protected P testForEntity(E entity) {
-		NearestVisibleLivingEntities matcher = BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+		NearestVisibleLivingEntities matcher = BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 		if (matcher == null)
 			return null;

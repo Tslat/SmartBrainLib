@@ -67,15 +67,15 @@ public final class EntityRetrievalUtil {
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> Optional<T> getNearestEntity(Entity origin, double radius) {
+	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radius) {
 		return getNearestEntity(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return Optional.ofNullable((T)getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin));
+	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ) {
+		return getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin);
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius) {
@@ -119,14 +119,14 @@ public final class EntityRetrievalUtil {
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T extends Entity> T getNearestEntity(Entity origin, double radius, Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radius, Predicate<? extends Entity> predicate) {
 		return getNearestEntity(origin, radius, radius, radius, predicate);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T extends Entity> T getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> Optional<T> getNearestEntity(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
 		return getNearestEntity(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
 	}
 
@@ -135,12 +135,11 @@ public final class EntityRetrievalUtil {
 	}
 
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Entity> predicate) {
-		return Optional.ofNullable(getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate));
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
 	}
 
-	@Nullable
-	public static <T extends Entity> T getNearestEntity(Level level, AABB bounds, Vec3 origin, Predicate<? extends Entity> predicate) {
-		return (T)getNearestEntity(level, bounds, origin, Entity.class, (Predicate<Entity>)predicate).orElse(null);
+	public static <T extends Entity> Optional<T> getNearestEntity(Level level, AABB bounds, Vec3 origin, Predicate<Entity> predicate) {
+		return (Optional<T>)getNearestEntity(level, bounds, origin, Entity.class, predicate);
 	}
 
 	/**
@@ -203,66 +202,65 @@ public final class EntityRetrievalUtil {
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T extends Player> T getNearestPlayer(Entity origin, double radius) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Entity origin, double radius) {
 		return getNearestPlayer(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T extends Player> T getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return (T)getNearestPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin);
+	public static <T extends Player> Optional<T> getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ) {
+		return getNearestPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), entity -> entity != origin);
 	}
 
-	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radius) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, Vec3 origin, double radius) {
 		return getNearestPlayer(level, origin, radius, radius, radius);
 	}
 
-	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
 		return getNearestPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin);
 	}
 
-	public static <T extends Player> T getNearestPlayer(Level level, AABB area, Vec3 origin) {
-		return (T)getNearestPlayer(level, area, origin, pl -> true);
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, AABB area, Vec3 origin) {
+		return getNearestPlayer(level, area, origin, pl -> true);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static Player getNearestPlayer(Entity origin, double radius, Predicate<Player> predicate) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Entity origin, double radius, Predicate<Player> predicate) {
 		return getNearestPlayer(origin, radius, radius, radius, predicate);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static Player getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
 		return getNearestPlayer(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), origin.position(), ((Predicate<Player>)entity -> entity != origin).and(predicate));
 	}
 
-	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
 		return getNearestPlayer(level, origin, radius, radius, radius, predicate);
 	}
 
-	public static <T extends Player> T getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return (T)getNearestPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
+		return getNearestPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
 	}
 
 	/**
-	 * Get all players within a given region that meet a given criteria.
+	 * Get the closest player within a given region that meet a given criteria.
 	 * <p>
 	 * This is an implicitly superior alternative to {@link #getEntities} when only looking for players, as this
 	 * only searches the level's players, which is always a significantly smaller pool of targets to search from.
 	 * <p>
-	 * This should be used in all circumstances where you are only looking for players
+	 * This should be used in all circumstances where you are only looking for a player
 	 *
 	 * @param level      The level in which to search
 	 * @param bounds     The region in which to find players
-	 * @param predicate  The criteria to meet for a player to be included in the returned list
-	 * @return           A list of all players that are within the given region that meet the criteria in the predicate
+	 * @param predicate  The criteria to meet for a player to be valid
+	 * @return           The closest valid player to the origin point
 	 */
-	@Nullable
-	public static Player getNearestPlayer(Level level, AABB bounds, Vec3 origin, Predicate<Player> predicate) {
+	public static <T extends Player> Optional<T> getNearestPlayer(Level level, AABB bounds, Vec3 origin, Predicate<Player> predicate) {
 		double dist = Double.MAX_VALUE;
 		Player closest = null;
 
@@ -277,20 +275,20 @@ public final class EntityRetrievalUtil {
 			}
 		}
 
-		return closest;
+		return Optional.ofNullable((T)closest);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static List<Player> getPlayers(Entity origin, double radius) {
+	public static <T extends Player> List<T> getPlayers(Entity origin, double radius) {
 		return getPlayers(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ) {
+	public static <T extends Player> List<T> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ) {
 		return getPlayers(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), entity -> entity != origin);
 	}
 
@@ -303,24 +301,24 @@ public final class EntityRetrievalUtil {
 	}
 
 	public static <T extends Player> List<T> getPlayers(Level level, Vec3 from, Vec3 to) {
-		return (List<T>)getPlayers(level, new AABB(from, to));
+		return getPlayers(level, new AABB(from, to));
 	}
 
-	public static List<Player> getPlayers(Level level, AABB area) {
+	public static <T extends Player> List<T> getPlayers(Level level, AABB area) {
 		return getPlayers(level, area, pl -> true);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static List<Player> getPlayers(Entity origin, double radius, Predicate<Player> predicate) {
+	public static <T extends Player> List<T> getPlayers(Entity origin, double radius, Predicate<Player> predicate) {
 		return getPlayers(origin, radius, radius, radius, predicate);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static List<Player> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
+	public static <T extends Player> List<T> getPlayers(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
 		return getPlayers(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Player>)entity -> entity != origin).and(predicate));
 	}
 
@@ -329,11 +327,11 @@ public final class EntityRetrievalUtil {
 	}
 
 	public static <T extends Player> List<T> getPlayers(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return (List<T>)getPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return getPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
 	}
 
 	public static <T extends Player> List<T> getPlayers(Level level, Vec3 from, Vec3 to, Predicate<Player> predicate) {
-		return (List<T>)getPlayers(level, new AABB(from, to), predicate);
+		return getPlayers(level, new AABB(from, to), predicate);
 	}
 
 	/**
@@ -349,12 +347,12 @@ public final class EntityRetrievalUtil {
 	 * @param predicate  The criteria to meet for a player to be included in the returned list
 	 * @return           A list of all players that are within the given region that meet the criteria in the predicate
 	 */
-	public static List<Player> getPlayers(Level level, AABB bounds, Predicate<Player> predicate) {
-		List<Player> players = new ObjectArrayList<>();
+	public static <T extends Player> List<T> getPlayers(Level level, AABB bounds, Predicate<Player> predicate) {
+		List<T> players = new ObjectArrayList<>();
 
 		for (Player player : level.players()) {
 			if (bounds.contains(player.position()) && predicate.test(player))
-				players.add(player);
+				players.add((T)player);
 		}
 
 		return players;
@@ -363,15 +361,15 @@ public final class EntityRetrievalUtil {
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> List<T> getEntities(Entity origin, double radius) {
+	public static <T extends Entity> List<T> getEntities(Entity origin, double radius) {
 		return getEntities(origin, radius, radius, radius);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ) {
-		return (List<T>)getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), entity -> entity != origin);
+	public static <T extends Entity> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ) {
+		return getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), entity -> entity != origin);
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius) {
@@ -423,15 +421,15 @@ public final class EntityRetrievalUtil {
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> List<T> getEntities(Entity origin, double radius, Predicate<? extends Entity> predicate) {
+	public static <T extends Entity> List<T> getEntities(Entity origin, double radius, Predicate<? extends Entity> predicate) {
 		return getEntities(origin, radius, radius, radius, predicate);
 	}
 
 	/**
 	 * NOTE: The origin entity will be automatically excluded from the search and will not be passed to the predicate
 	 */
-	public static <T> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
-		return (List<T>)getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
+	public static <T extends Entity> List<T> getEntities(Entity origin, double radiusX, double radiusY, double radiusZ, Predicate<? extends Entity> predicate) {
+		return getEntities(origin.level(), origin.getBoundingBox().inflate(radiusX, radiusY, radiusZ), ((Predicate<Entity>)entity -> entity != origin).and((Predicate<Entity>)predicate));
 	}
 
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
@@ -825,8 +823,6 @@ public final class EntityRetrievalUtil {
 	 * @param <T>           The class in which all returned entities should be or extend. More specific typings are more efficient
 	 */
 	public static <T extends Entity> Stream<T> streamEntities(Level level, AABB bounds, Class<T> minimumClass) {
-		level.getProfiler().incrementCounter("getEntities");
-
 		if (!(level.getEntities() instanceof LevelEntityGetterAdapter<Entity> entities))
 			return (minimumClass == Entity.class ? (List)getEntities(level, bounds, entity -> true) : getEntities(level, bounds, minimumClass, entity -> true)).stream();
 

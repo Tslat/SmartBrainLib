@@ -14,7 +14,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
 		Brain<?> brain = entity.getBrain();
-		WalkTarget walkTarget = BrainUtils.getMemory(brain, MemoryModuleType.WALK_TARGET);
+		WalkTarget walkTarget = BrainUtil.getMemory(brain, MemoryModuleType.WALK_TARGET);
 
 		if (!hasReachedTarget(entity, walkTarget) && attemptNewPath(entity, walkTarget, false)) {
 			this.lastTargetPos = walkTarget.getTarget().currentBlockPosition();
@@ -49,8 +49,8 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 			return true;
 		}
 
-		BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
-		BrainUtils.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+		BrainUtil.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+		BrainUtil.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		return false;
 	}
@@ -63,7 +63,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 		if (entity.getNavigation().isDone())
 			return false;
 
-		WalkTarget walkTarget = BrainUtils.getMemory(entity, MemoryModuleType.WALK_TARGET);
+		WalkTarget walkTarget = BrainUtil.getMemory(entity, MemoryModuleType.WALK_TARGET);
 
 		return walkTarget != null && !hasReachedTarget(entity, walkTarget);
 	}
@@ -81,11 +81,11 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 		if (this.path != path) {
 			this.path = path;
 
-			BrainUtils.setMemory(brain, MemoryModuleType.PATH, path);
+			BrainUtil.setMemory(brain, MemoryModuleType.PATH, path);
 		}
 
 		if (path != null && this.lastTargetPos != null) {
-			WalkTarget walkTarget = BrainUtils.getMemory(brain, MemoryModuleType.WALK_TARGET);
+			WalkTarget walkTarget = BrainUtil.getMemory(brain, MemoryModuleType.WALK_TARGET);
 
 			if (walkTarget.getTarget().currentBlockPosition().distSqr(this.lastTargetPos) > 4 && attemptNewPath(entity, walkTarget, hasReachedTarget(entity, walkTarget))) {
 				this.lastTargetPos = walkTarget.getTarget().currentBlockPosition();
@@ -99,11 +99,11 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	protected void stop(E entity) {
 		Brain<?> brain = entity.getBrain();
 
-		if (!entity.getNavigation().isStuck() || !BrainUtils.hasMemory(brain, MemoryModuleType.WALK_TARGET) || hasReachedTarget(entity, BrainUtils.getMemory(brain, MemoryModuleType.WALK_TARGET)))
+		if (!entity.getNavigation().isStuck() || !BrainUtil.hasMemory(brain, MemoryModuleType.WALK_TARGET) || hasReachedTarget(entity, BrainUtil.getMemory(brain, MemoryModuleType.WALK_TARGET)))
 			this.cooldownFinishedAt = 0;
 
 		entity.getNavigation().stop();
-		BrainUtils.clearMemories(brain, MemoryModuleType.WALK_TARGET, MemoryModuleType.PATH);
+		BrainUtil.clearMemories(brain, MemoryModuleType.WALK_TARGET, MemoryModuleType.PATH);
 
 		this.path = null;
 	}
@@ -115,16 +115,16 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 		this.speedModifier = walkTarget.getSpeedModifier();
 
 		if (reachedCurrentTarget) {
-			BrainUtils.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+			BrainUtil.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 			return false;
 		}
 
 		if (this.path != null && this.path.canReach()) {
-			BrainUtils.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+			BrainUtil.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 		}
 		else {
-			BrainUtils.setMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, entity.level().getGameTime());
+			BrainUtil.setMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, entity.level().getGameTime());
 		}
 
 		if (this.path != null)
@@ -146,7 +146,7 @@ public class MoveToWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour
 	}
 
 	protected void startOnNewPath(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.PATH, this.path);
+		BrainUtil.setMemory(entity, MemoryModuleType.PATH, this.path);
 		entity.getNavigation().moveTo(this.path, this.speedModifier);
 	}
 }

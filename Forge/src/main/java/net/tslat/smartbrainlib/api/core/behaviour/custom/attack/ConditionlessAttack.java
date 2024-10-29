@@ -10,13 +10,13 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /**
  * Attack behaviour that doesn't require line of sight or proximity to target, or to even have a target at all. This is useful for special attacks. <br>
@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 	protected boolean requireTarget = false;
 	protected Consumer<E> effect = entity -> {};
 
@@ -42,7 +42,7 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 	 * @param supplier The tick value provider
 	 * @return this
 	 */
-	public ConditionlessAttack<E> attackInterval(Function<E, Integer> supplier) {
+	public ConditionlessAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
@@ -79,7 +79,7 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 		if (!this.requireTarget)
 			return true;
 
-		this.target = BrainUtils.getTargetOfEntity(entity);
+		this.target = BrainUtil.getTargetOfEntity(entity);
 
 		return this.target != null;
 	}
@@ -98,6 +98,6 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 			return;
 
 		this.effect.accept(entity);
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		BrainUtil.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 	}
 }

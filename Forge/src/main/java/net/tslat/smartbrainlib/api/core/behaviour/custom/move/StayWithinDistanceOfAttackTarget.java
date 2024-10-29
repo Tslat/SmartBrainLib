@@ -13,10 +13,10 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -34,8 +34,8 @@ import java.util.function.Predicate;
 public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
 
-	protected BiFunction<E, LivingEntity, Float> distMax = (entity, target) -> 20f;
-	protected BiFunction<E, LivingEntity, Float> distMin = (entity, target) -> 5f;
+	protected ToFloatBiFunction<E, LivingEntity> distMax = (entity, target) -> 20f;
+	protected ToFloatBiFunction<E, LivingEntity> distMin = (entity, target) -> 5f;
 	protected Predicate<E> stopWhen = entity -> false;
 	protected float speedMod = 1;
 	protected float repositionSpeedMod = 1.3f;
@@ -54,7 +54,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	 * @param distance The distance function, in blocks
 	 * @return this
 	 */
-	public StayWithinDistanceOfAttackTarget<E> minDistance(BiFunction<E, LivingEntity, Float> distance) {
+	public StayWithinDistanceOfAttackTarget<E> minDistance(ToFloatBiFunction<E, LivingEntity> distance) {
 		this.distMin = distance;
 
 		return this;
@@ -74,7 +74,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	 * @param distance The distance function, in blocks
 	 * @return this
 	 */
-	public StayWithinDistanceOfAttackTarget<E> maxDistance(BiFunction<E, LivingEntity, Float> distance) {
+	public StayWithinDistanceOfAttackTarget<E> maxDistance(ToFloatBiFunction<E, LivingEntity> distance) {
 		this.distMax = distance;
 
 		return this;
@@ -109,16 +109,16 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopWhen.test(entity);
+		return BrainUtil.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopWhen.test(entity);
 	}
 
 	@Override
 	protected void tick(E entity) {
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 		double distanceToTarget = target.distanceToSqr(entity);
-		float maxDist = this.distMax.apply(entity, target);
+		float maxDist = this.distMax.applyAsFloat(entity, target);
 		double maxDistSq = Math.pow(maxDist, 2);
-		double minDistSq = Math.pow(this.distMin.apply(entity, target), 2);
+		double minDistSq = Math.pow(this.distMin.applyAsFloat(entity, target), 2);
 		PathNavigation navigation = entity.getNavigation();
 
 		if (distanceToTarget > maxDistSq || !entity.hasLineOfSight(target)) {
@@ -142,7 +142,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 		if (navigation instanceof GroundPathNavigation)
 			navigation.stop();
 
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
+		BrainUtil.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
 
 		if (distanceToTarget > maxDistSq * 0.5f) {
 			entity.lookAt(target, 30, 30);

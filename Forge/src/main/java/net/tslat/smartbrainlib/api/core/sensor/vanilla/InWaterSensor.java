@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -43,10 +43,10 @@ public class InWaterSensor<E extends LivingEntity> extends PredicateSensor<E, E>
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
 		if (predicate().test(entity, entity)) {
-			BrainUtils.setMemory(entity, MemoryModuleType.IS_IN_WATER, Unit.INSTANCE);
+			BrainUtil.setMemory(entity, MemoryModuleType.IS_IN_WATER, Unit.INSTANCE);
 		}
 		else {
-			BrainUtils.clearMemory(entity, MemoryModuleType.IS_IN_WATER);
+			BrainUtil.clearMemory(entity, MemoryModuleType.IS_IN_WATER);
 		}
 	}
 }

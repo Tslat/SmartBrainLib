@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier, 0));
+		BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.hidePos, this.speedModifier, 0));
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		if (this.hidePos == null)
 			return false;
 
-		WalkTarget walkTarget = BrainUtils.getMemory(entity, MemoryModuleType.WALK_TARGET);
+		WalkTarget walkTarget = BrainUtil.getMemory(entity, MemoryModuleType.WALK_TARGET);
 
 		if (walkTarget == null)
 			return false;

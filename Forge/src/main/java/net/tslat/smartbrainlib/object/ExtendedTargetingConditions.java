@@ -3,7 +3,7 @@ package net.tslat.smartbrainlib.object;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.tslat.smartbrainlib.util.SensoryUtils;
+import net.tslat.smartbrainlib.util.SensoryUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
@@ -119,7 +119,7 @@ public class ExtendedTargetingConditions {
         }
 
         if (this.checkLineOfSight)
-            return SensoryUtils.hasLineOfSight(entity, target);
+            return SensoryUtil.hasLineOfSight(entity, target);
 
         return true;
     }

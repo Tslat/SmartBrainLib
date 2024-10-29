@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 		Brain<?> brain = entity.getBrain();
 		List<AbstractPiglin> adultPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> {
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> {
 			Mob nemesis = null;
 			Hoglin nearestHuntableHoglin = null;
 			Hoglin nearestBabyHoglin = null;
@@ -82,7 +82,7 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 						visibleAdultPiglins.add(piglin);
 				}
 				else if (target instanceof Player player) {
-					if (nearestPlayerWithoutGold == null && !PiglinAi.isWearingGold(player) && entity.canAttack(player))
+					if (nearestPlayerWithoutGold == null && !PiglinAi.isWearingSafeArmor(player) && entity.canAttack(player))
 						nearestPlayerWithoutGold = player;
 
 					if (nearestPlayerWithWantedItem == null && !player.isSpectator() && PiglinAi.isPlayerHoldingLovedItem(player))
@@ -97,16 +97,16 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 				}
 			}
 
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, nemesis);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, nearestHuntableHoglin);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, nearestBabyHoglin);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, nearestZombified);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, nearestPlayerWithoutGold);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, nearestPlayerWithWantedItem);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, visibleAdultPiglins);
-			BrainUtils.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, visibleAdultPiglins.size());
-			BrainUtils.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, adultHoglinCount);
-			BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_REPELLENT,
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, nemesis);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_HUNTABLE_HOGLIN, nearestHuntableHoglin);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_BABY_HOGLIN, nearestBabyHoglin);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ZOMBIFIED, nearestZombified);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD, nearestPlayerWithoutGold);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_PLAYER_HOLDING_WANTED_ITEM, nearestPlayerWithWantedItem);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLINS, visibleAdultPiglins);
+			BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, visibleAdultPiglins.size());
+			BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, adultHoglinCount);
+			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_REPELLENT,
 					BlockPos.findClosestMatch(entity.blockPosition(), 8, 4, pos -> {
 						BlockState state = level.getBlockState(pos);
 						boolean isRepellent = state.is(BlockTags.PIGLIN_REPELLENTS);
@@ -115,12 +115,12 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 					}).orElse(null));
 		});
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
 			for (LivingEntity target : entities) {
 				if (target instanceof AbstractPiglin piglin && piglin.isAdult())
 					adultPiglins.add(piglin);
 			}
 		});
-		BrainUtils.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, adultPiglins);
+		BrainUtil.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, adultPiglins);
 	}
 }

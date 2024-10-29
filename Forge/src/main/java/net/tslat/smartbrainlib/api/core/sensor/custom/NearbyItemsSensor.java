@@ -13,7 +13,7 @@ import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  * Defaults:
  * <ul>
  * <li>32x16x32 radius</li>
- * <li>Only items that return true for {@link Mob#wantsToPickUp(ItemStack)}</li>
+ * <li>Only items that return true for {@link Mob#wantsToPickUp(ServerLevel, ItemStack)}</li>
  * <li>Only items that return true for
  * {@link net.minecraft.world.entity.LivingEntity#hasLineOfSight(Entity)}</li>
  * </ul>
@@ -36,7 +36,7 @@ public class NearbyItemsSensor<E extends Mob> extends PredicateSensor<ItemEntity
 	protected SquareRadius radius = new SquareRadius(32, 16);
 
 	public NearbyItemsSensor() {
-		super((item, entity) -> entity.wantsToPickUp(item.getItem()) && entity.hasLineOfSight(item));
+		super((item, entity) -> entity.wantsToPickUp((ServerLevel)entity.level(), item.getItem()) && entity.hasLineOfSight(item));
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class NearbyItemsSensor<E extends Mob> extends PredicateSensor<ItemEntity
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.setMemory(entity, SBLMemoryTypes.NEARBY_ITEMS.get(), EntityRetrievalUtil.getEntities(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), ItemEntity.class, item -> predicate().test(item, entity)));
+		BrainUtil.setMemory(entity, SBLMemoryTypes.NEARBY_ITEMS.get(), EntityRetrievalUtil.getEntities(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), ItemEntity.class, item -> predicate().test(item, entity)));
 	}
 }
 

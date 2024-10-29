@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -32,17 +32,6 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 	 * Set the predicate for the player to look at.
 	 * @param predicate The predicate
 	 * @return this
-	 * @deprecated Use {@link #lookPredicate(BiPredicate)}
-	 */
-	@Deprecated(forRemoval = true)
-	public SetPlayerLookTarget<E> predicate(Predicate<Player> predicate) {
-		return lookPredicate((entity, player) -> predicate.test(player));
-	}
-
-	/**
-	 * Set the predicate for the player to look at.
-	 * @param predicate The predicate
-	 * @return this
 	 */
 	public SetPlayerLookTarget<E> lookPredicate(BiPredicate<E, Player> predicate) {
 		this.lookPredicate = predicate;
@@ -57,7 +46,7 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		for (Player player : BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS)) {
+		for (Player player : BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS)) {
 			if (this.predicate.test(player) && this.lookPredicate.test(entity, player)) {
 				this.target = player;
 
@@ -87,7 +76,7 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
+		BrainUtil.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(this.target, true));
 	}
 
 	@Override

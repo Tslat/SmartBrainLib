@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * An extension of the base Sensor. This adds some minor additional functionality and swaps the memory to a list for easier usage and faster iteration. <br>
@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
-	protected Function<E, Integer> scanRate = entity -> 20;
+	protected ToIntFunction<E> scanRate = entity -> 20;
 	protected Consumer<E> scanCallback = entity -> {};
 	protected long nextTickTime = 0;
 
@@ -34,7 +34,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	 * @param function The function to provide the tick rate
 	 * @return this
 	 */
-	public ExtendedSensor<E> setScanRate(Function<E, Integer> function) {
+	public ExtendedSensor<E> setScanRate(ToIntFunction<E> function) {
 		this.scanRate = function;
 
 		return this;
@@ -52,7 +52,7 @@ public abstract class ExtendedSensor<E extends LivingEntity> extends Sensor<E> {
 	@Override
 	public final void tick(ServerLevel level, E entity) {
 		if (nextTickTime < level.getGameTime()) {
-			nextTickTime = level.getGameTime() + scanRate.apply(entity);
+			nextTickTime = level.getGameTime() + this.scanRate.applyAsInt(entity);
 
 			doTick(level, entity);
 			this.scanCallback.accept(entity);

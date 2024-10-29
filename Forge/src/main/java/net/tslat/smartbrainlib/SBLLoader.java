@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface SBLLoader {
-	void init();
+	void init(Object eventBus);
 	boolean isDevEnv();
 	Pair<Collection<? extends Entity>, Function<Entity, ? extends Entity>> getPartEntities(Level level);
 
@@ -23,7 +23,6 @@ public interface SBLLoader {
 	<T> Supplier<MemoryModuleType<T>> registerMemoryType(String id);
 	@ApiStatus.Internal
 	<T> Supplier<MemoryModuleType<T>> registerMemoryType(String id, Optional<Codec<T>> codec);
-
 	@ApiStatus.Internal
 	<T extends ExtendedSensor<?>> Supplier<SensorType<T>> registerSensorType(String id, Supplier<T> sensor);
 }

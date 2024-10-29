@@ -14,11 +14,11 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.RandomUtil;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -36,9 +36,9 @@ import java.util.function.Function;
 public class FollowEntity<E extends PathfinderMob, T extends Entity> extends ExtendedBehaviour<E> {
 	protected Function<E, T> followingEntityProvider = entity -> null;
 
-	protected BiFunction<E, T, Double> teleportDistance = (entity, target) -> Double.MAX_VALUE;
-	protected BiFunction<E, T, Double> followDistMin = (entity, target) -> 4d;
-	protected BiFunction<E, T, Float> speedMod = (entity, target) -> 1f;
+	protected ToFloatBiFunction<E, T> teleportDistance = (entity, target) -> Float.MAX_VALUE;
+	protected ToFloatBiFunction<E, T> followDistMin = (entity, target) -> 4f;
+	protected ToFloatBiFunction<E, T> speedMod = (entity, target) -> 1f;
 
 	protected float oldWaterPathMalus = 0;
 	protected float oldLavaPathMalus = 0;
@@ -59,7 +59,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 * @param distance The function to provide the distance to teleport after
 	 * @return this
 	 */
-	public FollowEntity<E, T> teleportToTargetAfter(double distance) {
+	public FollowEntity<E, T> teleportToTargetAfter(float distance) {
 		return teleportToTargetAfter((entity, target) -> distance);
 	}
 
@@ -68,7 +68,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 * @param distanceProvider The function to provide the distance to teleport after
 	 * @return this
 	 */
-	public FollowEntity<E, T> teleportToTargetAfter(BiFunction<E, T, Double> distanceProvider) {
+	public FollowEntity<E, T> teleportToTargetAfter(ToFloatBiFunction<E, T> distanceProvider) {
 		this.teleportDistance = distanceProvider;
 
 		return this;
@@ -79,7 +79,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 * @param distance The distance to stop following within
 	 * @return this
 	 */
-	public FollowEntity<E, T> stopFollowingWithin(double distance) {
+	public FollowEntity<E, T> stopFollowingWithin(float distance) {
 		return stopFollowingWithin((entity, target) -> distance);
 	}
 
@@ -88,7 +88,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 * @param distanceProvider The function to provide the distance to stop following within
 	 * @return this
 	 */
-	public FollowEntity<E, T> stopFollowingWithin(BiFunction<E, T, Double> distanceProvider) {
+	public FollowEntity<E, T> stopFollowingWithin(ToFloatBiFunction<E, T> distanceProvider) {
 		this.followDistMin = distanceProvider;
 
 		return this;
@@ -108,7 +108,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 * @param modifier The multiplier function for movement speed
 	 * @return this
 	 */
-	public FollowEntity<E, T> speedMod(BiFunction<E, T, Float> modifier) {
+	public FollowEntity<E, T> speedMod(ToFloatBiFunction<E, T> modifier) {
 		this.speedMod = modifier;
 
 		return this;
@@ -126,7 +126,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		if (target == null || target.isSpectator())
 			return false;
 
-		double minDist = this.followDistMin.apply(entity, target);
+		double minDist = this.followDistMin.applyAsFloat(entity, target);
 
 		return entity.distanceToSqr(target) > minDist * minDist;
 	}
@@ -139,7 +139,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			return false;
 
 		double dist = entity.distanceToSqr(target);
-		double minDist = this.followDistMin.apply(entity, target);
+		double minDist = this.followDistMin.applyAsFloat(entity, target);
 
 		return dist > minDist * minDist;
 	}
@@ -147,8 +147,8 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	@Override
 	protected void start(E entity) {
 		T target = this.followingEntityProvider.apply(entity);
-		double minDist = this.followDistMin.apply(entity, target);
-		float speedMod = this.speedMod.apply(entity, target);
+		double minDist = this.followDistMin.applyAsFloat(entity, target);
+		float speedMod = this.speedMod.applyAsFloat(entity, target);
 		this.oldWaterPathMalus = entity.getPathfindingMalus(PathType.WATER);
 
 		if (entity.fireImmune()) {
@@ -157,8 +157,8 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			entity.setPathfindingMalus(PathType.LAVA, 0);
 		}
 
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target, speedMod, (int)minDist));
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
+		BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(target, speedMod, (int)minDist));
+		BrainUtil.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
 		entity.setPathfindingMalus(PathType.WATER, 0);
 	}
 
@@ -170,13 +170,13 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			entity.setPathfindingMalus(PathType.LAVA, this.oldLavaPathMalus);
 
 		entity.getNavigation().stop();
-		BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+		BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 	}
 
 	@Override
 	protected void tick(E entity) {
 		T target = this.followingEntityProvider.apply(entity);
-		double teleportDist = this.teleportDistance.apply(entity, target);
+		double teleportDist = this.teleportDistance.applyAsFloat(entity, target);
 
 		if (entity.distanceToSqr(target) >= teleportDist * teleportDist)
 			teleportToTarget(entity, target);
@@ -198,7 +198,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		if (pos != entityPos) {
 			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
 			entity.getNavigation().stop();
-			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+			BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}
 	}
 }

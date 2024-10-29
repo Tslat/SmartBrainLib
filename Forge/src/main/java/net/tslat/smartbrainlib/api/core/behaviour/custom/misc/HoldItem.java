@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -78,7 +79,7 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 		ItemStack previousStack = entity.getItemInHand(hand);
 
 		if (this.dropItemOnUnequip.test(entity, previousStack))
-			entity.spawnAtLocation(previousStack);
+			entity.spawnAtLocation((ServerLevel)entity.level(), previousStack);
 
 		entity.setItemInHand(hand, this.stackFunction.apply(entity));
 	}

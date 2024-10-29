@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
@@ -137,20 +135,5 @@ public class SmartBrainProvider<E extends LivingEntity & SmartBrainOwner<E>> ext
 		brain.useDefaultActivity();
 		brain.setSchedule(this.owner.getSchedule());
 		this.owner.handleAdditionalBrainSetup(brain);
-	}
-
-	/**
-	 * Use one of the startup 'getTasks' methods if adding at startup, or else use {@link net.tslat.smartbrainlib.util.BrainUtils#addActivity(Brain, BrainActivityGroup)}
-	 */
-	@Deprecated(forRemoval = true)
-	protected void addActivity(SmartBrain<E> brain, Activity activity, BrainActivityGroup<E> activityGroup) {
-		brain.activityRequirements.put(activity, activityGroup.getActivityStartMemoryConditions());
-
-		if (!activityGroup.getWipedMemoriesOnFinish().isEmpty())
-			brain.activityMemoriesToEraseWhenStopped.put(activity, activityGroup.getWipedMemoriesOnFinish());
-
-		for (Pair<Integer, ? extends Behavior<? super E>> pair : activityGroup.pairBehaviourPriorities()) {
-			brain.addBehaviour(pair.getFirst(), activity, pair.getSecond());
-		}
 	}
 }

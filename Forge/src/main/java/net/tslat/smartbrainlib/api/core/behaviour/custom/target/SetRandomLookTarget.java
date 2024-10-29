@@ -11,10 +11,10 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.FreePositionTracker;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Set the look target to a random nearby position
@@ -24,7 +24,7 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected FloatProvider runChance = ConstantFloat.of(0.02f);
-	protected Function<E, Integer> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
+	protected ToIntFunction<E> lookTime = entity -> entity.getRandom().nextInt(20) + 20;
 
 	/**
 	 * Set the value provider for the chance of the look target being set.
@@ -42,7 +42,7 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	 * @param function The tick providing function
 	 * @return this
 	 */
-	public SetRandomLookTarget<E> lookTime(Function<E, Integer> function) {
+	public SetRandomLookTarget<E> lookTime(ToIntFunction<E> function) {
 		this.lookTime = function;
 
 		return this;
@@ -62,6 +62,6 @@ public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	protected void start(E entity) {
 		double angle = Mth.TWO_PI * entity.getRandom().nextDouble();
 
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.apply(entity));
+		BrainUtil.setForgettableMemory(entity, MemoryModuleType.LOOK_TARGET, new FreePositionTracker(entity.getEyePosition().add(Math.cos(angle), 0, Math.sin(angle))), this.lookTime.applyAsInt(entity));
 	}
 }

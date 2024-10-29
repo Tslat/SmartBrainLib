@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 /**
  * Utility class for various brain functions. Try to utilise this where possible to ensure consistency and safety.
  */
-public final class BrainUtils {
+public final class BrainUtil {
 	/**
 	 * Get a memory value from an entity, with a fallback value if no memory is present
 	 *
@@ -186,7 +186,7 @@ public final class BrainUtils {
 
 	/**
 	 * Set an entity's memory value for the given memory type. <br>
-	 * Use {@link BrainUtils#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
+	 * Use {@link BrainUtil#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
 	 *
 	 * @param entity The entity
 	 * @param memoryType Memory type to set the value for
@@ -199,7 +199,7 @@ public final class BrainUtils {
 
 	/**
 	 * Set a brain's memory value for the given memory type. <br>
-	 * Use {@link BrainUtils#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
+	 * Use {@link BrainUtil#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
 	 *
 	 * @param brain The brain
 	 * @param memoryType Memory type to set the value for
@@ -212,7 +212,7 @@ public final class BrainUtils {
 
 	/**
 	 * Set a brain's memory value for the given memory type, with the memory expiring after a certain time.<br>
-	 * Use {@link BrainUtils#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
+	 * Use {@link BrainUtil#clearMemory(LivingEntity, MemoryModuleType)} if intending to set a memory to nothing.
 	 * @param entity The entity
 	 * @param memoryType Memory type to set the value for
 	 * @param memory The memory value to set
@@ -225,7 +225,7 @@ public final class BrainUtils {
 
 	/**
 	 * Set an entity's memory value for the given memory type, with the memory expiring after a certain time.<br>
-	 * Use {@link BrainUtils#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
+	 * Use {@link BrainUtil#clearMemory(Brain, MemoryModuleType)} if intending to set a memory to nothing.
 	 * @param brain The brain
 	 * @param memoryType Memory type to set the value for
 	 * @param memory The memory value to set
@@ -349,7 +349,7 @@ public final class BrainUtils {
 
 	/**
 	 * Sets a {@link SBLMemoryTypes#SPECIAL_ATTACK_COOLDOWN} value for a certain length of time.<br>
-	 * This can then be checked via {@link BrainUtils#isOnSpecialCooldown(LivingEntity)} as needed.
+	 * This can then be checked via {@link BrainUtil#isOnSpecialCooldown(LivingEntity)} as needed.
 	 * @param entity The entity to check the brain of
 	 * @param ticks The length of time (in ticks) the cooldown should apply for
 	 */
@@ -513,7 +513,7 @@ public final class BrainUtils {
 	/**
 	 * Adds a sensor to the given brain, additionally allowing for custom instantiation.<br>
 	 * Automatically adds detected memories to the brain, but because of the nature of the vanilla brain system,
-	 * you may need to {@link BrainUtils#addMemories add additional memories manually} if Mojang didn't set something up properly
+	 * you may need to {@link BrainUtil#addMemories add additional memories manually} if Mojang didn't set something up properly
 	 */
 	public static <S extends Sensor<?>> void addSensor(Brain<?> brain, SensorType<S> sensorType, S sensor) {
 		if (brain instanceof SmartBrain smartBrain) {

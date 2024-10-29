@@ -80,7 +80,7 @@ public final class AllApplicableBehaviours<E extends LivingEntity> extends Group
 
 	@Override
 	protected void stop(ServerLevel level, E entity, long gameTime) {
-		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
+		this.cooldownFinishedAt = gameTime + this.cooldownProvider.applyAsInt(entity);
 
 		this.taskStopCallback.accept(entity);
 		stop(entity);

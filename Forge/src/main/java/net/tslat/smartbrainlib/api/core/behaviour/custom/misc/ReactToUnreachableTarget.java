@@ -7,11 +7,11 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Calls a callback when the entity has been obstructed for a given period of time.
@@ -20,7 +20,7 @@ import java.util.function.Function;
 public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemories(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 
-	protected Function<E, Integer> ticksToReact = entity -> 100;
+	protected ToIntFunction<E> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};
 
 	protected long reactAtTime = 0;
@@ -30,7 +30,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	 * @param ticksToReact The function to provide the time to wait before reacting
 	 * @return this
 	 */
-	public ReactToUnreachableTarget<E> timeBeforeReacting(Function<E, Integer> ticksToReact) {
+	public ReactToUnreachableTarget<E> timeBeforeReacting(ToIntFunction<E> ticksToReact) {
 		this.ticksToReact = ticksToReact;
 
 		return this;
@@ -64,7 +64,7 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 
 	@Override
 	protected void start(E entity) {
-		this.reactAtTime = entity.level().getGameTime() + this.ticksToReact.apply(entity);
+		this.reactAtTime = entity.level().getGameTime() + this.ticksToReact.applyAsInt(entity);
 	}
 
 	@Override
@@ -75,6 +75,6 @@ public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBe
 	@Override
 	protected void tick(E entity) {
 		if (entity.level().getGameTime() == this.reactAtTime)
-			this.callback.accept(entity, BrainUtils.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE.get()));
+			this.callback.accept(entity, BrainUtil.getMemory(entity, SBLMemoryTypes.TARGET_UNREACHABLE.get()));
 	}
 }

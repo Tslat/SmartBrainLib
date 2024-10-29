@@ -17,12 +17,12 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
 
 /**
  * Functional equivalent of the goal system's {@link net.minecraft.world.entity.ai.goal.PanicGoal panic goal}.<br>
@@ -42,7 +42,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	protected BiPredicate<E, DamageSource> shouldPanicPredicate = (entity, damageSource) -> entity.isFreezing() || entity.isOnFire() || damageSource.getEntity() instanceof LivingEntity;
 	protected Object2FloatFunction<E> speedMod = entity -> 1.25f;
 	protected SquareRadius radius = new SquareRadius(5, 4);
-	protected BiFunction<E, DamageSource, Integer> panicFor = (entity, damageSource) -> entity.getRandom().nextInt(100, 120);
+	protected ToIntBiFunction<E, DamageSource> panicFor = (entity, damageSource) -> entity.getRandom().nextInt(100, 120);
 
 	protected Vec3 targetPos = null;
 	protected int panicEndTime = 0;
@@ -67,7 +67,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	 * @param function The predicate
 	 * @return this
 	 */
-	public Panic<E> panicFor(final BiFunction<E, DamageSource, Integer> function) {
+	public Panic<E> panicFor(final ToIntBiFunction<E, DamageSource> function) {
 		this.panicFor = function;
 
 		return this;
@@ -112,7 +112,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		if (!this.shouldPanicPredicate.test(entity, BrainUtils.getMemory(entity, MemoryModuleType.HURT_BY)))
+		if (!this.shouldPanicPredicate.test(entity, BrainUtil.getMemory(entity, MemoryModuleType.HURT_BY)))
 			return false;
 
 		setPanicTarget(entity);
@@ -127,10 +127,10 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedMod.apply(entity), 0));
-		BrainUtils.setMemory(entity, MemoryModuleType.IS_PANICKING, true);
+		BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedMod.apply(entity), 0));
+		BrainUtil.setMemory(entity, MemoryModuleType.IS_PANICKING, true);
 
-		this.panicEndTime = entity.tickCount + this.panicFor.apply(entity, BrainUtils.getMemory(entity, MemoryModuleType.HURT_BY));
+		this.panicEndTime = entity.tickCount + this.panicFor.applyAsInt(entity, BrainUtil.getMemory(entity, MemoryModuleType.HURT_BY));
 	}
 
 	@Override
@@ -140,8 +140,8 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 			setPanicTarget(entity);
 
 			if (this.targetPos != null) {
-				BrainUtils.clearMemory(entity, MemoryModuleType.PATH);
-				BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedMod.apply(entity), 1));
+				BrainUtil.clearMemory(entity, MemoryModuleType.PATH);
+				BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedMod.apply(entity), 1));
 			}
 		}
 	}
@@ -151,7 +151,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		this.targetPos = null;
 		this.panicEndTime = 0;
 
-		BrainUtils.setMemory(entity, MemoryModuleType.IS_PANICKING, false);
+		BrainUtil.setMemory(entity, MemoryModuleType.IS_PANICKING, false);
 	}
 
 	@Nullable
@@ -167,7 +167,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 			this.targetPos = findNearbyWater(entity);
 
 		if (this.targetPos == null) {
-			final DamageSource lastDamage = BrainUtils.getMemory(entity, MemoryModuleType.HURT_BY);
+			final DamageSource lastDamage = BrainUtil.getMemory(entity, MemoryModuleType.HURT_BY);
 
 			if (lastDamage != null && lastDamage.getEntity() instanceof LivingEntity attacker)
 				this.targetPos = DefaultRandomPos.getPosAway(entity, (int)this.radius.xzRadius(), (int)this.radius.yRadius(), attacker.position());

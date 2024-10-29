@@ -11,11 +11,11 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
-	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
+	protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
 	protected Predicate<E> avoidWaterPredicate = entity -> true;
 	protected SquareRadius radius = new SquareRadius(10, 7);
 	protected BiPredicate<E, Vec3> positionPredicate = (entity, pos) -> true;
@@ -73,7 +73,7 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	 * @param function The movespeed modifier/multiplier function
 	 * @return this
 	 */
-	public SetRandomWalkTarget<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+	public SetRandomWalkTarget<E> speedModifier(ToFloatBiFunction<E, Vec3> function) {
 		this.speedModifier = function;
 
 		return this;
@@ -123,10 +123,10 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 			targetPos = null;
 
 		if (targetPos == null) {
-			BrainUtils.clearMemory(entity, MemoryModuleType.WALK_TARGET);
+			BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}
 		else {
-			BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, this.speedModifier.apply(entity, targetPos), 0));
+			BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(targetPos, this.speedModifier.applyAsFloat(entity, targetPos), 0));
 		}
 	}
 

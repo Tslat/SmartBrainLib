@@ -11,7 +11,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 		double distToTarget = entity.distanceToSqr(target);
 		Vec3 runPos = DefaultRandomPos.getPosAway(entity, this.fleeDistance, 10, target.position());
 
@@ -85,7 +85,7 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	@Override
 	protected void start(E entity) {
 		entity.getNavigation().moveTo(this.runPath, this.speedModifier);
-		BrainUtils.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
+		BrainUtil.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 	}
 
 	@Override

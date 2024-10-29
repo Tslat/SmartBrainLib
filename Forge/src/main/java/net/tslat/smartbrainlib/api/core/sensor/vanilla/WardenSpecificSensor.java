@@ -9,7 +9,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -40,12 +40,12 @@ public class WardenSpecificSensor<E extends Warden> extends NearbyLivingEntitySe
 	protected void doTick(ServerLevel level, E entity) {
 		super.doTick(level, entity);
 
-		BrainUtils.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtil.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
 			LivingEntity fallbackTarget = null;
 
 			for (LivingEntity target : entities) {
 				if (target instanceof Player) {
-					BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, target);
+					BrainUtil.setMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, target);
 
 					return;
 				}
@@ -55,10 +55,10 @@ public class WardenSpecificSensor<E extends Warden> extends NearbyLivingEntitySe
 			}
 
 			if (fallbackTarget != null) {
-				BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, fallbackTarget);
+				BrainUtil.setMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, fallbackTarget);
 			}
 			else {
-				BrainUtils.clearMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
+				BrainUtil.clearMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
 			}
 		});
 	}

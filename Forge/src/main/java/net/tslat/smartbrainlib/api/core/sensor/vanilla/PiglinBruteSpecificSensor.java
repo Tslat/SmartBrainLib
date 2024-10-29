@@ -13,7 +13,7 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -44,13 +44,13 @@ public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedS
 		Brain<?> brain = entity.getBrain();
 		List<AbstractPiglin> nearbyPiglins = new ObjectArrayList<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> BrainUtils.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (Mob)entities.findClosest(target -> target instanceof WitherSkeleton || target instanceof WitherBoss).orElse(null)));
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, entities -> BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_NEMESIS, (Mob)entities.findClosest(target -> target instanceof WitherSkeleton || target instanceof WitherBoss).orElse(null)));
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {
 			for (LivingEntity target : entities) {
 				if (target instanceof AbstractPiglin piglin && piglin.isAdult())
 					nearbyPiglins.add(piglin);
 			}
 		});
-		BrainUtils.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, nearbyPiglins);
+		BrainUtil.setMemory(brain, MemoryModuleType.NEARBY_ADULT_PIGLINS, nearbyPiglins);
 	}
 }

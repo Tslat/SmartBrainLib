@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.List;
@@ -36,13 +36,13 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected LivingEntity toTarget = null;
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
 	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
-		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtils.getTargetOfEntity(ally) != null)
+		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtil.getTargetOfEntity(ally) != null)
 			return false;
 
 		if (owner instanceof OwnableEntity pet && pet.getOwner() != ((OwnableEntity)ally).getOwner())
 			return false;
 
-		Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
+		Entity lastHurtBy = BrainUtil.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
 
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
@@ -88,7 +88,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
-		this.toTarget = BrainUtils.getMemory(owner, MemoryModuleType.HURT_BY_ENTITY);
+		this.toTarget = BrainUtil.getMemory(owner, MemoryModuleType.HURT_BY_ENTITY);
 
 		if (this.toTarget.isAlive() && this.toTarget.level() == level && this.canAttackPredicate.test(this.toTarget)) {
 			if (this.alertAlliesPredicate.test(owner, this.toTarget))
@@ -102,8 +102,8 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setTargetOfEntity(entity, this.toTarget);
-		BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+		BrainUtil.setTargetOfEntity(entity, this.toTarget);
+		BrainUtil.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		this.toTarget = null;
 	}
@@ -112,7 +112,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 		double followRange = owner.getAttributeValue(Attributes.FOLLOW_RANGE);
 
 		for (LivingEntity ally : EntityRetrievalUtil.getEntities(owner, followRange, 10, followRange, LivingEntity.class, entity -> this.allyPredicate.test(owner, entity))) {
-			BrainUtils.setTargetOfEntity(ally, this.toTarget);
+			BrainUtil.setTargetOfEntity(ally, this.toTarget);
 		}
 	}
 }

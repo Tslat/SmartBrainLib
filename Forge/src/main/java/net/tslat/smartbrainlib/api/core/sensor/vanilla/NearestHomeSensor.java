@@ -17,7 +17,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -94,7 +94,7 @@ public class NearestHomeSensor<E extends Mob> extends PredicateSensor<E, E> {
 		if (pathToHome != null && pathToHome.canReach()) {
 			BlockPos targetPos = pathToHome.getTarget();
 
-			poiManager.getType(targetPos).ifPresent(poiType -> BrainUtils.setMemory(entity, MemoryModuleType.NEAREST_BED, targetPos));
+			poiManager.getType(targetPos).ifPresent(poiType -> BrainUtil.setMemory(entity, MemoryModuleType.NEAREST_BED, targetPos));
 		}
 		else if (this.tries < 5) {
 			this.homesMap.object2LongEntrySet().removeIf(pos -> pos.getLongValue() < nodeExpiryTime);

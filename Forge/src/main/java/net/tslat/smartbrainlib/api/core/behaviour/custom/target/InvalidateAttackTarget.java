@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -60,14 +60,14 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 
 	@Override
 	protected void start(E entity) {
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 
 		if (target == null)
 			return;
 
 		if (isTargetInvalid(entity, target) || !canAttack(entity, target) ||
 				isTiredOfPathing(entity) || this.customPredicate.test(entity, target)) {
-			BrainUtils.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
+			BrainUtil.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 		if (this.pathfindingAttentionSpan <= 0)
 			return false;
 
-		Long time = BrainUtils.getMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+		Long time = BrainUtil.getMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		return time != null && entity.level().getGameTime() - time > this.pathfindingAttentionSpan;
 	}

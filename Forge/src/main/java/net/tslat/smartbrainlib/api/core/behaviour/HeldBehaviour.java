@@ -3,7 +3,7 @@ package net.tslat.smartbrainlib.api.core.behaviour;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * An abstract behaviour used for tasks that should have an ongoing effect, optionally with an early finish.<br>
@@ -11,7 +11,7 @@ import java.util.function.Function;
  * @param <E> The entity
  */
 public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	protected Function<E, Boolean> tickConsumer = entity -> true;
+	protected Predicate<E> tickConsumer = entity -> true;
 	protected int runningTime = 0;
 
 	public HeldBehaviour() {
@@ -22,7 +22,7 @@ public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBeha
 	 * Set the per-tick handler for this held behaviour
 	 * @param tickConsumer The consumer to handle the per-action tick. Return false to end the behaviour, or true to continue running
 	 */
-	public HeldBehaviour<E> onTick(Function<E, Boolean> tickConsumer) {
+	public HeldBehaviour<E> onTick(Predicate<E> tickConsumer) {
 		this.tickConsumer = tickConsumer;
 
 		return this;
@@ -51,7 +51,7 @@ public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBeha
 	protected void tick(ServerLevel level, E owner, long gameTime) {
 		super.tick(level, owner, gameTime);
 
-		if (!this.tickConsumer.apply(owner))
+		if (!this.tickConsumer.test(owner))
 			doStop(level, owner, gameTime);
 
 		this.runningTime++;

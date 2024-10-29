@@ -11,11 +11,11 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> extends DelayedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> entity.level().getDifficulty() == Difficulty.HARD ? 20 : 40;
+	protected ToIntFunction<E> attackIntervalSupplier = entity -> entity.level().getDifficulty() == Difficulty.HARD ? 20 : 40;
 	protected float attackRadius;
 
 	@Nullable
@@ -46,7 +46,7 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 	 * @param supplier The tick value provider
 	 * @return this
 	 */
-	public AnimatableRangedAttack<E> attackInterval(Function<E, Integer> supplier) {
+	public AnimatableRangedAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
@@ -70,9 +70,9 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		this.target = BrainUtils.getTargetOfEntity(entity);
+		this.target = BrainUtil.getTargetOfEntity(entity);
 
-		return BrainUtils.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
+		return BrainUtil.canSee(entity, this.target) && entity.distanceToSqr(this.target) <= this.attackRadius;
 	}
 
 	@Override
@@ -91,10 +91,10 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 		if (this.target == null)
 			return;
 
-		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtil.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, 1);
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		BrainUtil.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 	}
 }

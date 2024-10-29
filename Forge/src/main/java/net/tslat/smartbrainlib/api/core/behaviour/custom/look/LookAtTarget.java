@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void tick(E entity) {
-		BrainUtils.withMemory(entity, MemoryModuleType.LOOK_TARGET, target -> entity.getLookControl().setLookAt(target.currentPosition()));
+		BrainUtil.withMemory(entity, MemoryModuleType.LOOK_TARGET, target -> entity.getLookControl().setLookAt(target.currentPosition()));
 	}
 
 	/**
@@ -53,13 +53,13 @@ public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	 * @return true if the look target is valid
 	 */
 	protected boolean testAndInvalidateLookTarget(E entity) {
-		PositionTracker lookTarget = BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET);
+		PositionTracker lookTarget = BrainUtil.getMemory(entity, MemoryModuleType.LOOK_TARGET);
 
 		if (lookTarget == null)
 			return false;
 
 		if (lookTarget instanceof EntityTracker entityTracker && !entityTracker.getEntity().isAlive()) {
-			BrainUtils.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
+			BrainUtil.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 
 			return false;
 		}

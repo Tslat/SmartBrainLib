@@ -14,7 +14,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
@@ -97,7 +97,7 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		for (Pair<BlockPos, BlockState> pair : BrainUtils.getMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get())) {
+		for (Pair<BlockPos, BlockState> pair : BrainUtil.getMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get())) {
 			if (this.targetBlockPredicate.test(entity, pair.getFirst(), pair.getSecond())) {
 				this.pos = pair.getFirst();
 				this.state = pair.getSecond();

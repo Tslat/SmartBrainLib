@@ -16,7 +16,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.TriPredicate;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -78,20 +78,20 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        Path path = BrainUtils.getMemory(entity, MemoryModuleType.PATH);
+        Path path = BrainUtil.getMemory(entity, MemoryModuleType.PATH);
 
         return !path.notStarted() && !path.isDone();
     }
 
     @Override
     protected boolean shouldKeepRunning(E entity) {
-        return BrainUtils.hasMemory(entity, MemoryModuleType.PATH) && checkExtraStartConditions((ServerLevel)entity.level(), entity);
+        return BrainUtil.hasMemory(entity, MemoryModuleType.PATH) && checkExtraStartConditions((ServerLevel)entity.level(), entity);
     }
 
     @Override
     protected void tick(E entity) {
         ServerLevel level = (ServerLevel)entity.level();
-        Path path = BrainUtils.getMemory(entity, MemoryModuleType.PATH);
+        Path path = BrainUtil.getMemory(entity, MemoryModuleType.PATH);
         BlockPos prevNodePos = path.getPreviousNode().asBlockPos();
         Node nextNode = path.getNextNode();
         BlockPos nextNodePos = path.getNextNode().asBlockPos();
@@ -106,7 +106,7 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
         if (!Objects.equals(this.lastNode, path.getNextNode()) && --this.doorCloseCooldown < 0)
             return;
 
-        BrainUtils.withMemory(entity, MemoryModuleType.DOORS_TO_CLOSE, doorsToClose -> checkAndCloseDoors(level, entity, doorsToClose, prevNodePos, nextNodePos));
+        BrainUtil.withMemory(entity, MemoryModuleType.DOORS_TO_CLOSE, doorsToClose -> checkAndCloseDoors(level, entity, doorsToClose, prevNodePos, nextNodePos));
 
         if (isInteractableDoor(prevNodeBlockState))
             tryOpenDoor(level, entity, prevNodeBlockState, prevNodePos);
@@ -134,7 +134,7 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
             if (isInteractableDoor(doorState)) {
                 DoorBlock doorBlock = (DoorBlock)doorState.getBlock();
 
-                if (doorBlock.isOpen(doorState) && !shouldHoldDoorOpenForOthers(entity, doorPos, BrainUtils.memoryOrDefault(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, List::of)))
+                if (doorBlock.isOpen(doorState) && !shouldHoldDoorOpenForOthers(entity, doorPos, BrainUtil.memoryOrDefault(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, List::of)))
                     doorBlock.setOpen(entity, level, doorState, doorPos, false);
             }
 
@@ -147,7 +147,7 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
             if (!this.holdDoorsOpenFor.test(entity, other, doorPos))
                 continue;
 
-            Path path = BrainUtils.getMemory(entity, MemoryModuleType.PATH);
+            Path path = BrainUtil.getMemory(entity, MemoryModuleType.PATH);
 
             if (path == null || path.isDone() || path.notStarted())
                 continue;
@@ -169,7 +169,7 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
         if (!door.isOpen(blockState)) {
             door.setOpen(entity, level, blockState, pos, true);
 
-            BrainUtils.computeMemoryIfAbsent(entity, MemoryModuleType.DOORS_TO_CLOSE, ObjectOpenHashSet::new).add(new GlobalPos(level.dimension(), pos));
+            BrainUtil.computeMemoryIfAbsent(entity, MemoryModuleType.DOORS_TO_CLOSE, ObjectOpenHashSet::new).add(new GlobalPos(level.dimension(), pos));
         }
     }
 }

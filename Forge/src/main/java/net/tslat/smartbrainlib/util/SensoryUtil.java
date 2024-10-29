@@ -9,13 +9,13 @@ import net.tslat.smartbrainlib.object.ExtendedTargetingConditions;
  * Helper class for sensory-related utility methods.
  * <p>Mostly this just replaces the poorly implemented methods in {@link net.minecraft.world.entity.ai.sensing.Sensor}</p>
  */
-public class SensoryUtils {
+public class SensoryUtil {
     /**
      * Check whether the given target is considered 'targetable' based on sensory and status conditions such as teams and line of sight
      * @return Whether the target is considered targetable
      */
     public static boolean isEntityTargetable(LivingEntity attacker, LivingEntity target) {
-        final ExtendedTargetingConditions predicate = BrainUtils.getTargetOfEntity(attacker) == target ?
+        final ExtendedTargetingConditions predicate = BrainUtil.getTargetOfEntity(attacker) == target ?
                 ExtendedTargetingConditions.forLookTarget().withFollowRange().skipInvisibilityCheck() :
                 ExtendedTargetingConditions.forLookTarget().withFollowRange();
 
@@ -27,7 +27,7 @@ public class SensoryUtils {
      * @return Whether the target is considered attackable
      */
     public static boolean isEntityAttackable(LivingEntity attacker, LivingEntity target) {
-        final ExtendedTargetingConditions predicate = BrainUtils.getTargetOfEntity(attacker) == target ?
+        final ExtendedTargetingConditions predicate = BrainUtil.getTargetOfEntity(attacker) == target ?
                 ExtendedTargetingConditions.forAttackTarget().withFollowRange().skipInvisibilityCheck() :
                 ExtendedTargetingConditions.forAttackTarget().withFollowRange();
 
@@ -39,7 +39,7 @@ public class SensoryUtils {
      * @return Whether the target is considered attackable
      */
     public static boolean isEntityAttackableIgnoringLineOfSight(LivingEntity attacker, LivingEntity target) {
-        final ExtendedTargetingConditions predicate = BrainUtils.getTargetOfEntity(attacker) == target ?
+        final ExtendedTargetingConditions predicate = BrainUtil.getTargetOfEntity(attacker) == target ?
                 ExtendedTargetingConditions.forAttackTarget().ignoreLineOfSight().withFollowRange().skipInvisibilityCheck() :
                 ExtendedTargetingConditions.forAttackTarget().ignoreLineOfSight().withFollowRange();
 

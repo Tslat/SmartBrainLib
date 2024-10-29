@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
 		Brain<?> brain = entity.getBrain();
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 
 		if (target == null) {
 			resetState(brain);
@@ -50,7 +50,7 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 			return;
 		}
 
-		Long unpathableTime = BrainUtils.getMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+		Long unpathableTime = BrainUtil.getMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		if (unpathableTime == null) {
 			resetState(brain);
@@ -62,18 +62,18 @@ public class UnreachableTargetSensor<E extends LivingEntity> extends ExtendedSen
 			this.lastUnpathableTime = unpathableTime;
 		}
 		else if (this.lastUnpathableTime == unpathableTime) {
-			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+			BrainUtil.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 		}
 		else if (this.lastUnpathableTime < unpathableTime) {
 			this.lastUnpathableTime = unpathableTime;
 
-			BrainUtils.setMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get(), target.getY() > entity.getEyeY());
+			BrainUtil.setMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get(), target.getY() > entity.getEyeY());
 		}
 	}
 
 	private void resetState(Brain<?> brain) {
 		if (this.lastUnpathableTime > 0)
-			BrainUtils.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+			BrainUtil.clearMemory(brain, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 
 		this.lastUnpathableTime = 0;
 	}

@@ -11,12 +11,13 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.ToIntBiFunction;
 
 /**
  * Path setting behaviour for walking to/near a block position.
@@ -26,8 +27,8 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (entity, block) -> true;
-	protected BiFunction<E, Pair<BlockPos, BlockState>, Float> speedMod = (owner, pos) -> 1f;
-	protected BiFunction<E, Pair<BlockPos, BlockState>, Integer> closeEnoughDist = (entity, pos) -> 2;
+	protected ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedMod = (owner, pos) -> 1f;
+	protected ToIntBiFunction<E, Pair<BlockPos, BlockState>> closeEnoughDist = (entity, pos) -> 2;
 
 	protected Pair<BlockPos, BlockState> target = null;
 
@@ -47,7 +48,7 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 	 * @param speedModifier The movespeed modifier/multiplier
 	 * @return this
 	 */
-	public SetWalkTargetToBlock<E> speedMod(BiFunction<E, Pair<BlockPos, BlockState>, Float> speedModifier) {
+	public SetWalkTargetToBlock<E> speedMod(ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedModifier) {
 		this.speedMod = speedModifier;
 
 		return this;
@@ -58,7 +59,7 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 	 * @param function The function
 	 * @return this
 	 */
-	public SetWalkTargetToBlock<E> closeEnoughWhen(final BiFunction<E, Pair<BlockPos, BlockState>, Integer> function) {
+	public SetWalkTargetToBlock<E> closeEnoughWhen(final ToIntBiFunction<E, Pair<BlockPos, BlockState>> function) {
 		this.closeEnoughDist = function;
 
 		return this;
@@ -71,7 +72,7 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		for (Pair<BlockPos, BlockState> position : BrainUtils.getMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get())) {
+		for (Pair<BlockPos, BlockState> position : BrainUtil.getMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get())) {
 			if (this.predicate.test(entity, position)) {
 				this.target = position;
 
@@ -84,8 +85,8 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.target.getFirst(), this.speedMod.apply(entity, this.target), this.closeEnoughDist.apply(entity, this.target)));
-		BrainUtils.setMemory(entity, MemoryModuleType.LOOK_TARGET, new BlockPosTracker(this.target.getFirst()));
+		BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.target.getFirst(), this.speedMod.applyAsFloat(entity, this.target), this.closeEnoughDist.applyAsInt(entity, this.target)));
+		BrainUtil.setMemory(entity, MemoryModuleType.LOOK_TARGET, new BlockPosTracker(this.target.getFirst()));
 	}
 
 	@Override

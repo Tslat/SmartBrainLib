@@ -11,10 +11,10 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 
 /**
@@ -24,9 +24,7 @@ import java.util.function.ToIntBiFunction;
 public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.LOOK_TARGET);
 
-	@Deprecated(forRemoval = true)
-	protected float speedModifier = 1;
-	protected BiFunction<E, LivingEntity, Float> speedMod = (owner, target) -> 1f;
+	protected ToFloatBiFunction<E, LivingEntity> speedMod = (owner, target) -> 1f;
 	protected ToIntBiFunction<E, LivingEntity> closeEnoughWhen = (owner, target) -> 0;
 
 	/**
@@ -34,7 +32,6 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 	 * @param speedModifier The movespeed modifier/multiplier
 	 * @return this
 	 */
-	@Deprecated(forRemoval = true)
 	public SetWalkTargetToAttackTarget<E> speedMod(float speedModifier) {
 		return speedMod((owner, target) -> speedModifier);
 	}
@@ -44,7 +41,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 	 * @param speedModifier The movespeed modifier/multiplier
 	 * @return this
 	 */
-	public SetWalkTargetToAttackTarget<E> speedMod(BiFunction<E, LivingEntity, Float> speedModifier) {
+	public SetWalkTargetToAttackTarget<E> speedMod(ToFloatBiFunction<E, LivingEntity> speedModifier) {
 		this.speedMod = speedModifier;
 
 		return this;
@@ -69,14 +66,14 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 	@Override
 	protected void start(E entity) {
 		Brain<?> brain = entity.getBrain();
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 
 		if (entity.getSensing().hasLineOfSight(target) && BehaviorUtils.isWithinAttackRange(entity, target, 1)) {
-			BrainUtils.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+			BrainUtil.clearMemory(brain, MemoryModuleType.WALK_TARGET);
 		}
 		else {
-			BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedMod.apply(entity, target), this.closeEnoughWhen.applyAsInt(entity, target)));
+			BrainUtil.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
+			BrainUtil.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedMod.applyAsFloat(entity, target), this.closeEnoughWhen.applyAsInt(entity, target)));
 		}
 	}
 }

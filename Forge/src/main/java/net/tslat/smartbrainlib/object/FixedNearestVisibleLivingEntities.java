@@ -3,7 +3,7 @@ package net.tslat.smartbrainlib.object;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.tslat.smartbrainlib.util.SensoryUtils;
+import net.tslat.smartbrainlib.util.SensoryUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,7 +25,7 @@ public class FixedNearestVisibleLivingEntities extends NearestVisibleLivingEntit
 
             @Override
             public boolean test(LivingEntity target) {
-                return this.cache.computeIfAbsent(target, (Predicate<LivingEntity>) target1 -> SensoryUtils.isEntityTargetable(entity, target1));
+                return this.cache.computeIfAbsent(target, (Predicate<LivingEntity>) target1 -> SensoryUtil.isEntityTargetable(entity, target1));
             }
         };
     }

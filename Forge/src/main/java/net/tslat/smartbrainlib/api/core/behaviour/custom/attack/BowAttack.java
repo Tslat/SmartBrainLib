@@ -7,7 +7,7 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Items;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 /**
  * Extended behaviour for charging and firing a
@@ -31,11 +31,11 @@ public class BowAttack<E extends LivingEntity & RangedAttackMob> extends Animata
 		if (this.target == null)
 			return;
 
-		if (!BrainUtils.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
+		if (!BrainUtil.canSee(entity, this.target) || entity.distanceToSqr(this.target) > this.attackRadius)
 			return;
 
 		entity.performRangedAttack(this.target, BowItem.getPowerForTime(entity.getTicksUsingItem()));
 		entity.stopUsingItem();
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		BrainUtil.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 	}
 }

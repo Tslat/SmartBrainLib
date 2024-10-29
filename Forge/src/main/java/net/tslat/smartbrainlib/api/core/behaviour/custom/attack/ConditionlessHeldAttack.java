@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.HeldBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class ConditionlessHeldAttack<E extends LivingEntity> extends HeldBehavio
 		if (!this.requireTarget)
 			return true;
 
-		this.target = BrainUtils.getTargetOfEntity(entity);
+		this.target = BrainUtil.getTargetOfEntity(entity);
 
 		return this.target != null;
 	}

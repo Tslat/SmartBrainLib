@@ -13,7 +13,7 @@ import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -77,10 +77,10 @@ public class NearbyBlocksSensor<E extends LivingEntity> extends PredicateSensor<
 		}
 
 		if (blocks.isEmpty()) {
-			BrainUtils.clearMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get());
+			BrainUtil.clearMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get());
 		}
 		else {
-			BrainUtils.setMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), blocks);
+			BrainUtil.setMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), blocks);
 		}
 	}
 }

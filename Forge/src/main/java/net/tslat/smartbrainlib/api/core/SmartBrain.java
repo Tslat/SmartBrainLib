@@ -6,6 +6,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
@@ -26,8 +28,9 @@ import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -90,7 +93,9 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	@Override
 	public void tick(ServerLevel level, E entity) {
-		entity.level().getProfiler().push("SmartBrain");
+		ProfilerFiller profiler = Profiler.get();
+
+		profiler.push("SmartBrain");
 
 		if (this.sortBehaviours)
 			this.behaviours.sort(Comparator.comparingInt(ActivityBehaviours::priority));
@@ -101,10 +106,10 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		tickRunningBehaviours(level, entity);
 		findAndSetActiveActivity(entity);
 
-		entity.level().getProfiler().pop();
+		profiler.pop();
 
 		if (entity instanceof Mob mob)
-			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
+			mob.setAggressive(BrainUtil.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
 	}
 
 	private void findAndSetActiveActivity(E entity) {
@@ -448,7 +453,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	/**
 	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead
 	 */
-	@Deprecated(forRemoval = true)
+	@ApiStatus.Internal
 	@Override
 	public final void setSchedule(Schedule schedule) {}
 

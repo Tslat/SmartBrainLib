@@ -4,10 +4,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.util.BrainUtils;
-import net.tslat.smartbrainlib.util.SensoryUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.SensoryUtil;
 
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 /**
@@ -26,10 +26,10 @@ import java.util.function.BiPredicate;
  * @see AnimatableMeleeAttack
  */
 public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
-    protected BiFunction<E, LivingEntity, Float> verticalJumpStrength = (entity, target) -> 0.3f;
-    protected BiFunction<E, LivingEntity, Float> jumpStrength = (entity, target) -> 0.4f;
-    protected BiFunction<E, LivingEntity, Float> moveSpeedContribution = (entity, target) -> 0.2f;
-    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> entity.onGround() && SensoryUtils.hasLineOfSight(entity, target) && entity.distanceToSqr(target) < 8 * 8;
+    protected ToFloatBiFunction<E, LivingEntity> verticalJumpStrength = (entity, target) -> 0.3f;
+    protected ToFloatBiFunction<E, LivingEntity> jumpStrength = (entity, target) -> 0.4f;
+    protected ToFloatBiFunction<E, LivingEntity> moveSpeedContribution = (entity, target) -> 0.2f;
+    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> entity.onGround() && SensoryUtil.hasLineOfSight(entity, target) && entity.distanceToSqr(target) < 8 * 8;
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
@@ -53,7 +53,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The jump strength function
      * @return this
      */
-    public LeapAtTarget<E> jumpStrength(BiFunction<E, LivingEntity, Float> function) {
+    public LeapAtTarget<E> jumpStrength(ToFloatBiFunction<E, LivingEntity> function) {
         this.jumpStrength = function;
 
         return this;
@@ -66,7 +66,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The vertical jump strength function
      * @return this
      */
-    public LeapAtTarget<E> verticalJumpStrength(BiFunction<E, LivingEntity, Float> function) {
+    public LeapAtTarget<E> verticalJumpStrength(ToFloatBiFunction<E, LivingEntity> function) {
         this.verticalJumpStrength = function;
 
         return this;
@@ -80,7 +80,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The velocity contribution function
      * @return this
      */
-    public LeapAtTarget<E> moveSpeedContribution(BiFunction<E, LivingEntity, Float> function) {
+    public LeapAtTarget<E> moveSpeedContribution(ToFloatBiFunction<E, LivingEntity> function) {
         this.moveSpeedContribution = function;
 
         return this;
@@ -88,7 +88,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return this.leapPredicate.test(entity, BrainUtils.getTargetOfEntity(entity));
+        return this.leapPredicate.test(entity, BrainUtil.getTargetOfEntity(entity));
     }
 
     @Override
@@ -98,8 +98,8 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
         Vec3 velocity = new Vec3(this.target.getX() - entity.getX(), 0, this.target.getZ() - entity.getZ());
 
         if (velocity.lengthSqr() > 1.0E-7)
-            velocity = velocity.normalize().scale(this.jumpStrength.apply(entity, this.target)).add(entity.getDeltaMovement().scale(this.moveSpeedContribution.apply(entity, this.target)));
+            velocity = velocity.normalize().scale(this.jumpStrength.applyAsFloat(entity, this.target)).add(entity.getDeltaMovement().scale(this.moveSpeedContribution.applyAsFloat(entity, this.target)));
 
-        entity.setDeltaMovement(velocity.x, this.verticalJumpStrength.apply(entity, this.target), velocity.z);
+        entity.setDeltaMovement(velocity.x, this.verticalJumpStrength.applyAsFloat(entity, this.target), velocity.z);
     }
 }

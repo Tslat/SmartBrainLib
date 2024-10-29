@@ -10,11 +10,11 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Extended behaviour for melee attacking. Natively supports animation hit delays or other delays. <br>
@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
 	@Nullable
 	protected LivingEntity target = null;
@@ -41,7 +41,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	 * @param supplier The tick value provider
 	 * @return this
 	 */
-	public AnimatableMeleeAttack<E> attackInterval(Function<E, Integer> supplier) {
+	public AnimatableMeleeAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
@@ -54,7 +54,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		this.target = BrainUtils.getTargetOfEntity(entity);
+		this.target = BrainUtil.getTargetOfEntity(entity);
 
 		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
 	}
@@ -72,7 +72,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 
 	@Override
 	protected void doDelayedAction(E entity) {
-		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+		BrainUtil.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
 		if (this.target == null)
 			return;
@@ -80,6 +80,6 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 		if (!entity.getSensing().hasLineOfSight(this.target) || !entity.isWithinMeleeAttackRange(this.target))
 			return;
 
-		entity.doHurtTarget(this.target);
+		entity.doHurtTarget((ServerLevel)entity.level(), this.target);
 	}
 }

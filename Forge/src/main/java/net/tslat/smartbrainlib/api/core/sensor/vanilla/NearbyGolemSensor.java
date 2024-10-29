@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -61,13 +61,13 @@ public class NearbyGolemSensor<E extends LivingEntity> extends PredicateSensor<L
 
 	@Override
 	protected void doTick(ServerLevel level, E entity) {
-		BrainUtils.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entityList -> {
+		BrainUtil.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entityList -> {
 			if (entityList.isEmpty())
 				return;
 
 			for (LivingEntity target : entityList) {
 				if (predicate().test(target, entity)) {
-					BrainUtils.setForgettableMemory(entity, MemoryModuleType.GOLEM_DETECTED_RECENTLY, true, this.timeToRemember);
+					BrainUtil.setForgettableMemory(entity, MemoryModuleType.GOLEM_DETECTED_RECENTLY, true, this.timeToRemember);
 
 					return;
 				}

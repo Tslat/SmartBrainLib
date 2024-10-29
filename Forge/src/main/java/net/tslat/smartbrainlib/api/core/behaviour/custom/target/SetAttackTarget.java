@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.Function;
@@ -27,7 +27,7 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 
 	protected final boolean usingNearestAttackable;
 	protected Predicate<E> canAttackPredicate = entity -> true;
-	protected Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
+	protected Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
 
 	public SetAttackTarget() {
 		this(true);
@@ -74,11 +74,11 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 		LivingEntity target = this.targetFinder.apply(entity);
 
 		if (target == null) {
-			BrainUtils.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
+			BrainUtil.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 		}
 		else {
-			BrainUtils.setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
-			BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+			BrainUtil.setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
+			BrainUtil.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 		}
 	}
 }

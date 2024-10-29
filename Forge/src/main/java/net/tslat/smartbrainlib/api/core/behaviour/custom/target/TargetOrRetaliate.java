@@ -14,7 +14,7 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.List;
@@ -43,13 +43,13 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
 	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
-		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtils.getTargetOfEntity(ally) != null)
+		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtil.getTargetOfEntity(ally) != null)
 			return false;
 
 		if (owner instanceof OwnableEntity pet && pet.getOwner() != ((OwnableEntity)ally).getOwner())
 			return false;
 
-		Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
+		Entity lastHurtBy = BrainUtil.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
 
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
@@ -110,13 +110,13 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
 		Brain<?> brain = owner.getBrain();
-		this.toTarget = BrainUtils.getMemory(brain, this.priorityTargetMemory);
+		this.toTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
 
 		if (this.toTarget == null) {
-			this.toTarget = BrainUtils.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+			this.toTarget = BrainUtil.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 
 			if (this.toTarget == null) {
-				NearestVisibleLivingEntities nearbyEntities = BrainUtils.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+				NearestVisibleLivingEntities nearbyEntities = BrainUtil.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 				if (nearbyEntities != null)
 					this.toTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
@@ -137,8 +137,8 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setTargetOfEntity(entity, this.toTarget);
-		BrainUtils.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+		BrainUtil.setTargetOfEntity(entity, this.toTarget);
+		BrainUtil.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		this.toTarget = null;
 	}
@@ -147,7 +147,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 		double followRange = owner.getAttributeValue(Attributes.FOLLOW_RANGE);
 
 		for (LivingEntity ally : EntityRetrievalUtil.getEntities(owner, followRange, 10, followRange, LivingEntity.class, entity -> this.allyPredicate.test(owner, entity))) {
-			BrainUtils.setTargetOfEntity(ally, this.toTarget);
+			BrainUtil.setTargetOfEntity(ally, this.toTarget);
 		}
 	}
 }

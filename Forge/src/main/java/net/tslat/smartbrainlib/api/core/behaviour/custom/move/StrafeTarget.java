@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -71,12 +71,12 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
+		return BrainUtil.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) && !this.stopStrafingWhen.test(entity);
 	}
 
 	@Override
 	protected void tick(E entity) {
-		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+		LivingEntity target = BrainUtil.getTargetOfEntity(entity);
 		double distanceToTarget = target.distanceToSqr(entity);
 
 		if (distanceToTarget <= this.strafeDistanceSqr) {

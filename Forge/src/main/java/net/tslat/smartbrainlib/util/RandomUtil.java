@@ -189,9 +189,9 @@ public final class RandomUtil {
 			zRadius = Math.max(zRadius - minSpreadZ, 0);
 
 			for (int i = 0; i < tries; i++) {
-				double xAdjust = random.nextFloat() * xRadius * 2 - xRadius;
-				double yAdjust = random.nextFloat() * yRadius * 2 - yRadius;
-				double zAdjust = random.nextFloat() * zRadius * 2 - zRadius;
+				double xAdjust = randomValueBetween(-xRadius, xRadius);
+				double yAdjust = randomValueBetween(-yRadius, yRadius);
+				double zAdjust = randomValueBetween(-zRadius, zRadius);
 				int newX = (int)Math.floor(centerPos.getX() + xAdjust + minSpreadX * Math.signum(xAdjust));
 				int newY = (int)Math.floor(centerPos.getY() + yAdjust + minSpreadY * Math.signum(yAdjust));
 				int newZ = (int)Math.floor(centerPos.getZ() + zAdjust + minSpreadZ * Math.signum(zAdjust));

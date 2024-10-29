@@ -1,5 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
@@ -9,7 +10,7 @@ import net.minecraft.world.entity.animal.frog.Frog;
 import net.tslat.smartbrainlib.api.core.sensor.EntityFilteringSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,10 +39,10 @@ public class FrogSpecificSensor<E extends LivingEntity> extends EntityFilteringS
 	@Override
 	protected BiPredicate<LivingEntity, E> predicate() {
 		return (target, entity) -> {
-			if (BrainUtils.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN))
+			if (BrainUtil.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN))
 				return false;
 
-			if (!Sensor.isEntityAttackable(entity, target))
+			if (!Sensor.isEntityAttackable((ServerLevel)entity.level(), entity, target))
 				return false;
 
 			if (!Frog.canEat(target))
@@ -50,7 +51,7 @@ public class FrogSpecificSensor<E extends LivingEntity> extends EntityFilteringS
 			if (!target.closerThan(entity, 10))
 				return false;
 
-			List<UUID> unreachableTargets = BrainUtils.getMemory(entity, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS);
+			List<UUID> unreachableTargets = BrainUtil.getMemory(entity, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS);
 
 			return unreachableTargets == null || !unreachableTargets.contains(target.getUUID());
 		};

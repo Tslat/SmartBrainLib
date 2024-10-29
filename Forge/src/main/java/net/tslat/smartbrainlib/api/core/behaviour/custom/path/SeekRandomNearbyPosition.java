@@ -12,14 +12,14 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.object.SquareRadius;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.RandomUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Walk target class that finds a random position nearby and sets it as the walk target if applicable. <br>
@@ -36,9 +36,9 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected BiPredicate<E, BlockState> validPosition = (entity, state) -> false;
-	protected BiFunction<E, Vec3, Float> speedModifier = (entity, targetPos) -> 1f;
+	protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
 	protected SquareRadius radius = new SquareRadius(10, 6);
-	protected Function<E, Integer> tries = entity -> 10;
+	protected ToIntFunction<E> tries = entity -> 10;
 
 	protected Vec3 targetPos = null;
 
@@ -77,7 +77,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	 * @param function The movespeed modifier/multiplier function
 	 * @return this
 	 */
-	public SeekRandomNearbyPosition<E> speedModifier(BiFunction<E, Vec3, Float> function) {
+	public SeekRandomNearbyPosition<E> speedModifier(ToFloatBiFunction<E, Vec3> function) {
 		this.speedModifier = function;
 
 		return this;
@@ -97,7 +97,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	 * @param function The attempts function
 	 * @return this
 	 */
-	public SeekRandomNearbyPosition<E> attempts(Function<E, Integer> function) {
+	public SeekRandomNearbyPosition<E> attempts(ToIntFunction<E> function) {
 		this.tries = function;
 
 		return this;
@@ -128,7 +128,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 
 	@Override
 	protected void start(E entity) {
-		BrainUtils.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedModifier.apply(entity, this.targetPos), 0));
+		BrainUtil.setMemory(entity, MemoryModuleType.WALK_TARGET, new WalkTarget(this.targetPos, this.speedModifier.applyAsFloat(entity, this.targetPos), 0));
 	}
 
 	@Nullable

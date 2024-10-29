@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
@@ -43,19 +43,19 @@ public class HurtBySensor<E extends Mob> extends PredicateSensor<DamageSource, E
 		DamageSource damageSource = entity.getLastDamageSource();
 
 		if (damageSource == null) {
-			BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY);
-			BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+			BrainUtil.clearMemory(brain, MemoryModuleType.HURT_BY);
+			BrainUtil.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 		}
 		else if (predicate().test(damageSource, entity)) {
-			BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
+			BrainUtil.setMemory(brain, MemoryModuleType.HURT_BY, damageSource);
 
 			if (damageSource.getEntity()instanceof LivingEntity attacker && attacker.isAlive() && attacker.level() == entity.level())
-				BrainUtils.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
+				BrainUtil.setMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker);
 		}
 		else {
-			BrainUtils.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {
+			BrainUtil.withMemory(brain, MemoryModuleType.HURT_BY_ENTITY, attacker -> {
 				if (!attacker.isAlive() || attacker.level() != entity.level())
-					BrainUtils.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+					BrainUtil.clearMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 			});
 		}
 	}

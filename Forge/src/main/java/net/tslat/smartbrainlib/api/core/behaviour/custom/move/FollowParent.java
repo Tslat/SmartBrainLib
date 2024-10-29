@@ -6,7 +6,7 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -48,6 +48,6 @@ public class FollowParent<E extends AgeableMob> extends FollowEntity<E, AgeableM
 
 	@Nullable
 	protected AgeableMob getParent(E entity) {
-		return BrainUtils.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(other -> other instanceof AgeableMob ageableMob && this.parentPredicate.test(entity, ageableMob)).map(AgeableMob.class::cast).orElse(null);
+		return BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).findClosest(other -> other instanceof AgeableMob ageableMob && this.parentPredicate.test(entity, ageableMob)).map(AgeableMob.class::cast).orElse(null);
 	}
 }

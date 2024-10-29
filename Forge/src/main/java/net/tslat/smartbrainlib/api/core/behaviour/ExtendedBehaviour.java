@@ -12,8 +12,8 @@ import net.tslat.smartbrainlib.APIOnly;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /**
  * An extension of the base Behavior class that is used for tasks in the brain
@@ -36,8 +36,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	protected Consumer<E> taskStartCallback = entity -> {};
 	protected Consumer<E> taskStopCallback = entity -> {};
 
-	protected Function<E, Integer> runtimeProvider = entity -> 60;
-	protected Function<E, Integer> cooldownProvider = entity -> 0;
+	protected ToIntFunction<E> runtimeProvider = entity -> 60;
+	protected ToIntFunction<E> cooldownProvider = entity -> 0;
 	protected long cooldownFinishedAt = 0;
 
 	public ExtendedBehaviour() {
@@ -82,7 +82,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> runFor(Function<E, Integer> timeProvider) {
+	public final ExtendedBehaviour<E> runFor(ToIntFunction<E> timeProvider) {
 		this.runtimeProvider = timeProvider;
 
 		return this;
@@ -96,7 +96,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param timeProvider A function for the tick value
 	 * @return this
 	 */
-	public final ExtendedBehaviour<E> cooldownFor(Function<E, Integer> timeProvider) {
+	public final ExtendedBehaviour<E> cooldownFor(ToIntFunction<E> timeProvider) {
 		this.cooldownProvider = timeProvider;
 
 		return this;
@@ -146,7 +146,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 			return false;
 
 		this.status = Status.RUNNING;
-		this.endTimestamp = gameTime + this.runtimeProvider.apply(entity);
+		this.endTimestamp = gameTime + this.runtimeProvider.applyAsInt(entity);
 
 		start(level, entity, gameTime);
 
@@ -218,7 +218,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	@APIOnly
 	@Override
 	protected void stop(ServerLevel level, E entity, long gameTime) {
-		this.cooldownFinishedAt = gameTime + cooldownProvider.apply(entity);
+		this.cooldownFinishedAt = gameTime + this.cooldownProvider.applyAsInt(entity);
 
 		this.taskStopCallback.accept(entity);
 		stop(entity);

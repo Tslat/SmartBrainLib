@@ -6,7 +6,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -20,28 +20,16 @@ import java.util.function.BiPredicate;
  * @param <M> The data type of the memory
  */
 public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehaviour<E> {
-	private List<Pair<MemoryModuleType<?>, MemoryStatus>> memoryRequirements;
+	private final List<Pair<MemoryModuleType<?>, MemoryStatus>> memoryRequirements;
 
+	protected final MemoryModuleType<M> memory;
 	protected BiPredicate<E, M> customPredicate = (entity, target) -> true;
-	protected MemoryModuleType<M> memory;
 
 	public InvalidateMemory(MemoryModuleType<M> memory) {
 		super();
 
 		this.memory = memory;
 		this.memoryRequirements = MemoryTest.builder(1).hasMemory(this.memory);
-	}
-
-	/**
-	 * Sets the {@link MemoryModuleType memory} to check and invalidate.
-	 * @deprecated Use the constructor
-	 */
-	@Deprecated(forRemoval = true)
-	public InvalidateMemory<E, M> forMemory(MemoryModuleType<M> memory) {
-		this.memory = memory;
-		this.memoryRequirements = MemoryTest.builder(1).hasMemory(memory);
-
-		return this;
 	}
 
 	/**
@@ -60,9 +48,9 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 
 	@Override
 	protected void start(E entity) {
-		M memory = BrainUtils.getMemory(entity, this.memory);
+		M memory = BrainUtil.getMemory(entity, this.memory);
 
 		if (memory != null && this.customPredicate.test(entity, memory))
-			BrainUtils.clearMemory(entity, this.memory);
+			BrainUtil.clearMemory(entity, this.memory);
 	}
 }

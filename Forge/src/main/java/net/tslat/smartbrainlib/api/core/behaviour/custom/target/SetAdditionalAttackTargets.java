@@ -12,7 +12,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.TriPredicate;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.Iterator;
@@ -87,11 +87,11 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 		Brain<?> brain = entity.getBrain();
 
 		for (MemoryModuleType<?> memory : this.targetingMemories) {
-			if (!BrainUtils.hasMemory(brain, memory))
+			if (!BrainUtil.hasMemory(brain, memory))
 				return true;
 		}
 
-		return BrainUtils.hasMemory(brain, MemoryModuleType.NEAREST_PLAYERS) || BrainUtils.hasMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+		return BrainUtil.hasMemory(brain, MemoryModuleType.NEAREST_PLAYERS) || BrainUtil.hasMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 	}
 
 	@Override
@@ -99,14 +99,14 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 		Brain<?> brain = entity.getBrain();
 		Set<LivingEntity> targetPool = new ObjectOpenHashSet<>();
 
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_PLAYERS, targetPool::addAll);
-		BrainUtils.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, memory -> memory.findAll(target -> true).forEach(targetPool::add));
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_PLAYERS, targetPool::addAll);
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, memory -> memory.findAll(target -> true).forEach(targetPool::add));
 
 		if (targetPool.isEmpty())
 			return;
 
 		for (MemoryModuleType<? extends LivingEntity> memory : this.targetingMemories) {
-			LivingEntity target = BrainUtils.getMemory(brain, memory);
+			LivingEntity target = BrainUtil.getMemory(brain, memory);
 
 			if (target == null) {
 				LivingEntity newTarget = null;
@@ -115,7 +115,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 					newTarget = iterator.next();
 
 					if (this.canAttackPredicate.test(entity, memory, newTarget)) {
-						BrainUtils.setMemory(brain, (MemoryModuleType)memory, newTarget);
+						BrainUtil.setMemory(brain, (MemoryModuleType)memory, newTarget);
 						this.targetCallback.accept(entity, memory, newTarget);
 						iterator.remove();
 

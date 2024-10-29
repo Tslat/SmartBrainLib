@@ -10,7 +10,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
-import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
 import java.util.Comparator;
@@ -55,10 +55,10 @@ public class IncomingProjectilesSensor<E extends LivingEntity> extends Predicate
 
 		if (!projectiles.isEmpty()) {
 			projectiles.sort(Comparator.comparingDouble(entity::distanceToSqr));
-			BrainUtils.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get(), projectiles);
+			BrainUtil.setMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get(), projectiles);
 		}
 		else {
-			BrainUtils.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get());
+			BrainUtil.clearMemory(entity, SBLMemoryTypes.INCOMING_PROJECTILES.get());
 		}
 	}
 }
