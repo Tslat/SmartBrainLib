@@ -52,7 +52,6 @@ neoForge {
 }
 
 dependencies {
-    implementation(libs.neoforge)
     compileOnly(project(":common"))
 }
 
