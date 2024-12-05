@@ -56,7 +56,7 @@ public final class SBLNeoForge implements SBLLoader {
 
 	@Override
 	public Pair<Collection<? extends Entity>, Function<Entity, ? extends Entity>> getPartEntities(Level level) {
-		return Pair.of(level.getPartEntities(), entity -> ((PartEntity<?>)entity).getParent());
+		return Pair.of(level.dragonParts(), entity -> ((PartEntity<?>)entity).getParent());
 	}
 
 	@Override
