@@ -23,6 +23,7 @@ run
 logs
 libs/*
 
-# Files from Forge MDK
+# Platform
 forge*changelog.txt
 /NeoForge/runs/**
+fabric/runs
