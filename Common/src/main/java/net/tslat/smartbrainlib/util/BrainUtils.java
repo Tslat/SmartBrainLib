@@ -65,6 +65,8 @@ public final class BrainUtils {
 
 	/**
 	 * Get a memory value from a brain, or insert a new value if not already present
+	 * <p>
+	 * <b>NOTE: </b> Do not use this method to instantiate a new empty collection for insertion, as the memory will be immediately culled
 	 *
 	 * @param entity The entity
 	 * @param memory Memory type to get the value for
@@ -77,6 +79,8 @@ public final class BrainUtils {
 
 	/**
 	 * Get a memory value from a brain, or insert a new value if not already present
+	 * <p>
+	 * <b>NOTE: </b> Do not use this method to instantiate a new empty collection for insertion, as the memory will be immediately culled
 	 *
 	 * @param brain The brain
 	 * @param memory Memory type to get the value for
