@@ -5,10 +5,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.util.BrainUtils;
-import net.tslat.smartbrainlib.util.SensoryUtils;
 
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
 /**
  * SmartBrainLib equivalent of {@link net.minecraft.world.entity.ai.goal.LeapAtTargetGoal}
@@ -29,20 +27,20 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
     protected BiFunction<E, LivingEntity, Float> verticalJumpStrength = (entity, target) -> 0.3f;
     protected BiFunction<E, LivingEntity, Float> jumpStrength = (entity, target) -> 0.4f;
     protected BiFunction<E, LivingEntity, Float> moveSpeedContribution = (entity, target) -> 0.2f;
-    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> entity.onGround() && SensoryUtils.hasLineOfSight(entity, target) && entity.distanceToSqr(target) < 8 * 8;
+    protected BiFunction<E, LivingEntity, Float> leapRange = (entity, target) -> 8f;
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
     }
 
     /**
-     * Add a predicate that determines whether the entity can leap or not
+     * Determines how far away the entity can be and still leap
      *
-     * @param predicate The predicate
+     * @param range The maximum range at which the entity can jump at target
      * @return this
      */
-    public LeapAtTarget<E> leapIf(BiPredicate<E, LivingEntity> predicate) {
-        this.leapPredicate = predicate;
+    public LeapAtTarget<E> leapRange(BiFunction<E, LivingEntity, Float> range) {
+        this.leapRange = range;
 
         return this;
     }
@@ -88,7 +86,9 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return this.leapPredicate.test(entity, BrainUtils.getTargetOfEntity(entity));
+        this.target = BrainUtils.getTargetOfEntity(entity);
+
+        return entity.getSensing().hasLineOfSight(this.target) && entity.onGround() && entity.distanceTo(this.target) < this.leapRange.apply(entity, this.target);
     }
 
     @Override
