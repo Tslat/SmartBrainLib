@@ -93,7 +93,6 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
         ServerLevel level = (ServerLevel)entity.level();
         Path path = BrainUtils.getMemory(entity, MemoryModuleType.PATH);
         BlockPos prevNodePos = path.getPreviousNode().asBlockPos();
-        Node nextNode = path.getNextNode();
         BlockPos nextNodePos = path.getNextNode().asBlockPos();
         BlockState prevNodeBlockState = level.getBlockState(prevNodePos);
         BlockState nextNodeBlockState = level.getBlockState(nextNodePos);
@@ -169,7 +168,12 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
         if (!door.isOpen(blockState)) {
             door.setOpen(entity, level, blockState, pos, true);
 
-            BrainUtils.computeMemoryIfAbsent(entity, MemoryModuleType.DOORS_TO_CLOSE, ObjectOpenHashSet::new).add(new GlobalPos(level.dimension(), pos));
+            Set<GlobalPos> doorPositions = BrainUtils.getMemory(entity, MemoryModuleType.DOORS_TO_CLOSE);
+
+            if (doorPositions == null)
+                doorPositions = new ObjectOpenHashSet<>();
+
+            doorPositions.add(new GlobalPos(level.dimension(), pos));
         }
     }
 }
