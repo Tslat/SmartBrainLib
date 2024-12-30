@@ -81,7 +81,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 			mob.setAggressive(BrainUtils.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
 	}
 
-	private void findAndSetActiveActivity(E entity) {
+	protected void findAndSetActiveActivity(E entity) {
 		Activity nextActivity = getFirstValidActivity(entity.getActivityPriorities());
 
 		if (nextActivity != null && entity.getScheduleIgnoringActivities().contains(nextActivity)) {
@@ -106,7 +106,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	}
 
 	@Nullable
-	private Activity getFirstValidActivity(List<Activity> activities) {
+	protected Activity getFirstValidActivity(List<Activity> activities) {
 		for (Activity activity : activities) {
 			if (activityRequirementsAreMet(activity))
 				return activity;
@@ -115,13 +115,13 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return null;
 	}
 
-	private void tickSensors(ServerLevel level, E entity) {
+	protected void tickSensors(ServerLevel level, E entity) {
 		for (Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>> sensor : this.sensors) {
 			sensor.getSecond().tick(level, entity);
 		}
 	}
 
-	private void checkForNewBehaviours(ServerLevel level, E entity) {
+	protected void checkForNewBehaviours(ServerLevel level, E entity) {
 		long gameTime = level.getGameTime();
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
@@ -136,7 +136,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		}
 	}
 
-	private void tickRunningBehaviours(ServerLevel level, E entity) {
+	protected void tickRunningBehaviours(ServerLevel level, E entity) {
 		long gameTime = level.getGameTime();
 
 		for (ActivityBehaviours<E> behaviourGroup : this.behaviours) {
@@ -214,7 +214,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return value.isPresent() && value.get().equals(memory);
 	}
 
-	private static <E extends LivingEntity & SmartBrainOwner<E>> Codec<Brain<E>> emptyBrainCodec() {
+	protected static <E extends LivingEntity & SmartBrainOwner<E>> Codec<Brain<E>> emptyBrainCodec() {
 		MutableObject<Codec<Brain<E>>> brainCodec = new MutableObject<>();
 
 		brainCodec.setValue(Codec.unit(() -> new Brain<>(ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), brainCodec::getValue)));
@@ -222,7 +222,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		return brainCodec.getValue();
 	}
 
-	private static <E extends LivingEntity & SmartBrainOwner<E>> List<? extends SensorType<? extends Sensor<? super E>>> convertSensorsToTypes(List<? extends ExtendedSensor<E>> sensors) {
+	protected static <E extends LivingEntity & SmartBrainOwner<E>> List<? extends SensorType<? extends Sensor<? super E>>> convertSensorsToTypes(List<? extends ExtendedSensor<E>> sensors) {
 		List<SensorType<? extends Sensor<? super E>>> types = new ObjectArrayList<>(sensors.size());
 
 		for (ExtendedSensor<?> sensor : sensors) {
@@ -379,7 +379,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		this.schedule.scheduleTask(brainOwner, delay, (Consumer)task);
 	}
 
-	private static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
+	protected static <E extends LivingEntity> void checkBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourPredicate predicate, Runnable callback) {
 		if (predicate.isBehaviour(priority, activity, behaviour, parentBehaviour)) {
 			callback.run();
 		}
@@ -419,7 +419,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 		}
 	}
 
-	private static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourConsumer consumer) {
+	protected static <E extends LivingEntity> void consumeBehaviour(int priority, Activity activity, BehaviorControl<E> behaviour, @Nullable BehaviorControl<E> parentBehaviour, BrainBehaviourConsumer consumer) {
 		consumer.consume(priority, activity, behaviour, parentBehaviour);
 
 		if (behaviour instanceof GateBehavior<E> groupBehaviour) {
@@ -446,5 +446,5 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	@Override
 	public final void setSchedule(Schedule schedule) {}
 
-	private record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<BehaviorControl<? super E>>>> behaviours) {}
+	protected record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<BehaviorControl<? super E>>>> behaviours) {}
 }
