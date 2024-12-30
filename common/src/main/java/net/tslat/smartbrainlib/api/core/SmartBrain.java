@@ -41,12 +41,12 @@ import java.util.stream.Stream;
  * @param <E> The entity
  */
 public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Brain<E> {
-	private final List<MemoryModuleType<?>> expirableMemories = new ObjectArrayList<>();
-	private final List<ActivityBehaviours<E>> behaviours = new ObjectArrayList<>();
-	private final List<Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>>> sensors = new ObjectArrayList<>();
-	private SmartBrainSchedule schedule = null;
+	protected final List<MemoryModuleType<?>> expirableMemories = new ObjectArrayList<>();
+	protected final List<ActivityBehaviours<E>> behaviours = new ObjectArrayList<>();
+	protected final List<Pair<SensorType<ExtendedSensor<? super E>>, ExtendedSensor<? super E>>> sensors = new ObjectArrayList<>();
+	protected SmartBrainSchedule schedule = null;
 
-	private boolean sortBehaviours = false;
+	protected boolean sortBehaviours = false;
 
 	public SmartBrain(List<MemoryModuleType<?>> memories, List<? extends ExtendedSensor<E>> sensors, @Nullable List<BrainActivityGroup<E>> taskList) {
 		super(memories, ImmutableList.of(), ImmutableList.of(), SmartBrain::emptyBrainCodec);
