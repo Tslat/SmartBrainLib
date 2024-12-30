@@ -4,11 +4,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.object.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
-import net.tslat.smartbrainlib.util.SensoryUtil;
 
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * SmartBrainLib equivalent of {@link net.minecraft.world.entity.ai.goal.LeapAtTargetGoal}
@@ -26,10 +26,12 @@ import java.util.function.BiPredicate;
  * @see AnimatableMeleeAttack
  */
 public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
-    protected ToFloatBiFunction<E, LivingEntity> verticalJumpStrength = (entity, target) -> 0.3f;
-    protected ToFloatBiFunction<E, LivingEntity> jumpStrength = (entity, target) -> 0.4f;
-    protected ToFloatBiFunction<E, LivingEntity> moveSpeedContribution = (entity, target) -> 0.2f;
-    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> entity.onGround() && SensoryUtil.hasLineOfSight(entity, target) && entity.distanceToSqr(target) < 8 * 8;
+    protected BiFunction<E, LivingEntity, Float> verticalJumpStrength = (entity, target) -> 0.3f;
+    protected BiFunction<E, LivingEntity, Float> jumpStrength = (entity, target) -> 0.4f;
+    protected BiFunction<E, LivingEntity, Float> moveSpeedContribution = (entity, target) -> 0.2f;
+    protected BiFunction<E, LivingEntity, Float> leapRange = (entity, target) -> 8f;
+    @Deprecated(forRemoval = true)
+    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> true;
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
@@ -38,11 +40,25 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
     /**
      * Add a predicate that determines whether the entity can leap or not
      *
+     * @deprecated use {@link #startCondition(Predicate)} and/or {@link #leapRange(BiFunction)} instead
      * @param predicate The predicate
      * @return this
      */
+    @Deprecated(forRemoval = true)
     public LeapAtTarget<E> leapIf(BiPredicate<E, LivingEntity> predicate) {
         this.leapPredicate = predicate;
+
+        return this;
+    }
+
+    /**
+     * Determines how far away the entity can be and still leap
+     *
+     * @param range The maximum range at which the entity can jump at target
+     * @return this
+     */
+    public LeapAtTarget<E> leapRange(BiFunction<E, LivingEntity, Float> range) {
+        this.leapRange = range;
 
         return this;
     }
@@ -53,7 +69,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The jump strength function
      * @return this
      */
-    public LeapAtTarget<E> jumpStrength(ToFloatBiFunction<E, LivingEntity> function) {
+    public LeapAtTarget<E> jumpStrength(BiFunction<E, LivingEntity, Float> function) {
         this.jumpStrength = function;
 
         return this;
@@ -66,7 +82,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The vertical jump strength function
      * @return this
      */
-    public LeapAtTarget<E> verticalJumpStrength(ToFloatBiFunction<E, LivingEntity> function) {
+    public LeapAtTarget<E> verticalJumpStrength(BiFunction<E, LivingEntity, Float> function) {
         this.verticalJumpStrength = function;
 
         return this;
@@ -80,7 +96,7 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
      * @param function The velocity contribution function
      * @return this
      */
-    public LeapAtTarget<E> moveSpeedContribution(ToFloatBiFunction<E, LivingEntity> function) {
+    public LeapAtTarget<E> moveSpeedContribution(BiFunction<E, LivingEntity, Float> function) {
         this.moveSpeedContribution = function;
 
         return this;
@@ -88,7 +104,9 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-        return this.leapPredicate.test(entity, BrainUtil.getTargetOfEntity(entity));
+        this.target = BrainUtil.getTargetOfEntity(entity);
+
+        return entity.onGround() && entity.getSensing().hasLineOfSight(this.target) && entity.closerThan(this.target, this.leapRange.apply(entity, this.target));
     }
 
     @Override
@@ -98,8 +116,8 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
         Vec3 velocity = new Vec3(this.target.getX() - entity.getX(), 0, this.target.getZ() - entity.getZ());
 
         if (velocity.lengthSqr() > 1.0E-7)
-            velocity = velocity.normalize().scale(this.jumpStrength.applyAsFloat(entity, this.target)).add(entity.getDeltaMovement().scale(this.moveSpeedContribution.applyAsFloat(entity, this.target)));
+            velocity = velocity.normalize().scale(this.jumpStrength.apply(entity, this.target)).add(entity.getDeltaMovement().scale(this.moveSpeedContribution.apply(entity, this.target)));
 
-        entity.setDeltaMovement(velocity.x, this.verticalJumpStrength.applyAsFloat(entity, this.target), velocity.z);
+        entity.setDeltaMovement(velocity.x, this.verticalJumpStrength.apply(entity, this.target), velocity.z);
     }
 }

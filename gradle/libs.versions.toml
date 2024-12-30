@@ -1,6 +1,6 @@
 [versions]
 # Common
-smartbrainlib = "1.16.4"
+smartbrainlib = "1.16.5"
 minecraft-range = "[1.21.4,)"
 minecraft = "1.21.4"
 parchment-minecraft = "1.21"

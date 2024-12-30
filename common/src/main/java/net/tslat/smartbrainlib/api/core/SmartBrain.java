@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * library. <br>
  * Any entity that returns a {@link SmartBrainProvider} from
  * {@link LivingEntity#brainProvider()} will have one of these.
- * 
+ *
  * @param <E> The entity
  */
 public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Brain<E> {
@@ -86,18 +86,38 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 			mob.setAggressive(BrainUtil.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
 	}
 
-	private void findAndSetActiveActivity(E entity) {
+	protected void findAndSetActiveActivity(E entity) {
+		Activity nextActivity = getFirstValidActivity(entity.getActivityPriorities());
+
+		if (nextActivity != null && entity.getScheduleIgnoringActivities().contains(nextActivity)) {
+			setActiveActivity(nextActivity);
+
+			return;
+		}
+
 		if (this.schedule != null) {
 			Activity scheduledActivity = this.schedule.tick(entity);
 
-			if (scheduledActivity != null && !getActiveActivities().contains(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
-				setActiveActivity(scheduledActivity);
+			if (scheduledActivity != null && activityRequirementsAreMet(scheduledActivity)) {
+				if (!isActive(scheduledActivity))
+					setActiveActivity(scheduledActivity);
 
 				return;
 			}
 		}
 
-		setActiveActivityToFirstValid(entity.getActivityPriorities());
+		if (nextActivity != null)
+			setActiveActivity(nextActivity);
+	}
+
+	@Nullable
+	protected Activity getFirstValidActivity(List<Activity> activities) {
+		for (Activity activity : activities) {
+			if (activityRequirementsAreMet(activity))
+				return activity;
+		}
+
+		return null;
 	}
 
 	private void tickSensors(ServerLevel level, E entity) {
@@ -280,7 +300,7 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 	/**
 	 * Add a behaviour to the behaviours list of this brain.
-	 * 
+	 *
 	 * @param priority  The behaviour's priority value
 	 * @param activity  The behaviour's activity category
 	 * @param behaviour The behaviour instance
