@@ -21,24 +21,29 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implement this class for any entity you want to use the SmartBrain system. <br>
+ * Implement this class for any entity you want to use the SmartBrain system.
+ * <p>
  * This interface contains the helper and constructive methods for initialising your entity's brain.
  *
  * @param <T> Your entity
  */
 public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	/**
-	 * The list of {@link ExtendedSensor Sensors} that your entity will be using. <br>
+	 * The list of {@link ExtendedSensor Sensors} that your entity will be using.
+	 * <p>
 	 * Only supports ExtendedSensors.
+	 *
 	 * @return A {@link List} of {@link ExtendedSensor Sensors} that the entity will use to fill memories for tasks.
 	 */
 	List<? extends ExtendedSensor<? extends T>> getSensors();
 
 	/**
-	 * Override this for tasks that ideally should always be running, regardless of anything else. <br>
-	 * Usually you'd use this for things like moving towards the current target, floating on water, looking at a certain target, etc. <br>
+	 * Override this for tasks that ideally should always be running, regardless of anything else.
+	 * <p>
+	 * Usually you'd use this for things like moving towards the current target, floating on water, looking at a certain target, etc.
+	 * <p>
 	 * Like all task groups, this method is <i>optional</i>, if you have no tasks that apply to this category
-	 * <br><br>
+	 * <p>
 	 * Tasks returned in this category take up the {@link Activity#CORE} activity category
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>core</i> tasks your entity should run.
@@ -48,10 +53,12 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this for tasks that would normally run when your entity is doing nothing else. <br>
-	 * Usually you'd use this for things like random walking, setting targets, or just standing still and doing nothing at all. <br>
+	 * Override this for tasks that would normally run when your entity is doing nothing else.
+	 * <p>
+	 * Usually you'd use this for things like random walking, setting targets, or just standing still and doing nothing at all.
+	 * <p>
 	 * Like all task groups, this method is <i>optional</i>, if you have no tasks that apply to this category
-	 * <br><br>
+	 * <p>
 	 * Tasks returned in this category take up the {@link Activity#IDLE} activity category
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>idle</i> tasks your entity should run.
@@ -61,10 +68,12 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this to add the tasks that would normally run when your entity attacking something, or is otherwise in combat. <br>
-	 * Usually you'd use this for things melee attacking, invalidating attack targets, or setting walk targets based off the current attack target. <br>
+	 * Override this to add the tasks that would normally run when your entity attacking something, or is otherwise in combat.
+	 * <p>
+	 * Usually you'd use this for things melee attacking, invalidating attack targets, or setting walk targets based off the current attack target.
+	 * <p>
 	 * Like all task groups, this method is <i>optional</i>, if you have no tasks that apply to this category
-	 * <br><br>
+	 * <p>
 	 * Tasks returned in this category take up the {@link Activity#FIGHT} activity category
 	 *
 	 * @return a {@link BrainActivityGroup} containing the <i>fight</i> tasks your entity should run.
@@ -74,7 +83,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this to add any additional tasks that don't fit into the categories already handled in the pre-defined activity task methods. <br>
+	 * Override this to add any additional tasks that don't fit into the categories already handled in the pre-defined activity task methods.
+	 * <p>
 	 * Like all task groups, this method is <i>optional</i>, if you have no tasks that apply to this category
 	 *
 	 * @return a {@link Map} of Activities to BrainActivityGroups group containing the additional tasks your entity should run.
@@ -84,7 +94,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * The activity categories that should always be running, regardless of any other conditions or situations. <br>
+	 * The activity categories that should always be running, regardless of any other conditions or situations.
+	 * <p>
 	 * This is usually just left as {@link Activity#CORE}, but it can be modified as needed
 	 *
 	 * @return A {@link Set} of {@link Activity Activities}
@@ -94,7 +105,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * The activity category that is used as a fallback, for when no other activity categories meet the conditions to run. <br>
+	 * The activity category that is used as a fallback, for when no other activity categories meet the conditions to run.
+	 * <p>
 	 * This is almost always left as {@link Activity#IDLE}, but it can be modified as needed.
 	 *
 	 * @return The {@link Activity} to use as a fallback
@@ -104,7 +116,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this to return the order of activity categories the brain should attempt to run things in. <br>
+	 * Override this to return the order of activity categories the brain should attempt to run things in.
+	 * <p>
 	 * The list is ordered in order of insertion - I.E. earlier elements have higher priority
 	 *
 	 * @return An <b>ordered</b> {@link List} of {@link Activity} categories
@@ -114,7 +127,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this to return a set of activities that should be prioritised over scheduled activities.<br>
+	 * Override this to return a set of activities that should be prioritised over scheduled activities.
+	 * <p>
 	 * Activities listed here will be selected even if a {@link SmartBrainSchedule schedule} determines another activity is valid.
 	 *
 	 * @return A {@link Set} of {@link Activity} categories
@@ -124,7 +138,8 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * Override this to do any additional work after the brain has been built and readied. <br>
+	 * Override this to do any additional work after the brain has been built and readied.
+	 * <p>
 	 * By this stage, the brain has had all its memories, sensors, activities, and priorities set.
 	 *
 	 * @param brain The brain that the entity will be using.
@@ -132,9 +147,11 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	default void handleAdditionalBrainSetup(SmartBrain<? extends T> brain) {}
 
 	/**
-	 * Override this to return the {@link net.minecraft.world.entity.schedule.Schedule schedule} for your entity.<br>
+	 * Override this to return the {@link net.minecraft.world.entity.schedule.Schedule schedule} for your entity.
+	 * <p>
 	 * This can be set at any time via {@link SmartBrain#setSchedule(SmartBrainSchedule)}, but it's recommended to
 	 * do so statically if possible and provide it through this method
+	 *
 	 * @return The schedule for the brain, or null if no schedule
 	 */
 	@Nullable
@@ -143,9 +160,12 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	/**
-	 * SmartBrainOwners <b><u>MUST</u></b> call this from the entity's {@link LivingEntity#serverAiStep}, or {@link Mob#customServerAiStep} if extending Mob. <br>
-	 * Brains should only be ticked <b>server side</b>.<br>
+	 * SmartBrainOwners <b><u>MUST</u></b> call this from the entity's {@link LivingEntity#serverAiStep}, or {@link Mob#customServerAiStep} if extending {@link Mob}.
+	 * <p>
+	 * Brains should only be ticked <b>server side</b>.
+	 * <p>
 	 * This method does not need to be overridden.
+	 *
 	 * @param entity The brain owner
 	 */
 	@APIOnly
