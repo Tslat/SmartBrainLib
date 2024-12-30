@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -110,6 +111,16 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 */
 	default List<Activity> getActivityPriorities() {
 		return ObjectArrayList.of(Activity.FIGHT, Activity.IDLE);
+	}
+
+	/**
+	 * Override this to return a set of activities that should be prioritised over scheduled activities.<br>
+	 * Activities listed here will be selected even if a {@link SmartBrainSchedule schedule} determines another activity is valid.
+	 *
+	 * @return A {@link Set} of {@link Activity} categories
+	 */
+	default Set<Activity> getScheduleIgnoringActivities() {
+		return ObjectArraySet.of(Activity.FIGHT);
 	}
 
 	/**

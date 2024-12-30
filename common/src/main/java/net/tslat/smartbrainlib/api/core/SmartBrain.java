@@ -82,6 +82,14 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	}
 
 	private void findAndSetActiveActivity(E entity) {
+		Activity nextActivity = getFirstValidActivity(entity.getActivityPriorities());
+
+		if (nextActivity != null && entity.getScheduleIgnoringActivities().contains(nextActivity)) {
+			setActiveActivity(nextActivity);
+
+			return;
+		}
+
 		if (this.schedule != null) {
 			Activity scheduledActivity = this.schedule.tick(entity);
 
@@ -93,7 +101,18 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 			}
 		}
 
-		setActiveActivityToFirstValid(entity.getActivityPriorities());
+		if (nextActivity != null)
+			setActiveActivity(nextActivity);
+	}
+
+	@Nullable
+	private Activity getFirstValidActivity(List<Activity> activities) {
+		for (Activity activity : activities) {
+			if (activityRequirementsAreMet(activity))
+				return activity;
+		}
+
+		return null;
 	}
 
 	private void tickSensors(ServerLevel level, E entity) {
