@@ -9,11 +9,9 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.pathfinder.PathfindingContext;
+import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.ToFloatBiFunction;
@@ -228,15 +226,21 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected BlockPos getTeleportPos(E entity, T target, BlockPos targetPos) {
 		Level level = entity.level();
 
-		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) ->
+		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, entity.getNavigation().getNodeEvaluator() instanceof WalkNodeEvaluator, level, 10, (state, statePos) ->
 				this.teleportPredicate.test(entity, statePos, state));
 	}
 
 	protected boolean isTeleportable(E entity, BlockPos pos, BlockState state) {
-		PathType pathType = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
+		NodeEvaluator nodeEvaluator = entity.getNavigation().getNodeEvaluator();
+		PathType pathType = nodeEvaluator.getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
 
-		if (pathType != PathType.WALKABLE && (pathType == PathType.OPEN && !(entity.getNavigation() instanceof FlyingPathNavigation)))
+		if (!(nodeEvaluator instanceof FlyNodeEvaluator)) {
+			if (pathType != PathType.WALKABLE)
+				return false;
+		}
+		else if (pathType != PathType.OPEN && pathType != PathType.WALKABLE) {
 			return false;
+		}
 
 		return entity.level().noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(pos).subtract(entity.position())));
 	}
