@@ -16,11 +16,11 @@ public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, Living
 	}
 
 	protected LivingEntity getOwner(E entity) {
+		if (this.owner != null && (this.owner.isRemoved() || !this.owner.getUUID().equals(entity.getOwnerUUID())))
+			this.owner = null;
+
 		if (this.owner == null)
 			this.owner = entity.getOwner();
-
-		if (this.owner != null && this.owner.isRemoved())
-			this.owner = null;
 
 		return this.owner;
 	}
