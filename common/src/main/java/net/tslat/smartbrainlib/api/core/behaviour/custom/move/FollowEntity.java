@@ -9,12 +9,15 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.RandomUtil;
 
@@ -39,6 +42,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected ToFloatBiFunction<E, T> teleportDistance = (entity, target) -> Float.MAX_VALUE;
 	protected ToFloatBiFunction<E, T> followDistMin = (entity, target) -> 4f;
 	protected ToFloatBiFunction<E, T> speedMod = (entity, target) -> 1f;
+	protected TriPredicate<E, BlockPos, BlockState> teleportPredicate = this::isTeleportable;
 
 	protected float oldWaterPathMalus = 0;
 	protected float oldLavaPathMalus = 0;
@@ -114,6 +118,18 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		return this;
 	}
 
+	/**
+	 * Override the default predicate for whether an entity can teleport to a given location when attempting to teleport to the following entity
+	 *
+	 * @param teleportPosPredicate The predicate for the teleport position
+	 * @return this
+	 */
+	public FollowEntity<E, T> canTeleportTo(TriPredicate<E, BlockPos, BlockState> teleportPosPredicate) {
+		this.teleportPredicate = teleportPosPredicate;
+
+		return this;
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();
@@ -182,23 +198,46 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 			teleportToTarget(entity, target);
 	}
 
+	/**
+	 * Attempt to teleport to a random safe position near the target entity
+	 *
+	 * @param entity The entity to teleport
+	 * @param target The target entity to teleport around
+	 */
 	protected void teleportToTarget(E entity, T target) {
-		Level level = entity.level();
-		BlockPos entityPos = target.blockPosition();
+		BlockPos targetPos = target.blockPosition();
+		BlockPos teleportPos = getTeleportPos(entity, target, targetPos);
 
-		BlockPos pos = RandomUtil.getRandomPositionWithinRange(entityPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) -> {
-			PathType pathTypes = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(level, entity), statePos.getX(), statePos.getY(), statePos.getZ());
-
-			if (pathTypes != PathType.WALKABLE)
-				return false;
-
-			return level.noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(statePos).subtract(entity.position())));
-		});
-
-		if (pos != entityPos) {
-			entity.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
+		if (!teleportPos.equals(targetPos)) {
+			entity.moveTo(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
 			entity.getNavigation().stop();
 			BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}
+	}
+
+	/**
+	 * Attempt to locate a safe teleport position for the given entity around the target
+	 * <p>
+	 * Failing to find a safe location should return the <code>targetPos</code> parameter instead
+	 *
+	 * @param entity The entity to teleport
+	 * @param target The target entity to teleport around
+	 * @param targetPos The block position that the entity is teleporting from
+	 * @return A safe teleport position, or the provided <code>targetPos</code> arg if not found
+	 */
+	protected BlockPos getTeleportPos(E entity, T target, BlockPos targetPos) {
+		Level level = entity.level();
+
+		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, true, level, 10, (state, statePos) ->
+				this.teleportPredicate.test(entity, statePos, state));
+	}
+
+	protected boolean isTeleportable(E entity, BlockPos pos, BlockState state) {
+		PathType pathType = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
+
+		if (pathType != PathType.WALKABLE && (pathType == PathType.OPEN && !(entity.getNavigation() instanceof FlyingPathNavigation)))
+			return false;
+
+		return entity.level().noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(pos).subtract(entity.position())));
 	}
 }
