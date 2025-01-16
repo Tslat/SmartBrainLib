@@ -14,10 +14,8 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
-import net.tslat.smartbrainlib.util.RandomUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -56,7 +54,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
-	protected TriPredicate<E, LivingEntity, LivingEntity> targetSwapPredicate = (entity, currentTarget, newTarget) -> RandomUtil.oneInNChance(150);
+	protected boolean canSwapTarget = true;
 
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
@@ -107,15 +105,10 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	/**
-	 * Set the predicate to determine whether the entity should be able to swap targets from its current to a new potential target
-	 * <p>
-	 * Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
-	 *
-	 * @param predicate The predicate
-	 * @return this
+	 * Disable the ability to occasionally swap targets if a higher priority target source has one
 	 */
-	public TargetOrRetaliate<E> canSwapTargetWhen(TriPredicate<E, LivingEntity, LivingEntity> predicate) {
-		this.targetSwapPredicate = predicate;
+	public TargetOrRetaliate<E> noTargetSwapping() {
+		this.canSwapTarget = false;
 
 		return this;
 	}
@@ -127,10 +120,14 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
-		LivingEntity currentTarget = BrainUtil.getTargetOfEntity(owner);
-		LivingEntity newTarget = getTarget(owner, level);
+		this.toTarget = BrainUtil.getTargetOfEntity(owner);
 
+		if (this.toTarget == null || (this.canSwapTarget && owner.tickCount % 100 == 0)) {
+			LivingEntity newTarget = getTarget(owner, level);
 
+			if (newTarget != null)
+				this.toTarget = newTarget;
+		}
 
 		return this.toTarget != null;
 	}
@@ -149,7 +146,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 				if (nearbyEntities != null)
 					newTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
 
-				if (this.alertAlliesPredicate.test(owner, newTarget))
+				if (this.alertAlliesPredicate.test(owner, newTarget) && this.toTarget == null)
 					alertAllies(level, owner);
 
 				if (newTarget == null)
@@ -157,7 +154,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 			}
 		}
 
-		if (this.alertAlliesPredicate.test(owner, newTarget))
+		if (this.alertAlliesPredicate.test(owner, newTarget) && this.toTarget == null)
 			alertAllies(level, owner);
 
 		return this.canAttackPredicate.test(newTarget) ? newTarget : null;
