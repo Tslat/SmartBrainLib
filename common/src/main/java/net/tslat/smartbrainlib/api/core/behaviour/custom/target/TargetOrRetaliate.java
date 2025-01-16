@@ -119,21 +119,19 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
+	protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
+		return (!BrainUtil.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) || (this.canSwapTarget && entity.tickCount % 100 == 0)) && super.doStartCheck(level, entity, gameTime);
+	}
+
+	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
-		this.toTarget = BrainUtil.getTargetOfEntity(owner);
-
-		if (this.toTarget == null || (this.canSwapTarget && owner.tickCount % 100 == 0)) {
-			LivingEntity newTarget = getTarget(owner, level);
-
-			if (newTarget != null)
-				this.toTarget = newTarget;
-		}
+		this.toTarget = getTarget(owner, level, BrainUtil.getTargetOfEntity(owner));
 
 		return this.toTarget != null;
 	}
 
 	@Nullable
-	protected LivingEntity getTarget(E owner, ServerLevel level) {
+	protected LivingEntity getTarget(E owner, ServerLevel level, @Nullable LivingEntity existingTarget) {
 		Brain<?> brain = owner.getBrain();
 		LivingEntity newTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
 
@@ -146,24 +144,23 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 				if (nearbyEntities != null)
 					newTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
 
-				if (this.alertAlliesPredicate.test(owner, newTarget) && this.toTarget == null)
-					alertAllies(level, owner);
-
 				if (newTarget == null)
 					return null;
 			}
 		}
-
-		if (this.alertAlliesPredicate.test(owner, newTarget) && this.toTarget == null)
-			alertAllies(level, owner);
 
 		return this.canAttackPredicate.test(newTarget) ? newTarget : null;
 	}
 
 	@Override
 	protected void start(E entity) {
+		LivingEntity existingTarget = BrainUtil.getTargetOfEntity(entity);
+
 		BrainUtil.setTargetOfEntity(entity, this.toTarget);
 		BrainUtil.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+
+		if (this.alertAlliesPredicate.test(entity, this.toTarget) && existingTarget == null)
+			alertAllies((ServerLevel)entity.level(), entity);
 
 		this.toTarget = null;
 	}
