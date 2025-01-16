@@ -14,8 +14,11 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.util.RandomUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -38,7 +41,7 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemories(MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
@@ -53,6 +56,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
+	protected TriPredicate<E, LivingEntity, LivingEntity> targetSwapPredicate = (entity, currentTarget, newTarget) -> RandomUtil.oneInNChance(150);
 
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
@@ -102,6 +106,20 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 		return this;
 	}
 
+	/**
+	 * Set the predicate to determine whether the entity should be able to swap targets from its current to a new potential target
+	 * <p>
+	 * Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
+	 *
+	 * @param predicate The predicate
+	 * @return this
+	 */
+	public TargetOrRetaliate<E> canSwapTargetWhen(TriPredicate<E, LivingEntity, LivingEntity> predicate) {
+		this.targetSwapPredicate = predicate;
+
+		return this;
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
@@ -109,30 +127,40 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
+		LivingEntity currentTarget = BrainUtil.getTargetOfEntity(owner);
+		LivingEntity newTarget = getTarget(owner, level);
+
+
+
+		return this.toTarget != null;
+	}
+
+	@Nullable
+	protected LivingEntity getTarget(E owner, ServerLevel level) {
 		Brain<?> brain = owner.getBrain();
-		this.toTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
+		LivingEntity newTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
 
-		if (this.toTarget == null) {
-			this.toTarget = BrainUtil.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+		if (newTarget == null) {
+			newTarget = BrainUtil.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 
-			if (this.toTarget == null) {
+			if (newTarget == null) {
 				NearestVisibleLivingEntities nearbyEntities = BrainUtil.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 				if (nearbyEntities != null)
-					this.toTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
+					newTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
 
-				if (this.alertAlliesPredicate.test(owner, this.toTarget))
+				if (this.alertAlliesPredicate.test(owner, newTarget))
 					alertAllies(level, owner);
 
-				if (this.toTarget == null)
-					return false;
+				if (newTarget == null)
+					return null;
 			}
 		}
 
-		if (this.alertAlliesPredicate.test(owner, this.toTarget))
+		if (this.alertAlliesPredicate.test(owner, newTarget))
 			alertAllies(level, owner);
 
-		return this.canAttackPredicate.test(this.toTarget);
+		return this.canAttackPredicate.test(newTarget) ? newTarget : null;
 	}
 
 	@Override
