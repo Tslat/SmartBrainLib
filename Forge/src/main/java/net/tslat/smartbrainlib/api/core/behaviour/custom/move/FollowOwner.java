@@ -4,7 +4,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 
 /**
- * A movement behaviour for automatically following the owner of a {@link TamableAnimal TameableAnimal}.<br>
+ * A movement behaviour for automatically following the owner of a {@link TamableAnimal TameableAnimal}
+ *
  * @param <E> The owner of the brain
  */
 public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, LivingEntity> {
@@ -16,11 +17,11 @@ public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, Living
 	}
 
 	protected LivingEntity getOwner(E entity) {
+		if (this.owner != null && (this.owner.isRemoved() || !this.owner.getUUID().equals(entity.getOwnerUUID())))
+			this.owner = null;
+
 		if (this.owner == null)
 			this.owner = entity.getOwner();
-
-		if (this.owner != null && this.owner.isRemoved())
-			this.owner = null;
 
 		return this.owner;
 	}

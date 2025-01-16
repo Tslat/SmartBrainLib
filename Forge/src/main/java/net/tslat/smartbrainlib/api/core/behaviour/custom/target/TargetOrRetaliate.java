@@ -16,6 +16,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -38,7 +39,7 @@ import java.util.function.Predicate;
  * @param <E> The entity
  */
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemories(MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
@@ -53,6 +54,7 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
+	protected boolean canSwapTarget = true;
 
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
@@ -102,43 +104,66 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 		return this;
 	}
 
+	/**
+	 * Disable the ability to occasionally swap targets if a higher priority target source has one
+	 */
+	public TargetOrRetaliate<E> noTargetSwapping() {
+		this.canSwapTarget = false;
+
+		return this;
+	}
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 
 	@Override
+	protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
+		return (!BrainUtil.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) || (this.canSwapTarget && entity.tickCount % 100 == 0)) && super.doStartCheck(level, entity, gameTime);
+	}
+
+	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E owner) {
+		this.toTarget = getTarget(owner, level, BrainUtil.getTargetOfEntity(owner));
+
+		return this.toTarget != null;
+	}
+
+	@Nullable
+	protected LivingEntity getTarget(E owner, ServerLevel level, @Nullable LivingEntity existingTarget) {
 		Brain<?> brain = owner.getBrain();
-		this.toTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
+		LivingEntity newTarget = BrainUtil.getMemory(brain, this.priorityTargetMemory);
 
-		if (this.toTarget == null) {
-			this.toTarget = BrainUtil.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
+		if (newTarget == null) {
+			newTarget = BrainUtil.getMemory(brain, MemoryModuleType.HURT_BY_ENTITY);
 
-			if (this.toTarget == null) {
+			if (newTarget == null) {
 				NearestVisibleLivingEntities nearbyEntities = BrainUtil.getMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 				if (nearbyEntities != null)
-					this.toTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
+					newTarget = nearbyEntities.findClosest(this.canAttackPredicate).orElse(null);
 
-				if (this.alertAlliesPredicate.test(owner, this.toTarget))
-					alertAllies(level, owner);
-
-				if (this.toTarget == null)
-					return false;
+				if (newTarget == null)
+					return null;
 			}
 		}
 
-		if (this.alertAlliesPredicate.test(owner, this.toTarget))
-			alertAllies(level, owner);
+		if (newTarget == existingTarget)
+			return null;
 
-		return this.canAttackPredicate.test(this.toTarget);
+		return this.canAttackPredicate.test(newTarget) ? newTarget : null;
 	}
 
 	@Override
 	protected void start(E entity) {
+		LivingEntity existingTarget = BrainUtil.getTargetOfEntity(entity);
+
 		BrainUtil.setTargetOfEntity(entity, this.toTarget);
 		BrainUtil.clearMemory(entity, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+
+		if (this.alertAlliesPredicate.test(entity, this.toTarget) && existingTarget == null)
+			alertAllies((ServerLevel)entity.level(), entity);
 
 		this.toTarget = null;
 	}
