@@ -149,6 +149,9 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 			}
 		}
 
+		if (newTarget == existingTarget)
+			return null;
+
 		return this.canAttackPredicate.test(newTarget) ? newTarget : null;
 	}
 
