@@ -21,6 +21,7 @@ import net.tslat.smartbrainlib.util.RandomUtil;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A movement behaviour for automatically following a given entity.<br>
@@ -41,6 +42,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected BiFunction<E, T, Double> followDistMin = (entity, target) -> 4d;
 	protected BiFunction<E, T, Float> speedMod = (entity, target) -> 1f;
 	protected TriPredicate<E, BlockPos, BlockState> teleportPredicate = this::isTeleportable;
+	protected Predicate<E> canTeleportOffGround = entity -> entity.getNavigation().getNodeEvaluator() instanceof SwimNodeEvaluator || entity.getNavigation().getNodeEvaluator() instanceof FlyNodeEvaluator;
 
 	protected float oldWaterPathMalus = 0;
 	protected float oldLavaPathMalus = 0;
@@ -124,6 +126,20 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	 */
 	public FollowEntity<E, T> canTeleportTo(TriPredicate<E, BlockPos, BlockState> teleportPosPredicate) {
 		this.teleportPredicate = teleportPosPredicate;
+
+		return this;
+	}
+
+	/**
+	 * Override the default predicate for whether an entity should be looking for an on-ground position or not when teleporting.
+	 * <p>
+	 * Typically this returns true when the entity can fly, swim, or hover
+	 *
+	 * @param predicate The predicate for the teleport target
+	 * @return this
+	 */
+	public FollowEntity<E, T> canTeleportOffGroundWhen(Predicate<E> predicate) {
+		this.canTeleportOffGround = predicate;
 
 		return this;
 	}
@@ -226,7 +242,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected BlockPos getTeleportPos(E entity, T target, BlockPos targetPos) {
 		Level level = entity.level();
 
-		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, entity.getNavigation().getNodeEvaluator() instanceof WalkNodeEvaluator, level, 10, (state, statePos) ->
+		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, !this.canTeleportOffGround.test(entity), level, 10, (state, statePos) ->
 				this.teleportPredicate.test(entity, statePos, state));
 	}
 
@@ -234,7 +250,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		NodeEvaluator nodeEvaluator = entity.getNavigation().getNodeEvaluator();
 		PathType pathType = nodeEvaluator.getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
 
-		if (!(nodeEvaluator instanceof FlyNodeEvaluator)) {
+		if (!this.canTeleportOffGround.test(entity)) {
 			if (pathType != PathType.WALKABLE)
 				return false;
 		}
