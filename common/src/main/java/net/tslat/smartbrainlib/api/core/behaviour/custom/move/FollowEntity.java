@@ -242,7 +242,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 	protected BlockPos getTeleportPos(E entity, T target, BlockPos targetPos) {
 		Level level = entity.level();
 
-		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, this.canTeleportOffGround.test(entity), level, 10, (state, statePos) ->
+		return RandomUtil.getRandomPositionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, !this.canTeleportOffGround.test(entity), level, 10, (state, statePos) ->
 				this.teleportPredicate.test(entity, statePos, state));
 	}
 
