@@ -55,7 +55,7 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		if (!level.isDay() || !entity.isOnFire() || !level.canSeeSky(entity.blockPosition()))
+		if (!level.isBrightOutside() || !entity.isOnFire() || !level.canSeeSky(entity.blockPosition()))
 			return false;
 
 		if (!entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty())

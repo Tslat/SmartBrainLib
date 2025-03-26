@@ -1,37 +1,37 @@
 [versions]
 # Common
 smartbrainlib = "1.16.7"
-minecraft-range = "[1.21.4,)"
-minecraft = "1.21.4"
-parchment-minecraft = "1.21"
-parchment = "2024.11.10"
-neoform = "1.21.4-20241203.161809"
+minecraft-range = "[1.21.5,)"
+minecraft = "1.21.5"
+parchment-minecraft = "1.21.4"
+parchment = "2025.03.23"
+neoform = "1.21.5-20250325.162830"
 jopt-simple = "5.0.4"
 java = "21"
 
 # Fabric
-fabric = "0.16.9"
+fabric = "0.16.10"
 fabric-range = "0.16"
-fabric-api = "0.110.5+1.21.4"
-fabric-api-range = "0.110.0+1.21.4"
+fabric-api = "0.119.5+1.21.5"
+fabric-api-range = "0.119.5+1.21.5"
 
 # Neoforge
 neoforge-loader-range = "[5,)"
-neoforge-range = "[21.4.8-beta,)"
-neoforge = "21.4.8-beta"
+neoforge-range = "[21.5.0-beta,)"
+neoforge = "21.5.1-beta"
 
 # Dependencies
 mixin = "0.8.7"
-mixinextras = "0.3.5"
-mixinextras-range = "[0.3.5,)"
+mixinextras = "0.4.1"
+mixinextras-range = "[0.4.1,)"
 
 # Plugins
-plugin-moddevgradle = "2.0.54-beta"
+plugin-moddevgradle = "2.0.80"
 plugin-minotaur = "2.8.7"
-plugin-curseforge-gradle = "1.1.25"
-plugin-idea-ext = "1.1.8"
+plugin-curseforge-gradle = "1.1.26"
+plugin-idea-ext = "1.1.10"
 plugin-mixin = "0.7.+"
-plugin-loom = "1.9-SNAPSHOT"
+plugin-loom = "1.10-SNAPSHOT"
 
 [libraries]
 # Mixin

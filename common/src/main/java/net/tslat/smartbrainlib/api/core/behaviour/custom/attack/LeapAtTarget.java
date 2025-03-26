@@ -7,8 +7,6 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 /**
  * SmartBrainLib equivalent of {@link net.minecraft.world.entity.ai.goal.LeapAtTargetGoal}
@@ -30,25 +28,9 @@ public class LeapAtTarget<E extends Mob> extends AnimatableMeleeAttack<E> {
     protected BiFunction<E, LivingEntity, Float> jumpStrength = (entity, target) -> 0.4f;
     protected BiFunction<E, LivingEntity, Float> moveSpeedContribution = (entity, target) -> 0.2f;
     protected BiFunction<E, LivingEntity, Float> leapRange = (entity, target) -> 8f;
-    @Deprecated(forRemoval = true)
-    protected BiPredicate<E, LivingEntity> leapPredicate = (entity, target) -> true;
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
-    }
-
-    /**
-     * Add a predicate that determines whether the entity can leap or not
-     *
-     * @deprecated use {@link #startCondition(Predicate)} and/or {@link #leapRange(BiFunction)} instead
-     * @param predicate The predicate
-     * @return this
-     */
-    @Deprecated(forRemoval = true)
-    public LeapAtTarget<E> leapIf(BiPredicate<E, LivingEntity> predicate) {
-        this.leapPredicate = predicate;
-
-        return this;
     }
 
     /**

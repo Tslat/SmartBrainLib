@@ -46,7 +46,7 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 			if (target.distanceToSqr(entity) > 64)
 				return false;
 
-			if (!target.isInWaterOrBubble())
+			if (!target.isInWater())
 				return false;
 
 			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) && (BrainUtil.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN) || !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))

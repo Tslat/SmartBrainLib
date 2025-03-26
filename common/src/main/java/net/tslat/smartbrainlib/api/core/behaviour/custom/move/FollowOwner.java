@@ -1,28 +1,15 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 
 /**
  * A movement behaviour for automatically following the owner of a {@link TamableAnimal TameableAnimal}
  *
  * @param <E> The owner of the brain
  */
-public class FollowOwner<E extends TamableAnimal> extends FollowEntity<E, LivingEntity> {
-	protected LivingEntity owner = null;
-
+public class FollowOwner<E extends PathfinderMob & OwnableEntity> extends FollowEntity<E, LivingEntity> {
 	public FollowOwner() {
-		following(this::getOwner);
+		following(OwnableEntity::getOwner);
 		teleportToTargetAfter(12);
-	}
-
-	protected LivingEntity getOwner(E entity) {
-		if (this.owner != null && (this.owner.isRemoved() || !this.owner.getUUID().equals(entity.getOwnerUUID())))
-			this.owner = null;
-
-		if (this.owner == null)
-			this.owner = entity.getOwner();
-
-		return this.owner;
 	}
 }
