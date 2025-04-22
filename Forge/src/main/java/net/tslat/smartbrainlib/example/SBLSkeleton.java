@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
@@ -64,10 +64,10 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new NearbyPlayersSensor<>(), // Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>() // Keep track of nearby entities the Skeleton is interested in
 						.setPredicate((target, entity) ->
-								target instanceof Player ||
-										target instanceof IronGolem ||
-										target instanceof Wolf ||
-										(target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
+											  target instanceof Player ||
+											  target instanceof IronGolem ||
+											  target instanceof Wolf ||
+											  (target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
 	}
 
 	// Add our core tasks - this group runs every tick regardless of any other activities the skeleton may be running
@@ -92,14 +92,14 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 	public BrainActivityGroup<? extends SBLSkeleton> getIdleTasks() {
 		return BrainActivityGroup.idleTasks(
 				new FirstApplicableBehaviour<SBLSkeleton>( // Run only one of the below behaviours, trying each one in order. Include explicit generic typing because javac is silly
-						new TargetOrRetaliate<>(), // Set the attack target
-						new SetPlayerLookTarget<>(), // Set the look target to a nearby player if available
-						new SetRandomLookTarget<>()), // Set the look target to a random nearby location
+														   new TargetOrRetaliate<>(), // Set the attack target
+														   new SetPlayerLookTarget<>(), // Set the look target to a nearby player if available
+														   new SetRandomLookTarget<>()), // Set the look target to a random nearby location
 				new OneRandomBehaviour<>( // Run only one of the below behaviours, picked at random
-						new SetRandomWalkTarget<>() // Set the walk target to a nearby random pathable location
-								.speedModifier(1),
-						new Idle<>() // Don't do anything for a bit
-								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
+										  new SetRandomWalkTarget<>() // Set the walk target to a nearby random pathable location
+												  .speedModifier(1),
+										  new Idle<>() // Don't do anything for a bit
+												  .runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	// Add our fight tasks - this group only runs when the skeleton has a target to attack, as dictated by TargetOrRetaliate
@@ -108,13 +108,13 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 		return BrainActivityGroup.fightTasks(
 				new InvalidateAttackTarget<>(), // Invalidate the attack target if it's no longer applicable
 				new SetWalkTargetToAttackTarget<>() // Run at the target if not holding a bow
-						.startCondition(entity -> !isHoldingBow(entity) && (!entity.level().isDay() || (entity.isOnFire() && entity.level().canSeeSky(entity.blockPosition())))),
+						.startCondition(entity -> !isHoldingBow(entity) && (!entity.level().isBrightOutside() || (entity.isOnFire() && entity.level().canSeeSky(entity.blockPosition())))),
 				new FirstApplicableBehaviour<>( // Run only one of the below behaviours, trying each one in order
-						new BowAttack<>(20) // Fire a bow, if holding one
-								.startCondition(SBLSkeleton::isHoldingBow),
-						new AnimatableMeleeAttack<>(0) // Melee attack
-								.whenStarting(entity -> setAggressive(true))
-								.whenStopping(entity -> setAggressive(false)))
+												new BowAttack<>(20) // Fire a bow, if holding one
+														.startCondition(SBLSkeleton::isHoldingBow),
+												new AnimatableMeleeAttack<>(0) // Melee attack
+														.whenStarting(entity -> setAggressive(true))
+														.whenStopping(entity -> setAggressive(false)))
 		);
 	}
 

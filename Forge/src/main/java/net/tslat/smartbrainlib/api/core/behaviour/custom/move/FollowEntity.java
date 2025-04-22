@@ -223,7 +223,7 @@ public class FollowEntity<E extends PathfinderMob, T extends Entity> extends Ext
 		BlockPos teleportPos = getTeleportPos(entity, target, targetPos);
 
 		if (!teleportPos.equals(targetPos)) {
-			entity.moveTo(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
+			entity.snapTo(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5, entity.getYRot(), entity.getXRot());
 			entity.getNavigation().stop();
 			BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 		}

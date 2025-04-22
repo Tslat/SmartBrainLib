@@ -21,7 +21,7 @@ import java.util.function.BiPredicate;
  * {@link net.minecraft.world.entity.ai.sensing.AxolotlAttackablesSensor}. Not
  * really useful, but included for completeness' sake and legibility. <br>
  * Handles the Axolotl's hostility and targets
- * 
+ *
  * @param <E> The entity
  */
 public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
@@ -46,7 +46,7 @@ public class AxolotlSpecificSensor<E extends LivingEntity> extends EntityFilteri
 			if (target.distanceToSqr(entity) > 64)
 				return false;
 
-			if (!target.isInWaterOrBubble())
+			if (!target.isInWater())
 				return false;
 
 			if (!target.getType().is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) && (BrainUtil.hasMemory(target, MemoryModuleType.HAS_HUNTING_COOLDOWN) || !target.getType().is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)))

@@ -22,7 +22,7 @@ public class AvoidSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
-		return level.isDay() && entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty() && entity.getNavigation() instanceof GroundPathNavigation;
+		return level.isBrightOutside() && entity.getItemBySlot(EquipmentSlot.HEAD).isEmpty() && entity.getNavigation() instanceof GroundPathNavigation;
 	}
 
 	@Override
