@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 /**
  * Wrapper helper class to allow for cleaner and more legible memory conditions for behaviours and sensors.
  * <p>
- * Functionally this is just a list, so usage of this class is entirely optional, although recommended.
+ * Functionally, this is just a list; so usage of this class is entirely optional although recommended.
  */
 public class MemoryTest extends ObjectArrayList<Pair<MemoryModuleType<?>, MemoryStatus>> {
     private MemoryTest(int size) {
@@ -23,6 +23,16 @@ public class MemoryTest extends ObjectArrayList<Pair<MemoryModuleType<?>, Memory
      */
     public static MemoryTest builder(int size) {
         return new MemoryTest(size);
+    }
+
+    /**
+     * Create a new MemoryTest instance, with a default initial size.<br>
+     * You should use {@link #builder(int)} wherever possible, since it is more efficient.
+     *
+     * @return A new MemoryTest instance
+     */
+    public static MemoryTest builder() {
+        return builder(ObjectArrayList.DEFAULT_INITIAL_CAPACITY);
     }
 
     /**

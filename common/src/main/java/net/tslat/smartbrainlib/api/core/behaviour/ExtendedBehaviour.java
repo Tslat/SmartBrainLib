@@ -76,8 +76,8 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Set the length that the task should run for, once activated. The value used
-	 * is in <i>ticks</i>.
+	 * Set the length that the task should run for, once activated.<br>
+	 * The value used is in <i>ticks</i>.
 	 * 
 	 * @param timeProvider A function for the tick value
 	 * @return this
@@ -89,15 +89,44 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	}
 
 	/**
-	 * Set the length that the task should wait for between activations. This is the
-	 * time between when the task stops, and it is able to start again. The value
-	 * used is in <i>ticks</i>
+	 * Set the length that the task should run for once activated, randomly selected between two values.<br>
+	 * The value used is in <i>ticks</i>.
+	 *
+	 * @param minTicks The minimum number of ticks to run for
+	 * @param maxTicks The maximum number of ticks to run for
+	 * @return this
+	 */
+	public final ExtendedBehaviour<E> runForBetween(int minTicks, int maxTicks) {
+		this.runtimeProvider = entity -> entity.getRandom().nextIntBetweenInclusive(minTicks, maxTicks);
+
+		return this;
+	}
+
+	/**
+	 * Set the length that the task should wait for between activations.
+	 * This is the time between when the task stops, and it is able to start again.<br>
+	 * The value used is in <i>ticks</i>
 	 * 
-	 * @param timeProvider A function for the tick value
+	 * @param timeProvider A function for the tick value to cooldown for
 	 * @return this
 	 */
 	public final ExtendedBehaviour<E> cooldownFor(ToIntFunction<E> timeProvider) {
 		this.cooldownProvider = timeProvider;
+
+		return this;
+	}
+
+	/**
+	 * Set the length that the task should wait for between activations, randomly selected between two values.
+	 * This is the time between when the task stops, and it is able to start again.<br>
+	 * The value used is in <i>ticks</i>
+	 *
+	 * @param minTicks The minimum number of ticks to cooldown for
+	 * @param maxTicks The maximum number of ticks to cooldown for
+	 * @return this
+	 */
+	public final ExtendedBehaviour<E> cooldownForBetween(int minTicks, int maxTicks) {
+		this.cooldownProvider = entity -> entity.getRandom().nextIntBetweenInclusive(minTicks, maxTicks);
 
 		return this;
 	}

@@ -8,16 +8,15 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.object.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * Find the nearest player that is holding out a tempting item for the entity.
@@ -30,20 +29,13 @@ import java.util.function.BiPredicate;
  * @see net.minecraft.world.entity.ai.sensing.TemptingSensor
  * @param <E> The entity
  */
-public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<Player, E> {
+public class ItemTemptingSensor<E extends LivingEntity> extends ExtendedSensor<E> {
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.TEMPTING_PLAYER);
 
-	protected BiPredicate<E, ItemStack> temptPredicate = (entity, stack) -> false;
+	protected TriPredicate<E, ItemStack, Player> temptPredicate = (entity, stack, player) -> false;
 	protected SquareRadius radius = new SquareRadius(10, 10);
 
-	public ItemTemptingSensor() {
-		setPredicate((target, entity) -> {
-			if (target.isSpectator() || !target.isAlive())
-				return false;
-
-			return this.temptPredicate.test(entity, target.getMainHandItem()) || this.temptPredicate.test(entity, target.getOffhandItem());
-		});
-	}
+	public ItemTemptingSensor() {}
 
 	@Override
 	public List<MemoryModuleType<?>> memoriesUsed() {
@@ -56,13 +48,29 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	}
 
 	/**
-	 * Set the items to temptable items for the entity.
+	 * Set the items to temptable items for the entity.<br>
+	 * Automatically handles boilerplate player checks as part of the predicate
 	 *
-	 * @param predicate An ingredient representing the temptations for the
-	 *                      entity
+	 * @param predicate The predicate to test for valid items for tempting
+	 * @return this
+	 * @see #temptPredicate(TriPredicate)
+	 */
+	public ItemTemptingSensor<E> temptedWith(final TriPredicate<E, ItemStack, Player> predicate) {
+		return temptPredicate((entity, stack, player) -> {
+			if (player.isSpectator() || !player.isAlive())
+				return false;
+
+			return predicate.test(entity, stack, player);
+		});
+	}
+
+	/**
+	 * Set the predicate to determine whether the entity should be tempted
+	 *
+	 * @param predicate The predicate to test for successful temptation
 	 * @return this
 	 */
-	public ItemTemptingSensor<E> temptedWith(final BiPredicate<E, ItemStack> predicate) {
+	public ItemTemptingSensor<E> temptPredicate(final TriPredicate<E, ItemStack, Player> predicate) {
 		this.temptPredicate = predicate;
 
 		return this;
@@ -95,12 +103,27 @@ public class ItemTemptingSensor<E extends LivingEntity> extends PredicateSensor<
 	protected void doTick(ServerLevel level, E entity) {
 		Optional<Player> player;
 		final List<Player> nearbyPlayers = BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS);
+		final Predicate<Player> predicate = pl -> this.temptPredicate.test(entity, pl.getMainHandItem(), pl) || this.temptPredicate.test(entity, pl.getOffhandItem(), pl);
 
 		if (nearbyPlayers != null) {
-			player = nearbyPlayers.stream().filter(pl -> predicate().test(pl, entity)).min(Comparator.comparing(pl -> pl.distanceToSqr(entity)));
+			Player nearestPlayer = null;
+			double nearestDistance = Double.MAX_VALUE;
+
+			for (Player pl : nearbyPlayers) {
+				if (predicate.test(pl)) {
+					double dist = pl.distanceToSqr(entity);
+
+					if (dist < nearestDistance) {
+						nearestDistance = dist;
+						nearestPlayer = pl;
+					}
+				}
+			}
+
+			player = Optional.ofNullable(nearestPlayer);
 		}
 		else {
-			player = EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), target -> predicate().test(target, entity));
+			player = EntityRetrievalUtil.getNearestPlayer(entity, this.radius.xzRadius(), this.radius.yRadius(), this.radius.xzRadius(), predicate);
 		}
 
 		player.ifPresentOrElse(pl ->

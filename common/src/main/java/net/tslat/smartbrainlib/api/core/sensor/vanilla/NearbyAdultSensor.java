@@ -20,9 +20,9 @@ import java.util.function.BiPredicate;
  * @see net.minecraft.world.entity.ai.sensing.AdultSensor
  * @param <E> The entity
  */
-public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSensor<AgeableMob, E> {
+public class NearbyAdultSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	@Override
-	public MemoryModuleType<AgeableMob> getMemory() {
+	public MemoryModuleType<LivingEntity> getMemory() {
 		return MemoryModuleType.NEAREST_VISIBLE_ADULT;
 	}
 
