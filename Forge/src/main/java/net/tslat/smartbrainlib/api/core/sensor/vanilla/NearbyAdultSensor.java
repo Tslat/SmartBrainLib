@@ -16,13 +16,13 @@ import java.util.function.BiPredicate;
  * A sensor that sets the {@link MemoryModuleType#NEAREST_VISIBLE_ADULT} memory
  * by checking the existing visible entities for nearby adults of the same
  * entity type. <br>
- * 
+ *
  * @see net.minecraft.world.entity.ai.sensing.AdultSensor
  * @param <E> The entity
  */
-public class NearbyAdultSensor<E extends AgeableMob> extends EntityFilteringSensor<AgeableMob, E> {
+public class NearbyAdultSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	@Override
-	public MemoryModuleType<AgeableMob> getMemory() {
+	public MemoryModuleType<LivingEntity> getMemory() {
 		return MemoryModuleType.NEAREST_VISIBLE_ADULT;
 	}
 

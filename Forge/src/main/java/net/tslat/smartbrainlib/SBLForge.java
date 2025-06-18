@@ -14,8 +14,7 @@ import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,16 +38,16 @@ public final class SBLForge implements SBLLoader {
 	public static RegistryObject<EntityType<SBLSkeleton>> SBL_SKELETON;
 
 	public void init(Object eventBus) {
-		final IEventBus modEventBus = (IEventBus)eventBus;
+		final BusGroup busGroup = (BusGroup)eventBus;
 
-		MEMORY_TYPES.register(modEventBus);
-		SENSORS.register(modEventBus);
+		MEMORY_TYPES.register(busGroup);
+		SENSORS.register(busGroup);
 
 		SBLMemoryTypes.init();
 		SBLSensors.init();
 
 		if (isDevEnv())
-			registerEntities(modEventBus);
+			registerEntities(busGroup);
 	}
 
 	@Override
@@ -79,11 +78,9 @@ public final class SBLForge implements SBLLoader {
 		return SENSORS.register(id, () -> new SensorType<>(sensor));
 	}
 
-	private static void registerEntities(IEventBus modEventBus) {
-		ENTITY_TYPES.register(modEventBus);
-		modEventBus.addListener(EventPriority.NORMAL, false, EntityAttributeCreationEvent.class, ev -> {
-			ev.put(SBL_SKELETON.get(), Skeleton.createAttributes().build());
-		});
+	private static void registerEntities(BusGroup busGroup) {
+		ENTITY_TYPES.register(busGroup);
+		EntityAttributeCreationEvent.getBus(busGroup).addListener(ev -> ev.put(SBL_SKELETON.get(), Skeleton.createAttributes().build()));
 
 		SBL_SKELETON = ENTITY_TYPES.register("sbl_skeleton", () -> EntityType.Builder.of(SBLSkeleton::new, MobCategory.MONSTER).sized(0.6f, 1.99f).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, "sbl_skeleton"))));
 	}
