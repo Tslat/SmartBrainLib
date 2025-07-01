@@ -17,10 +17,12 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 	private Predicate<ExtendedBehaviour<? super E>> earlyResetPredicate = behaviour -> false;
 	private int runningIndex = 0;
 
+	@SafeVarargs
 	public SequentialBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
 	}
 
+	@SafeVarargs
 	public SequentialBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		super(behaviours);
 	}

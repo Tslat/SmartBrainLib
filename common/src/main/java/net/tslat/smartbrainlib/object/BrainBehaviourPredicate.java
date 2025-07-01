@@ -12,11 +12,13 @@ import org.jetbrains.annotations.Nullable;
 public interface BrainBehaviourPredicate {
 	/**
 	 * Tests whether the given behaviour is relevant to the predicate.
+	 *
 	 * @param priority The priority the behaviour is nested under
 	 * @param activity The activity category the behaviour is under
 	 * @param behaviour The behaviour to check
 	 * @param parentBehaviour The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
 	 *                        the behaviour is a child of, if applicable
+	 * @return Whether the behaviour is a correct match
 	 */
 	boolean isBehaviour(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parentBehaviour);
 }

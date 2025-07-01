@@ -12,8 +12,6 @@ import net.tslat.smartbrainlib.util.BrainUtil;
 /**
  * Extended behaviour for charging and firing a
  * {@link BowItem bow}.
- * 
- * @param <E>
  */
 public class BowAttack<E extends LivingEntity & RangedAttackMob> extends AnimatableRangedAttack<E> {
 	public BowAttack(int delayTicks) {

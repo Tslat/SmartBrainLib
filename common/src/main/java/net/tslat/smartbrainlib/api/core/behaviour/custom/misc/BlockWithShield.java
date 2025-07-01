@@ -18,8 +18,6 @@ import java.util.function.Predicate;
 public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected InteractionHand hand = InteractionHand.MAIN_HAND;
 
-	protected Predicate<E> stopCondition = entity -> false;
-
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();

@@ -18,7 +18,6 @@ import java.util.function.BiPredicate;
  * <ul>
  *     <li>Only targets that {@link SensoryUtil#isEntityAttackable(LivingEntity, LivingEntity)} passes.</li>
  * </ul>
- * @param <E>
  */
 public class GenericAttackTargetSensor<E extends LivingEntity> extends EntityFilteringSensor<LivingEntity, E> {
 	@Override

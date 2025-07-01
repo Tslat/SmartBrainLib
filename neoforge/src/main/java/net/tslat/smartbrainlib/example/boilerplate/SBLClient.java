@@ -8,7 +8,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.SBLNeoForge;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 final class SBLClient {
 	@SubscribeEvent
 	public static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers ev) {

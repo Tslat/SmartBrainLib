@@ -11,10 +11,12 @@ import org.jetbrains.annotations.Nullable;
  * @param <E> The entity
  */
 public final class OneRandomBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
+	@SafeVarargs
 	public OneRandomBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
 	}
 
+	@SafeVarargs
 	public OneRandomBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		super(behaviours);
 	}

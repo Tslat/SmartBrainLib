@@ -12,9 +12,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Functional replacement to {@link net.minecraft.world.entity.ai.behavior.GateBehavior} due to the very poor way it is implemented. <br>
- * In particular, this allows nesting of group behaviours without breaking behaviour flow entirely. <br>
- * It also allows for utilising the various callbacks and conditions that {@link ExtendedBehaviour} offers. <br>
+ * Functional replacement to {@link net.minecraft.world.entity.ai.behavior.GateBehavior} due to the very poor way it is implemented.
+ * <p>
+ * In particular, this allows nesting of group behaviours without breaking behaviour flow entirely.<br>
+ * It also allows for utilising the various callbacks and conditions that {@link ExtendedBehaviour} offers.
+ * <p>
  * NOTE: Only supports ExtendedBehaviour implementations as sub-behaviours. This is due to access-modifiers on the vanilla behaviours making this prohibitively annoying to work with.
  */
 public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
@@ -23,12 +25,14 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 	@Nullable
 	protected ExtendedBehaviour<? super E> runningBehaviour = null;
 
-	public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
+	@SafeVarargs
+    public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		this.behaviours = new SBLShufflingList<>(behaviours);
 
 		noTimeout();
 	}
 
+	@SafeVarargs
 	public GroupBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		this.behaviours = new SBLShufflingList<>();
 
