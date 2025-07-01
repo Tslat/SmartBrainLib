@@ -23,12 +23,14 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 	@Nullable
 	protected ExtendedBehaviour<? super E> runningBehaviour = null;
 
+	@SafeVarargs
 	public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		this.behaviours = new SBLShufflingList<>(behaviours);
 
 		noTimeout();
 	}
 
+	@SafeVarargs
 	public GroupBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		this.behaviours = new SBLShufflingList<>();
 
@@ -100,6 +102,6 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 	@Override
 	public String toString() {
-		return "(" + getClass().getSimpleName() + "): " + (this.runningBehaviour == null ? this.runningBehaviour.getClass().getSimpleName() : "{}");
+		return "(" + getClass().getSimpleName() + "): " + (this.runningBehaviour != null ? this.runningBehaviour.getClass().getSimpleName() : "{}");
 	}
 }
