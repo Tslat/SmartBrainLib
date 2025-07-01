@@ -28,7 +28,6 @@ import java.util.function.Predicate;
  *     <li>7-block vertical radius</li>
  *     <li>Avoids walk targets with fluid</li>
  * </ul>
- * @param <E>
  */
 public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);

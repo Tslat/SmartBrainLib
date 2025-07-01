@@ -11,10 +11,12 @@ import org.jetbrains.annotations.Nullable;
  * @param <E> The entity
  */
 public final class FirstApplicableBehaviour<E extends LivingEntity> extends GroupBehaviour<E> {
+	@SafeVarargs
 	public FirstApplicableBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
 	}
 
+	@SafeVarargs
 	public FirstApplicableBehaviour(ExtendedBehaviour<? super E>... behaviours) {
 		super(behaviours);
 	}

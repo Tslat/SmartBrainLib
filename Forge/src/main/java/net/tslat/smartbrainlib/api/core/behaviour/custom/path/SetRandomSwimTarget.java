@@ -25,7 +25,6 @@ import java.util.function.BiPredicate;
  *     <li>10-block lateral radius</li>
  *     <li>10-block vertical radius</li>
  * </ul>
- * @param <E>
  */
 public class SetRandomSwimTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
     private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);

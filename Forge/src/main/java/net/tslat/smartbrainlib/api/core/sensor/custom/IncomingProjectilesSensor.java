@@ -24,7 +24,6 @@ import java.util.List;
  *     <li>Only projectiles that are still in flight</li>
  *     <li>Only projectiles that will hit the entity before the next scan</li>
  * </ul>
- * @param <E>
  */
 public class IncomingProjectilesSensor<E extends LivingEntity> extends PredicateSensor<Projectile, E> {
 	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.INCOMING_PROJECTILES.get());

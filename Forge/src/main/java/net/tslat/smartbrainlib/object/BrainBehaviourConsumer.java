@@ -18,5 +18,5 @@ public interface BrainBehaviourConsumer {
 	 * @param parentBehaviour The {@link net.minecraft.world.entity.ai.behavior.GateBehavior GateBehaviour} or {@link GroupBehaviour GroupBehaviour}
 	 *                        the behaviour is a child of, if applicable
 	 */
-	void consume(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parent);
+	void consume(int priority, Activity activity, BehaviorControl<?> behaviour, @Nullable BehaviorControl<?> parentBehaviour);
 }

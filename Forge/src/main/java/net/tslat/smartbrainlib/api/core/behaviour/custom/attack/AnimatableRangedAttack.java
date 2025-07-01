@@ -24,7 +24,6 @@ import java.util.function.ToIntFunction;
  *     <li>40-tick firing interval, decreased to 20 ticks when on {@link Difficulty Hard Difficulty}</li>
  *     <li>16-block firing radius</li>
  * </ul>
- * @param <E>
  */
 public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> extends DelayedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);

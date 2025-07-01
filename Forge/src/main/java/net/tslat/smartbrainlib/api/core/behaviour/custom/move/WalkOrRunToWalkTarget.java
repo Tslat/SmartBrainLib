@@ -7,7 +7,6 @@ import net.tslat.smartbrainlib.util.BrainUtil;
 /**
  * Extension of MoveToWalkTarget, but auto-marking the sprinting flag depending on the movespeed.
  * This can be useful for using sprint animations on the client.
- * @param <E>
  */
 public class WalkOrRunToWalkTarget<E extends PathfinderMob> extends MoveToWalkTarget<E> {
 	@Override
