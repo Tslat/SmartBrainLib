@@ -32,7 +32,7 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	@SafeVarargs
-    public final BrainActivityGroup<T> behaviours(Behavior<? super T>... behaviours) {
+	public final BrainActivityGroup<T> behaviours(Behavior<? super T>... behaviours) {
 		this.behaviours.addAll(new ObjectArrayList<>(behaviours));
 
 		return this;
@@ -101,17 +101,17 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 	}
 
 	@SafeVarargs
-    public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> coreTasks(Behavior<T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> coreTasks(Behavior<T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.CORE).priority(0).behaviours(behaviours);
 	}
 
 	@SafeVarargs
-    public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleTasks(Behavior<T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleTasks(Behavior<T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.IDLE).priority(10).behaviours(behaviours);
 	}
 
 	@SafeVarargs
-    public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> fightTasks(Behavior<T>... behaviours) {
+	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> fightTasks(Behavior<T>... behaviours) {
 		return new BrainActivityGroup<T>(Activity.FIGHT).priority(10).behaviours(behaviours).requireAndWipeMemoriesOnUse(MemoryModuleType.ATTACK_TARGET);
 	}
 }

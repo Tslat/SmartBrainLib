@@ -63,7 +63,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	 * This appends to any existing memories already added to this behaviour, and the functionality of this behaviour is order-dependent.
 	 */
 	@SafeVarargs
-    public final SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
+	public final SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
 		this.targetingMemories.addAll(List.of(targetMemories));
 
 		return this;
