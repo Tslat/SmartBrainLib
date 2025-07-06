@@ -49,7 +49,8 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 	 *                hostile types map to
 	 * @return this
 	 */
-	public NearbyHostileSensor<E> setHostiles(Pair<EntityType<?>, Float>... entries) {
+	@SafeVarargs
+    public final NearbyHostileSensor<E> setHostiles(Pair<EntityType<?>, Float>... entries) {
 		this.hostileDistanceMap.clear();
 
 		for (Pair<EntityType<?>, Float> entry : entries) {

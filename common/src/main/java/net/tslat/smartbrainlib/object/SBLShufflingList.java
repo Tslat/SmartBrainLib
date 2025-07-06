@@ -25,7 +25,8 @@ public class SBLShufflingList<T> implements Iterable<T> {
 		this.entries = new ObjectArrayList<>(size);
 	}
 
-	public SBLShufflingList(Pair<T, Integer>... entries) {
+	@SafeVarargs
+    public SBLShufflingList(Pair<T, Integer>... entries) {
 		this.entries = new ObjectArrayList<>(entries.length);
 
 		for (Pair<T, Integer> entry : entries) {
