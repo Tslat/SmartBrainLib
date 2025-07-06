@@ -67,7 +67,8 @@ public final class RandomUtil {
 		return RANDOM.randomValueBetween(min, max);
 	}
 
-	public static <T> T getRandomSelection(@NotNull T... options) {
+	@SafeVarargs
+    public static <T> T getRandomSelection(@NotNull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
 
@@ -164,7 +165,8 @@ public final class RandomUtil {
 			return min + random.nextDouble() * (max - min);
 		}
 
-		public <T> T getRandomSelection(@NotNull T... options) {
+		@SafeVarargs
+        public final <T> T getRandomSelection(@NotNull T... options) {
 			return options[random.nextInt(options.length)];
 		}
 
