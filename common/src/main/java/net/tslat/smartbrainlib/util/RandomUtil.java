@@ -68,7 +68,7 @@ public final class RandomUtil {
 	}
 
 	@SafeVarargs
-    public static <T> T getRandomSelection(@NotNull T... options) {
+	public static <T> T getRandomSelection(@NotNull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
 
@@ -166,7 +166,7 @@ public final class RandomUtil {
 		}
 
 		@SafeVarargs
-        public final <T> T getRandomSelection(@NotNull T... options) {
+		public final <T> T getRandomSelection(@NotNull T... options) {
 			return options[random.nextInt(options.length)];
 		}
 
