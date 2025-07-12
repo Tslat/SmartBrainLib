@@ -62,7 +62,8 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	 * Add {@link MemoryModuleType memories} to the list of tertiary memories to set targets for.<br>
 	 * This appends to any existing memories already added to this behaviour, and the functionality of this behaviour is order-dependent.
 	 */
-	public SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
+	@SafeVarargs
+	public final SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
 		this.targetingMemories.addAll(List.of(targetMemories));
 
 		return this;
