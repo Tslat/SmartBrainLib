@@ -1,8 +1,10 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
@@ -22,9 +24,9 @@ import java.util.function.BiPredicate;
  * </ul>
  */
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
-	protected BiPredicate<E, LivingEntity> customPredicate = (entity, target) -> (target instanceof Player player && player.getAbilities().invulnerable) || (entity.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) && entity.distanceToSqr(target) >= Math.pow(entity.getAttributeValue(Attributes.FOLLOW_RANGE), 2));
+	protected BiPredicate<E, LivingEntity> customPredicate = (entity, target) -> (target instanceof Player player && player.getAbilities().invulnerable) || (entity.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) && entity.distanceToSqr(target) >= Mth.square(entity.getAttributeValue(Attributes.FOLLOW_RANGE)));
 	protected long pathfindingAttentionSpan = 200;
 
 	/**
@@ -68,6 +70,9 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 		if (isTargetInvalid(entity, target) || !canAttack(entity, target) ||
 				isTiredOfPathing(entity) || this.customPredicate.test(entity, target)) {
 			BrainUtils.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
+
+			if (BrainUtils.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == entity)
+				BrainUtils.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 		}
 	}
 
