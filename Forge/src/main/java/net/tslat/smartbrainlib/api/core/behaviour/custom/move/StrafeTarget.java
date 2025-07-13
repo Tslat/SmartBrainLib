@@ -26,6 +26,7 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	protected boolean strafingLaterally = false;
 	protected boolean strafingBack = false;
 	protected int strafeCounter = -1;
+	protected int targetingTime = 0;
 
 	protected float strafeDistanceSqr = 244;
 	protected Predicate<E> stopStrafingWhen = entity -> false;
@@ -78,8 +79,15 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	protected void tick(E entity) {
 		LivingEntity target = BrainUtils.getTargetOfEntity(entity);
 		double distanceToTarget = target.distanceToSqr(entity);
+		boolean canSeeTarget = BrainUtils.canSee(entity, target);
+		boolean couldSeeTarget = this.targetingTime > 0;
 
-		if (distanceToTarget <= this.strafeDistanceSqr) {
+		if (canSeeTarget != couldSeeTarget)
+			this.targetingTime = 0;
+
+		this.targetingTime += canSeeTarget ? 1 : -1;
+
+		if (distanceToTarget <= this.strafeDistanceSqr && this.targetingTime >= 20) {
 			entity.getNavigation().stop();
 			this.strafeCounter++;
 		}

@@ -67,6 +67,7 @@ public final class RandomUtil {
 		return RANDOM.randomValueBetween(min, max);
 	}
 
+	@SafeVarargs
 	public static <T> T getRandomSelection(@NotNull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
@@ -74,7 +75,7 @@ public final class RandomUtil {
 	public static <T> T getRandomSelection(@NotNull List<T> options) {
 		return RANDOM.getRandomSelection(options);
 	}
-	
+
 	@NotNull
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius);
@@ -84,7 +85,7 @@ public final class RandomUtil {
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, boolean safeSurfacePlacement, Level world) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, safeSurfacePlacement, world);
 	}
-	
+
 	@NotNull
 	public static BlockPos getRandomPositionWithinRange(BlockPos centerPos, int xRadius, int yRadius, int zRadius, int minSpreadX, int minSpreadY, int minSpreadZ, boolean safeSurfacePlacement, Level world, int tries, @Nullable BiPredicate<BlockState, BlockPos> statePredicate) {
 		return RANDOM.getRandomPositionWithinRange(centerPos, xRadius, yRadius, zRadius, minSpreadX, minSpreadY, minSpreadZ, safeSurfacePlacement, world, tries, statePredicate);

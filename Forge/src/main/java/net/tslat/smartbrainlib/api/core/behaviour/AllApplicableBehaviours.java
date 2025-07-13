@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,13 +18,16 @@ import java.util.stream.Collectors;
  * @param <E> The entity
  */
 public final class AllApplicableBehaviours<E extends LivingEntity> extends GroupBehaviour<E> {
-	@SafeVarargs
 	public AllApplicableBehaviours(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
 		super(behaviours);
 	}
 
 	@SafeVarargs
 	public AllApplicableBehaviours(ExtendedBehaviour<? super E>... behaviours) {
+		super(behaviours);
+	}
+
+	public AllApplicableBehaviours(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
 

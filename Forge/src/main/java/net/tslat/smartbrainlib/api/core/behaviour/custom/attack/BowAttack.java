@@ -12,7 +12,7 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 /**
  * Extended behaviour for charging and firing a
  * {@link BowItem bow}.
- * 
+ *
  * @param <E>
  */
 public class BowAttack<E extends LivingEntity & RangedAttackMob> extends AnimatableRangedAttack<E> {
@@ -37,5 +37,11 @@ public class BowAttack<E extends LivingEntity & RangedAttackMob> extends Animata
 		entity.performRangedAttack(this.target, BowItem.getPowerForTime(entity.getTicksUsingItem()));
 		entity.stopUsingItem();
 		BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.apply(entity));
+	}
+
+	@Override
+	protected void stop(E entity) {
+		super.stop(entity);
+		entity.stopUsingItem();
 	}
 }
