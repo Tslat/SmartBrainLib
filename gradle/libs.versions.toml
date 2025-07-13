@@ -1,26 +1,26 @@
 [versions]
 # SmartBrainLib
-    smartbrainlib = "1.16.8"
+    smartbrainlib = "1.16.10"
 
 # Common
     minecraft-range = "[1.21.7,)"
     minecraft = "1.21.7"
     parchment-minecraft = "1.21.5"
     parchment = "2025.06.15"
-    neoform = "1.21.7-20250630.141722"
+    neoform = "1.21.7-20250711.194848"
     jopt-simple = "5.0.4"
     java = "21"
 
 # Fabric
     fabric = "0.16.14"
     fabric-range = "0.16"
-    fabric-api = "0.128.1+1.21.7"
+    fabric-api = "0.129.0+1.21.7"
     fabric-api-range = "0.128.0+1.21.7"
 
 # Neoforge
     neoforge-loader-range = "[5,)"
     neoforge-range = "[21.7.0-beta,)"
-    neoforge = "21.7.1-beta"
+    neoforge = "21.7.21-beta"
 
 # Dependencies
     mixin = "0.8.7"
@@ -28,7 +28,7 @@
     mixinextras-range = "[0.4.1,)"
 
 # Plugins
-    plugin-moddevgradle = "2.0.96"
+    plugin-moddevgradle = "2.0.99"
     plugin-minotaur = "2.8.7"
     plugin-curseforge-gradle = "1.1.26"
     plugin-idea-ext = "1.1.10"

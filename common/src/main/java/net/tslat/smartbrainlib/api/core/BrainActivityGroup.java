@@ -99,14 +99,17 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return new BrainActivityGroup<T>(Activity.REST);
 	}
 
+	@SafeVarargs
 	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> coreTasks(Behavior... behaviours) {
 		return new BrainActivityGroup<T>(Activity.CORE).priority(0).behaviours(behaviours);
 	}
 
+	@SafeVarargs
 	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> idleTasks(Behavior... behaviours) {
 		return new BrainActivityGroup<T>(Activity.IDLE).priority(10).behaviours(behaviours);
 	}
 
+	@SafeVarargs
 	public static <T extends LivingEntity & SmartBrainOwner<T>> BrainActivityGroup<T> fightTasks(Behavior... behaviours) {
 		return new BrainActivityGroup<T>(Activity.FIGHT).priority(10).behaviours(behaviours).requireAndWipeMemoriesOnUse(MemoryModuleType.ATTACK_TARGET);
 	}

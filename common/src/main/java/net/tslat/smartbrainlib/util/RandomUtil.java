@@ -67,6 +67,7 @@ public final class RandomUtil {
 		return RANDOM.randomValueBetween(min, max);
 	}
 
+	@SafeVarargs
 	public static <T> T getRandomSelection(@NotNull T... options) {
 		return RANDOM.getRandomSelection(options);
 	}
