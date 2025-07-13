@@ -6,6 +6,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -24,6 +26,10 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 
 	@SafeVarargs
 	public SequentialBehaviour(ExtendedBehaviour<? super E>... behaviours) {
+		super(behaviours);
+	}
+
+	public SequentialBehaviour(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
 

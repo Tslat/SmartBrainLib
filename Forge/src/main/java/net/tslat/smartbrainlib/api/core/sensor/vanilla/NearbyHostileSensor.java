@@ -20,7 +20,7 @@ import java.util.function.BiPredicate;
  * checking the existing visible entities for nearby hostiles. <br>
  * By default, this is used for villager hostile detection, but it can be
  * configured at instantiation for any types.
- * 
+ *
  * @see net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor
  * @param <E> The entity
  */
@@ -44,7 +44,7 @@ public class NearbyHostileSensor<E extends LivingEntity> extends EntityFiltering
 
 	/**
 	 * Clear the hostile types map, and add all of the given entries.
-	 * 
+	 *
 	 * @param entries The collection of entity types and distances to set the
 	 *                hostile types map to
 	 * @return this

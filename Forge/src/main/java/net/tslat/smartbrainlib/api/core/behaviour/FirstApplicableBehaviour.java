@@ -6,6 +6,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Group behaviour that attempts to run all sub-behaviours in order, until the first successful one.
  * @param <E> The entity
@@ -18,6 +21,10 @@ public final class FirstApplicableBehaviour<E extends LivingEntity> extends Grou
 
 	@SafeVarargs
 	public FirstApplicableBehaviour(ExtendedBehaviour<? super E>... behaviours) {
+		super(behaviours);
+	}
+
+	public FirstApplicableBehaviour(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
 
