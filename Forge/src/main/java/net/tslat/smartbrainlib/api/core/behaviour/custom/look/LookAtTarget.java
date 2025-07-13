@@ -58,7 +58,7 @@ public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
 		if (lookTarget == null)
 			return false;
 
-		if (lookTarget instanceof EntityTracker entityTracker && !entityTracker.getEntity().isAlive()) {
+		if (lookTarget instanceof EntityTracker entityTracker && (!entityTracker.getEntity().isAlive() || entityTracker.getEntity().isSpectator())) {
 			BrainUtil.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 
 			return false;

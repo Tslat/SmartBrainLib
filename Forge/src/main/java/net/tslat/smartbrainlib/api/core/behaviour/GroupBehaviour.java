@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,12 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 	@SafeVarargs
 	public GroupBehaviour(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {
+		this.behaviours = new SBLShufflingList<>(behaviours);
+
+		noTimeout();
+	}
+
+	public GroupBehaviour(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		this.behaviours = new SBLShufflingList<>(behaviours);
 
 		noTimeout();
@@ -104,6 +111,11 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 
 	@Override
 	public String toString() {
-		return "(" + getClass().getSimpleName() + "): " + (this.runningBehaviour != null ? this.runningBehaviour.getClass().getSimpleName() : "{}");
+		return "(" + getClass().getSimpleName() + "): " + (this.runningBehaviour != null ? this.runningBehaviour.toString() : "{}");
+	}
+
+	@Override
+	public String debugString() {
+		return getClass().getSimpleName() + " -> " + (this.runningBehaviour != null ? this.runningBehaviour.debugString() : "{}");
 	}
 }
