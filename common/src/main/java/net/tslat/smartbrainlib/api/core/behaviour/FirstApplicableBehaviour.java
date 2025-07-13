@@ -24,7 +24,7 @@ public final class FirstApplicableBehaviour<E extends LivingEntity> extends Grou
 		super(behaviours);
 	}
 
-	public FirstApplicableBehaviour(List<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
+	public FirstApplicableBehaviour(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
 

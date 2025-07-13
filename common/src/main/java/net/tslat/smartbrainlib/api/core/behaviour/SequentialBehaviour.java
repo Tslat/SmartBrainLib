@@ -29,7 +29,7 @@ public final class SequentialBehaviour<E extends LivingEntity> extends GroupBeha
 		super(behaviours);
 	}
 
-	public SequentialBehaviour(List<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
+	public SequentialBehaviour(Collection<Pair<ExtendedBehaviour<? super E>, Integer>> behaviours) {
 		super(behaviours);
 	}
 
