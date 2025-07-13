@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +26,17 @@ public class SBLShufflingList<T> implements Iterable<T> {
 		this.entries = new ObjectArrayList<>(size);
 	}
 
+	@SafeVarargs
 	public SBLShufflingList(Pair<T, Integer>... entries) {
 		this.entries = new ObjectArrayList<>(entries.length);
+
+		for (Pair<T, Integer> entry : entries) {
+			this.entries.add(new WeightedEntry<>(entry.getFirst(), entry.getSecond()));
+		}
+	}
+
+	public SBLShufflingList(Collection<Pair<T, Integer>> entries) {
+		this.entries = new ObjectArrayList<>(entries.size());
 
 		for (Pair<T, Integer> entry : entries) {
 			this.entries.add(new WeightedEntry<>(entry.getFirst(), entry.getSecond()));
