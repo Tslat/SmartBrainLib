@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	protected float riseChance = 0.8f;
+	private boolean canFloatPrevious;
 
 	/**
 	 * Set the chance per tick that the entity will 'jump' in water, rising up towards the surface.
@@ -49,8 +50,21 @@ public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
+	protected void start(E entity) {
+		super.start(entity);
+		this.canFloatPrevious = entity.getNavigation().canFloat();
+		entity.getNavigation().setCanFloat(true);
+	}
+
+	@Override
 	protected void tick(E entity) {
 		if (entity.getRandom().nextFloat() < this.riseChance)
 			entity.getJumpControl().jump();
+	}
+
+	@Override
+	protected void stop(E entity) {
+		super.stop(entity);
+		entity.getNavigation().setCanFloat(this.canFloatPrevious);
 	}
 }
