@@ -31,7 +31,8 @@ public class BrainActivityGroup<T extends LivingEntity & SmartBrainOwner<T>> {
 		return this;
 	}
 
-	public BrainActivityGroup<T> behaviours(Behavior<? super T>... behaviours) {
+	@SafeVarargs
+	public final BrainActivityGroup<T> behaviours(Behavior<? super T>... behaviours) {
 		this.behaviours.addAll(new ObjectArrayList<>(behaviours));
 
 		return this;
