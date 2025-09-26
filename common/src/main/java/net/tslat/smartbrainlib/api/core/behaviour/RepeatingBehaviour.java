@@ -117,4 +117,14 @@ public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviou
         if (this.child.getStatus() != Status.STOPPED)
             this.child.doStop(level, entity, gameTime);
     }
+
+    @Override
+    public String toString() {
+        return "(" + getClass().getSimpleName() + "): " + (this.child != null ? this.child.toString() : "{}");
+    }
+
+    @Override
+    public String debugString() {
+        return getClass().getSimpleName() + " -> " + (this.child != null ? this.child.debugString() : "{}");
+    }
 }
