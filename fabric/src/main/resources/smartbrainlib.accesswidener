@@ -50,6 +50,7 @@ accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
 accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
 
 # Navigation
+extendable class net/minecraft/world/level/pathfinder/Path
 accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
 extendable method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
 accessible field net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation allowBreaching Z
