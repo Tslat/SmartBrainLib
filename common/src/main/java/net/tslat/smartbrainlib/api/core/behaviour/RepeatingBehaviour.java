@@ -93,7 +93,7 @@ public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviou
 
     @Override
     protected boolean canStillUse(ServerLevel level, E entity, long gameTime) {
-        return !this.stopCondition.test(entity) && (this.child.getStatus() != Status.STOPPED || this.repeats > 0);
+        return (this.child.getStatus() != Status.STOPPED || this.repeats > 0) && !this.stopCondition.test(entity);
     }
 
     @Override
