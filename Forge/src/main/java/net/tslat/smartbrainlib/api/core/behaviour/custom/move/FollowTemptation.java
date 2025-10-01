@@ -35,7 +35,7 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
 
 	protected ToFloatBiFunction<E, Player> speedMod = (entity, temptingPlayer) -> 1f;
-	protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> (!(entity instanceof Animal animal) || animal.getAge() == 0) && !BrainUtil.memoryOrDefault(entity, MemoryModuleType.IS_PANICKING, () -> false);
+    protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> !entity.hasPassenger(temptingPlayer);
 	protected ToFloatBiFunction<E, Player> closeEnoughWhen = (owner, temptingPlayer) -> 2.5f;
 	protected Object2IntFunction<E> temptationCooldown = entity -> 100;
 

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.APIOnly;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -182,7 +182,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 		return true;
 	}
 
-	@APIOnly
+	@ApiStatus.Internal
 	protected boolean doStartCheck(ServerLevel level, E entity, long gameTime) {
 		return this.cooldownFinishedAt <= gameTime && hasRequiredMemories(entity) && this.startCondition.test(entity)
 			   && checkExtraStartConditions(level, entity);
@@ -212,7 +212,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param entity   The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@APIOnly
+	@ApiStatus.Internal
 	@Override
 	protected void start(ServerLevel level, E entity, long gameTime) {
 		this.taskStartCallback.accept(entity);
@@ -244,7 +244,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param entity   The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@APIOnly
+	@ApiStatus.Internal
 	@Override
 	protected void stop(ServerLevel level, E entity, long gameTime) {
 		this.cooldownFinishedAt = gameTime + this.cooldownProvider.applyAsInt(entity);
@@ -304,7 +304,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 	 * @param entity   The entity the brain belongs to
 	 * @param gameTime The current gameTime (in ticks) of the level
 	 */
-	@APIOnly
+	@ApiStatus.Internal
 	@Override
 	protected void tick(ServerLevel level, E entity, long gameTime) {
 		tick(entity);
@@ -330,7 +330,7 @@ public abstract class ExtendedBehaviour<E extends LivingEntity> extends Behavior
 		return super.timedOut(gameTime);
 	}
 
-	@APIOnly
+	@ApiStatus.Internal
 	@Override
 	public final boolean hasRequiredMemories(E entity) {
 		Brain<?> brain = entity.getBrain();

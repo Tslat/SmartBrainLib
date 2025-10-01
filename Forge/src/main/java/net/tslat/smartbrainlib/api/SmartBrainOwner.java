@@ -9,11 +9,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.schedule.Activity;
-import net.tslat.smartbrainlib.APIOnly;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrain;
 import net.tslat.smartbrainlib.api.core.schedule.SmartBrainSchedule;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -168,7 +168,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	 *
 	 * @param entity The brain owner
 	 */
-	@APIOnly
+	@ApiStatus.Internal
 	default void tickBrain(T entity) {
 		((Brain<T>)entity.getBrain()).tick((ServerLevel)entity.level(), entity);
 	}
