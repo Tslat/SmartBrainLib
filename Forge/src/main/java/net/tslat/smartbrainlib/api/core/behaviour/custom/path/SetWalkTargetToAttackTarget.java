@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -28,6 +29,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 	protected float speedModifier = 1;
 	protected BiFunction<E, LivingEntity, Float> speedMod = (owner, target) -> 1f;
 	protected ToIntBiFunction<E, LivingEntity> closeEnoughWhen = (owner, target) -> 0;
+    protected ToBooleanBiFunction<E, LivingEntity> targetEyePosition = (owner, target) -> false;
 
 	/**
 	 * Set the movespeed modifier for the entity when moving to the target.
@@ -61,6 +63,29 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 		return this;
 	}
 
+    /**
+     * Sets the walk target location to be the target's eye height, rather than their feet.<br>
+     * This is useful for flying entities as they will otherwise just keep hitting the ground
+     *
+     * @return this
+     */
+    public SetWalkTargetToAttackTarget<E> targetEyePosition() {
+        return targetEyePosition((owner, target) -> true);
+    }
+
+    /**
+     * Sets the walk target location to be the target's eye height, rather than their feet.<br>
+     * This is useful for flying entities as they will otherwise just keep hitting the ground
+     *
+     * @param function The function that determines whether to use the eye height or not
+     * @return this
+     */
+    public SetWalkTargetToAttackTarget<E> targetEyePosition(ToBooleanBiFunction<E, LivingEntity> function) {
+        this.targetEyePosition = function;
+
+        return this;
+    }
+
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
@@ -76,7 +101,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 		}
 		else {
 			BrainUtils.setMemory(brain, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
-			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, false), this.speedMod.apply(entity, target), this.closeEnoughWhen.applyAsInt(entity, target)));
+			BrainUtils.setMemory(brain, MemoryModuleType.WALK_TARGET, new WalkTarget(new EntityTracker(target, this.targetEyePosition.applyAsBoolean(entity, target)), this.speedMod.apply(entity, target), this.closeEnoughWhen.applyAsInt(entity, target)));
 		}
 	}
 }
