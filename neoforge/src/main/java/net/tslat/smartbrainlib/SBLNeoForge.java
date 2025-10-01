@@ -51,7 +51,7 @@ public final class SBLNeoForge implements SBLLoader {
 
 	@Override
 	public boolean isDevEnv() {
-		return !FMLLoader.isProduction();
+		return !FMLLoader.getCurrent().isProduction();
 	}
 
 	@Override

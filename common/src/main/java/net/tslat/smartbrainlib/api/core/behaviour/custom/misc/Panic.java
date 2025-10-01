@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2FloatFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 
 /**
@@ -40,7 +40,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.HURT_BY).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_PANICKING);
 
 	protected BiPredicate<E, DamageSource> shouldPanicPredicate = (entity, damageSource) -> entity.isFreezing() || entity.isOnFire() || damageSource.getEntity() instanceof LivingEntity;
-	protected Object2FloatFunction<E> speedMod = entity -> 1.25f;
+	protected Function<E, Float> speedMod = entity -> 1.25f;
 	protected SquareRadius radius = new SquareRadius(5, 4);
 	protected ToIntBiFunction<E, DamageSource> panicFor = (entity, damageSource) -> entity.getRandom().nextInt(100, 120);
 
@@ -78,7 +78,7 @@ public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	 * @param speedModifier The movespeed modifier/multiplier
 	 * @return this
 	 */
-	public Panic<E> speedMod(final Object2FloatFunction<E> speedModifier) {
+	public Panic<E> speedMod(final Function<E, Float> speedModifier) {
 		this.speedMod = speedModifier;
 
 		return this;

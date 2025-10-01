@@ -1,6 +1,6 @@
 [versions]
 # SmartBrainLib
-    smartbrainlib = "1.16.10"
+    smartbrainlib = "1.16.11"
 
 # Common
     minecraft-range = "[1.21.9,)"
