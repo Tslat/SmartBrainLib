@@ -80,7 +80,7 @@ public final class SBLForge implements SBLLoader {
 
 	private static void registerEntities(BusGroup busGroup) {
 		ENTITY_TYPES.register(busGroup);
-		EntityAttributeCreationEvent.getBus(busGroup).addListener(ev -> ev.put(SBL_SKELETON.get(), Skeleton.createAttributes().build()));
+		EntityAttributeCreationEvent.BUS.addListener(ev -> ev.put(SBL_SKELETON.get(), Skeleton.createAttributes().build()));
 
 		SBL_SKELETON = ENTITY_TYPES.register("sbl_skeleton", () -> EntityType.Builder.of(SBLSkeleton::new, MobCategory.MONSTER).sized(0.6f, 1.99f).build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(SBLConstants.MOD_ID, "sbl_skeleton"))));
 	}
