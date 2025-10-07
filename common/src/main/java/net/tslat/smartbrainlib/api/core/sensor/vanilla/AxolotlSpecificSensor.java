@@ -17,9 +17,8 @@ import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
- * A replication of vanilla's
- * {@link net.minecraft.world.entity.ai.sensing.AxolotlAttackablesSensor}. Not
- * really useful, but included for completeness' sake and legibility. <br>
+ * A replication of vanilla's {@link net.minecraft.world.entity.ai.sensing.AxolotlAttackablesSensor}.
+ * Not really useful, but included for completeness' sake and legibility.<br>
  * Handles the Axolotl's hostility and targets
  * 
  * @param <E> The entity
