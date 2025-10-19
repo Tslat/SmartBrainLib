@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.tslat.smartbrainlib.SBLConstants;
 import net.tslat.smartbrainlib.SBLForge;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT)
 final class SBLClient {
 	@SubscribeEvent
 	public static void registerEntityRenderers(final EntityRenderersEvent.RegisterRenderers ev) {
