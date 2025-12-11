@@ -6,6 +6,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * A sensor that sets the {@link MemoryModuleType#GOLEM_DETECTED_RECENTLY}
  * memory by checking if any of the detected nearby entities are
- * {@link net.minecraft.world.entity.animal.IronGolem Iron Golems}. <br>
+ * {@link IronGolem Iron Golems}. <br>
  * Defaults:
  * <ul>
  * <li>200-tick scan rate</li>

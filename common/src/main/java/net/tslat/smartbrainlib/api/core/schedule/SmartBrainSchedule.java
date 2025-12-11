@@ -6,8 +6,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.SmartBrain;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -16,14 +16,13 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 
 /**
- * SBL-implementation of the vanilla {@link net.minecraft.world.entity.schedule.Schedule Schedule}.<br>
- * It extends the vanilla {@link Schedule} purely for compatibility reasons, but does not utilise any of its functionality.<br>
- * <br>
- * This segment of the Brain system is used to timeline activities, allowing you to run activity groups and tasks on a tick-based schedule.<br>
- * <br>
+ * SBL-implementation of an activity schedule for {@link SmartBrain}s.
+ * <p>
+ * This segment of the Brain system is used to timeline activities, allowing you to run activity groups and tasks on a tick-based schedule.
+ * <p>
  * Activities scheduled using this system will <b>override</b> the activity priorities from {@link SmartBrainOwner#getActivityPriorities()} at tick time
  */
-public class SmartBrainSchedule extends Schedule {
+public class SmartBrainSchedule {
 	private final Type type;
 	private final Int2ObjectArrayMap<Activity> timeline = new Int2ObjectArrayMap<>(0);
 	private final ListMultimap<Integer, Consumer<LivingEntity>> callbacks = MultimapBuilder.hashKeys(0).arrayListValues().build();
@@ -141,7 +140,6 @@ public class SmartBrainSchedule extends Schedule {
 		this.sortedTimeline = true;
 	}
 
-	@Override
 	public final Activity getActivityAt(int tick) {
 		if (this.type == Type.AGE)
 			return Activity.IDLE;

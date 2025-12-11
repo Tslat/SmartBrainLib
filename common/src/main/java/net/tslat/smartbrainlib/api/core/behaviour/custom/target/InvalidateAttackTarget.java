@@ -26,7 +26,10 @@ import java.util.function.BiPredicate;
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
-	protected BiPredicate<E, LivingEntity> customPredicate = (entity, target) -> (target instanceof Player player && player.getAbilities().invulnerable) || (entity.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) && entity.distanceToSqr(target) >= Mth.square(entity.getAttributeValue(Attributes.FOLLOW_RANGE)));
+	protected BiPredicate<E, LivingEntity> targetInvalidIf = (entity, target) ->
+			(target instanceof Player player && player.getAbilities().invulnerable) ||
+			(entity.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE) && entity.distanceToSqr(target) >= Mth.square(entity.getAttributeValue(Attributes.FOLLOW_RANGE))) ||
+			!entity.canAttack(target);
 	protected long pathfindingAttentionSpan = 200;
 
 	/**
@@ -34,7 +37,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 	 * Overrides the default player gamemode check
 	 */
 	public InvalidateAttackTarget<E> invalidateIf(BiPredicate<E, LivingEntity> predicate) {
-		this.customPredicate = predicate;
+		this.targetInvalidIf = predicate;
 
 		return this;
 	}
@@ -68,7 +71,7 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 			return;
 
 		if (isTargetInvalid(entity, target) || !canAttack(entity, target) ||
-			isTiredOfPathing(entity) || this.customPredicate.test(entity, target)) {
+			isTiredOfPathing(entity) || this.targetInvalidIf.test(entity, target)) {
 			BrainUtil.clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 
 			if (BrainUtil.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == entity)

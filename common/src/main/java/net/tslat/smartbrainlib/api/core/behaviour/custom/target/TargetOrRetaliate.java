@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.target;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -41,7 +42,7 @@ import java.util.function.Predicate;
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
-	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
+	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || (!player.getAbilities().invulnerable && entity.level().getDifficulty() != Difficulty.PEACEFUL));
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
 	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
 		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtil.getTargetOfEntity(ally) != null)

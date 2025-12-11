@@ -18,6 +18,7 @@ accessible field net/minecraft/world/entity/ai/Brain coreActivities Ljava/util/S
 accessible method net/minecraft/world/entity/ai/Brain setCoreActivities (Ljava/util/Set;)V
 extendable method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
 extendable method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
+accessible field net/minecraft/world/entity/ai/Brain schedule Lnet/minecraft/world/attribute/EnvironmentAttribute;
 
 # Behaviour
 accessible method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
@@ -45,9 +46,6 @@ accessible field net/minecraft/world/level/entity/EntitySection storage Lnet/min
 
 # Entities
 accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
-
-# Schedule
-accessible field net/minecraft/world/entity/schedule/Schedule timelines Ljava/util/Map;
 
 # Navigation
 extendable class net/minecraft/world/level/pathfinder/Path
