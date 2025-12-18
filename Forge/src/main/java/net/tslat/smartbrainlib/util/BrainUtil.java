@@ -16,8 +16,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
-import net.minecraft.world.entity.schedule.Timeline;
+import net.minecraft.world.timeline.Timeline;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrain;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
@@ -331,9 +330,9 @@ public final class BrainUtil {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
 		}
 	}
-	
+
 	/**
-	 * Replacement of {@link BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
+	 * Replacement of {@link net.minecraft.world.entity.ai.behavior.BehaviorUtils#canSee}, falling back to a raytrace check in the event the target entity isn't in the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory
 	 * @param entity The entity to check the brain of
 	 * @param target The target entity
 	 * @return Whether the target entity is known to be visible or not
@@ -548,35 +547,22 @@ public final class BrainUtil {
 	}
 
 	/**
-	 * Adds the given scheduled activity transition to the provided brain's {@link Schedule schedule}, creating a new schedule if required.
+	 * Adds the given scheduled activity transition to the provided brain's {@link SmartBrainSchedule}, creating a new schedule if required.<br>
+	 * Does not work on vanilla {@link Timeline}s due to their hardcoded nature
+	 *
 	 * @param brain The brain the schedule belongs to
 	 * @param activity The activity to transition to
 	 * @param tickTime The tick-time the activity transition should happen
-	 * @param tickType The type of tick tracking the schedule should use, if a new schedule has to be created.
+	 * @param tickType The type of tick tracking the schedule should use if a new schedule has to be created.
 	 */
 	public static void addScheduledActivityTransition(Brain<?> brain, Activity activity, int tickTime, SmartBrainSchedule.Type tickType) {
 		if (brain instanceof SmartBrain smartBrain) {
 			SmartBrainSchedule schedule;
 
-			if ((schedule = smartBrain.getSchedule()) == null)
+			if ((schedule = smartBrain.getScheduleForge()) == null)
 				smartBrain.setSchedule((schedule = new SmartBrainSchedule(tickType)));
 
 			schedule.activityAt(tickTime, activity);
-		}
-		else {
-			Schedule schedule;
-
-			if ((schedule = brain.getSchedule()) == Schedule.EMPTY)
-				brain.setSchedule(new Schedule());
-
-			Timeline timeline = schedule.timelines.computeIfAbsent(activity, key -> new Timeline());
-
-			timeline.addKeyframe(tickTime, 1);
-
-			for (Map.Entry<Activity, Timeline> entry : schedule.timelines.entrySet()) {
-				if (entry.getKey() != activity)
-					entry.getValue().addKeyframe(tickTime, 0);
-			}
 		}
 	}
 }

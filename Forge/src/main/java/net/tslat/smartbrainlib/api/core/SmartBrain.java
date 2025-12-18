@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.profiling.Profiler;
@@ -20,7 +21,6 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.entity.schedule.Schedule;
 import net.minecraftforge.common.util.BrainBuilder;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
@@ -30,8 +30,8 @@ import net.tslat.smartbrainlib.object.BrainBehaviourConsumer;
 import net.tslat.smartbrainlib.object.BrainBehaviourPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -246,11 +246,11 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	}
 
 	private static <E extends LivingEntity & SmartBrainOwner<E>> Codec<Brain<E>> emptyBrainCodec() {
-		MutableObject<Codec<Brain<E>>> brainCodec = new MutableObject<>();
+		MutableObject<Codec<Brain<@NonNull E>>> brainCodec = new MutableObject<>();
 
-		brainCodec.setValue(Codec.unit(() -> new Brain<>(ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), brainCodec::getValue)));
+		brainCodec.setValue(MapCodec.unitCodec(() -> new Brain<>(ImmutableList.of(), ImmutableList.of(), ImmutableList.of(), brainCodec)));
 
-		return brainCodec.getValue();
+		return brainCodec.get();
 	}
 
 	private static <E extends LivingEntity & SmartBrainOwner<E>> List<? extends SensorType<? extends Sensor<? super E>>> convertSensorsToTypes(List<? extends ExtendedSensor<E>> sensors) {
@@ -393,8 +393,8 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 	/**
 	 * @return The {@link SmartBrainSchedule schedule} of this brain
 	 */
-	@Override
-	public SmartBrainSchedule getSchedule() {
+	// Forge didn't remove a patch and broke this =/, sorry
+	public SmartBrainSchedule getScheduleForge() {
 		return this.schedule;
 	}
 
@@ -469,13 +469,6 @@ public class SmartBrain<E extends LivingEntity & SmartBrainOwner<E>> extends Bra
 
 		this.sensors.add(Pair.of(sensorType, sensor));
 	}
-
-	/**
-	 * Not supported, use {@link SmartBrain#setSchedule(SmartBrainSchedule)} instead
-	 */
-	@ApiStatus.Internal
-	@Override
-	public final void setSchedule(Schedule schedule) {}
 
 	private record ActivityBehaviours<E extends LivingEntity & SmartBrainOwner<E>> (int priority, List<Pair<Activity, List<BehaviorControl<? super E>>>> behaviours) {}
 }

@@ -10,12 +10,12 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -31,7 +31,7 @@ import java.util.List;
  * {@link net.minecraft.world.entity.ai.sensing.PiglinSpecificSensor}. Not
  * really useful, but included for completeness' sake and legibility. <br>
  * Handles most of Piglin's memories at once.
- * 
+ *
  * @param <E> The entity
  */
 public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {
@@ -107,12 +107,12 @@ public class PiglinSpecificSensor<E extends LivingEntity> extends ExtendedSensor
 			BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, visibleAdultPiglins.size());
 			BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, adultHoglinCount);
 			BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_REPELLENT,
-					BlockPos.findClosestMatch(entity.blockPosition(), 8, 4, pos -> {
-						BlockState state = level.getBlockState(pos);
-						boolean isRepellent = state.is(BlockTags.PIGLIN_REPELLENTS);
+								BlockPos.findClosestMatch(entity.blockPosition(), 8, 4, pos -> {
+									BlockState state = level.getBlockState(pos);
+									boolean isRepellent = state.is(BlockTags.PIGLIN_REPELLENTS);
 
-						return isRepellent && state.is(Blocks.SOUL_CAMPFIRE) ? CampfireBlock.isLitCampfire(state) : isRepellent;
-					}).orElse(null));
+									return isRepellent && state.is(Blocks.SOUL_CAMPFIRE) ? CampfireBlock.isLitCampfire(state) : isRepellent;
+								}).orElse(null));
 		});
 
 		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, entities -> {

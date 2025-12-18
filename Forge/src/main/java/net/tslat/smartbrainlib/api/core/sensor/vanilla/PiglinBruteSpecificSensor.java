@@ -8,9 +8,9 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
@@ -23,7 +23,7 @@ import java.util.List;
  * really useful, but included for completeness' sake and legibility. <br>
  * Keeps track of nearby {@link Piglin piglins} and
  * {@link MemoryModuleType#NEAREST_VISIBLE_NEMESIS nemesis}
- * 
+ *
  * @param <E> The entity
  */
 public class PiglinBruteSpecificSensor<E extends LivingEntity> extends ExtendedSensor<E> {

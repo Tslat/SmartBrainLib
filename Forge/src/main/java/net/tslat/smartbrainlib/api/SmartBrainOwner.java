@@ -147,7 +147,7 @@ public interface SmartBrainOwner<T extends LivingEntity & SmartBrainOwner<T>> {
 	default void handleAdditionalBrainSetup(SmartBrain<? extends T> brain) {}
 
 	/**
-	 * Override this to return the {@link net.minecraft.world.entity.schedule.Schedule schedule} for your entity.
+	 * Override this to return the {@link SmartBrainSchedule schedule} for your entity.
 	 * <p>
 	 * This can be set at any time via {@link SmartBrain#setSchedule(SmartBrainSchedule)}, but it's recommended to
 	 * do so statically if possible and provide it through this method
