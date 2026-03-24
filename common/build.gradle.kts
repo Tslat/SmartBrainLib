@@ -1,7 +1,7 @@
 plugins {
     id("smartbrainlib-convention")
 
-    alias(libs.plugins.moddevgradle)
+    alias(libs.plugins.loom)
 }
 
 val modId              : String by project
@@ -12,8 +12,6 @@ val modChangelogUrl    : String by project
 val modVersion         = libs.versions.smartbrainlib.get()
 val javaVersion        = libs.versions.java.get()
 val mcVersion          = libs.versions.minecraft.asProvider().get()
-val parchmentMcVersion = libs.versions.parchment.minecraft.get()
-val parchmentVersion   = libs.versions.parchment.asProvider().get()
 
 version = modVersion
 
@@ -21,16 +19,12 @@ base {
     archivesName = "${modDisplayName}-common-${mcVersion}"
 }
 
-neoForge {
-    neoFormVersion = libs.versions.neoform.get()
-    validateAccessTransformers = true
-    accessTransformers.files.setFrom("src/main/resources/META-INF/accesstransformer.cfg")
-
-    parchment.minecraftVersion.set(parchmentMcVersion)
-    parchment.mappingsVersion.set(parchmentVersion)
+loom {
+    accessWidenerPath = file("src/main/resources/${modId}.ct")
 }
 
 dependencies {
+    minecraft(libs.minecraft)
     compileOnly(libs.mixin)
     compileOnly(libs.mixinextras.common)
 }

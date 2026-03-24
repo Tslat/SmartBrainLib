@@ -2,6 +2,11 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
 
+        maven {
+            name = "RelativityMC"
+            url = uri("https://repo.codemc.io/repository/relativitymc/")
+        }
+
         // Fabric
         exclusiveContent {
             forRepository {

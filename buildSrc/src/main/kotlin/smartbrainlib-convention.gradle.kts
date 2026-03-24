@@ -28,7 +28,7 @@ val neoforgeVersionRange       = libs.get().findVersion("neoforge.range").get()
 val neoforgeLoaderVersionRange = libs.get().findVersion("neoforge.loader.range").get()
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 
     withSourcesJar()
     withJavadocJar()
@@ -43,7 +43,7 @@ idea {
 
 tasks.withType<JavaCompile>().configureEach {
     this.options.encoding = "UTF-8"
-    this.options.getRelease().set(21)
+    this.options.getRelease().set(25)
 }
 
 repositories {

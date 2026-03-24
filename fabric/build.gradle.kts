@@ -1,5 +1,5 @@
-import net.fabricmc.loom.task.RemapJarTask
-import net.darkhax.curseforgegradle.TaskPublishCurseForge
+// import net.fabricmc.loom.task.RemapJarTask
+// import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id("smartbrainlib-convention")
@@ -16,8 +16,6 @@ val modChangelogUrl    : String by project
 val modVersion         = libs.versions.smartbrainlib.get()
 val javaVersion        = libs.versions.java.get()
 val mcVersion          = libs.versions.minecraft.asProvider().get()
-val parchmentMcVersion = libs.versions.parchment.minecraft.get()
-val parchmentVersion   = libs.versions.parchment.asProvider().get()
 
 version = modVersion
 
@@ -41,38 +39,12 @@ repositories {
 
 dependencies {
     minecraft(libs.minecraft)
-    mappings(loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchmentMcVersion}:${parchmentVersion}@zip")
-    })
-    modImplementation(libs.fabric)
-    modImplementation(libs.fabric.api)
+    implementation(libs.fabric)
+    implementation(libs.fabric.api)
     compileOnly(project(":common"))
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/${modId}.accesswidener")
-
-    //mixin.defaultRefmapName.set("${modId}.refmap.json")
-
-    runs {
-        named("client") {
-            configName = "Fabric Client"
-
-            client()
-            ideConfigGenerated(true)
-            runDir("runs/" + name)
-            programArg("--username=Dev")
-        }
-
-        named("server") {
-            configName = "Fabric Server"
-
-            server()
-            ideConfigGenerated(true)
-            runDir("runs/" + name)
-        }
-    }
 }
 
 tasks.withType<Test>().configureEach {
@@ -96,39 +68,39 @@ tasks.withType<ProcessResources>().configureEach {
     exclude("**/accesstransformer.cfg")
 }
 
-modrinth {
-    token = System.getenv("modrinthKey") ?: "Invalid/No API Token Found"
-    projectId = modModrinthId
-    versionNumber.set(modVersion)
-    versionName = "Fabric ${mcVersion}"
-    uploadFile.set(tasks.named<RemapJarTask>("remapJar"))
-    changelog.set(modChangelogUrl)
-    gameVersions.set(listOf(mcVersion))
-    versionType = "release"
-    loaders.set(listOf("fabric"))
-    dependencies {
-        required.project("fabric-api")
-    }
+// modrinth {
+//     token = System.getenv("modrinthKey") ?: "Invalid/No API Token Found"
+//     projectId = modModrinthId
+//     versionNumber.set(modVersion)
+//     versionName = "Fabric ${mcVersion}"
+//     uploadFile.set(tasks.named<JarTask>("jar"))
+//     changelog.set(modChangelogUrl)
+//     gameVersions.set(listOf(mcVersion))
+//     versionType = "release"
+//     loaders.set(listOf("fabric"))
+//     dependencies {
+//         required.project("fabric-api")
+//     }
 
-    //debugMode = true
-    //https://github.com/modrinth/minotaur#available-properties
-}
+//     //debugMode = true
+//     //https://github.com/modrinth/minotaur#available-properties
+// }
 
-tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
-    group = "publishing"
-    apiToken = System.getenv("curseforge.apitoken") ?: "Invalid/No API Token Found"
+// tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
+//     group = "publishing"
+//     apiToken = System.getenv("curseforge.apitoken") ?: "Invalid/No API Token Found"
 
-    val mainFile = upload(modCurseforgeId, tasks.remapJar)
-    mainFile.displayName = "${modDisplayName} Fabric ${mcVersion} ${version}"
-    mainFile.releaseType = "release"
-    mainFile.addModLoader("Fabric")
-    mainFile.addGameVersion(mcVersion)
-    mainFile.addJavaVersion("Java ${javaVersion}")
-    mainFile.changelog = modChangelogUrl
+//     val mainFile = upload(modCurseforgeId, tasks.Jar)
+//     mainFile.displayName = "${modDisplayName} Fabric ${mcVersion} ${version}"
+//     mainFile.releaseType = "release"
+//     mainFile.addModLoader("Fabric")
+//     mainFile.addGameVersion(mcVersion)
+//     mainFile.addJavaVersion("Java ${javaVersion}")
+//     mainFile.changelog = modChangelogUrl
 
-    //debugMode = true
-    //https://github.com/Darkhax/CurseForgeGradle#available-properties
-}
+//     //debugMode = true
+//     //https://github.com/Darkhax/CurseForgeGradle#available-properties
+// }
 
 publishing {
     publications {
