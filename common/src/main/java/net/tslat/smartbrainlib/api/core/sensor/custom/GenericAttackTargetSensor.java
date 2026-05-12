@@ -30,7 +30,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage.
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public GenericAttackTargetSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (GenericAttackTargetSensor<BO>)super.setPredicate(predicate);
@@ -64,7 +64,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.GENERIC_ATTACK_TARGET.get();

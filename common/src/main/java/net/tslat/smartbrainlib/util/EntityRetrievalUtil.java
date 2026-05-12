@@ -25,9 +25,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/// A helper class for retrieving entities from a given world.
+/// A helper class for retrieving entities from a given world
 ///
-/// This removes a lot of the overhead of vanilla's type-checking, casting, and redundant stream-collection.
+/// This removes a lot of the overhead of vanilla's type-checking, casting, and redundant stream-collection
 ///
 /// Code borrowed from `TslatModdingExtensions`
 public final class EntityRetrievalUtil {

@@ -48,7 +48,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage.
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public AxolotlSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (AxolotlSpecificSensor<BO>)super.setPredicate(predicate);

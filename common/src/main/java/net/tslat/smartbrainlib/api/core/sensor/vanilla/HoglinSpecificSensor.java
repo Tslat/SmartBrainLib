@@ -80,8 +80,8 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain
-	/// Bonus points if it's a statically cached list.
+	/// The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain<br/>
+	/// Bonus points if it's a statically cached list
 	///
 	/// @return The list of memory types saves by this sensor
 	@Override
@@ -89,7 +89,7 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 		return MEMORIES;
 	}
 
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.HOGLIN_SPECIFIC.get();

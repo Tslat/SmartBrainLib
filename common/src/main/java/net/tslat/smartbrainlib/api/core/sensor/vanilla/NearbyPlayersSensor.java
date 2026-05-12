@@ -49,7 +49,7 @@ public class NearbyPlayersSensor<BO extends LivingEntity> extends PredicateSenso
 		return setRadius(_ -> new SquareRadius(xz, y));
 	}
 
-	/// Set the radius for the sensor to scan.
+	/// Set the radius for the sensor to scan
 	///
 	/// @param radiusFunction The function to determine the radius for the current scan tick
 	public NearbyPlayersSensor<BO> setRadius(Function<BO, SquareRadius> radiusFunction) {
@@ -93,7 +93,7 @@ public class NearbyPlayersSensor<BO extends LivingEntity> extends PredicateSenso
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_PLAYERS.get();

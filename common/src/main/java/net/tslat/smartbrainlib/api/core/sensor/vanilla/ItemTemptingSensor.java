@@ -44,7 +44,7 @@ public class ItemTemptingSensor<BO extends LivingEntity> extends ExtendedSensor<
 		return temptRadius(radius, radius);
 	}
 
-	/// Set the radius for the player sensor to scan.
+	/// Set the radius for the player sensor to scan
 	///
 	/// @param xz The X/Z axis radius, in blocks
 	/// @param y  The Y axis radius, in blocks
@@ -52,7 +52,7 @@ public class ItemTemptingSensor<BO extends LivingEntity> extends ExtendedSensor<
 		return temptRadius(bo -> new SquareRadius(xz, y));
 	}
 
-	/// Set the radius for the player sensor to scan.
+	/// Set the radius for the player sensor to scan
 	///
 	/// @param radiusFunction The function to determine the radius for the current scan tick
 	public ItemTemptingSensor<BO> temptRadius(Function<BO, SquareRadius> radiusFunction) {

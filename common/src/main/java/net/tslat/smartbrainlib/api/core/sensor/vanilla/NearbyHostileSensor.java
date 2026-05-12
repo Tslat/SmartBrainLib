@@ -65,9 +65,9 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 		return this;
 	}
 
-	/// Add an entity type to the hostile types map.
+	/// Add an entity type to the hostile types map
 	///
-	/// @param entry The entity type and distance to which it should be considered.
+	/// @param entry The entity type and distance to which it should be considered
 	/// @return this
 	public NearbyHostileSensor<BO> addHostile(ObjectFloatPair<EntityType<?>> entry) {
 		this.hostileDistanceMap.put(entry.key(), entry.valueFloat());

@@ -31,7 +31,7 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 		super((entity, item) -> entity.wantsToPickUp((ServerLevel)entity.level(), item.getItem()) && entity.hasLineOfSight(item));
 	}
 
-	/// Set the radius for the item sensor to scan.
+	/// Set the radius for the item sensor to scan
 	///
 	/// @param radius The coordinate radius, in blocks
 	/// @return this
@@ -39,7 +39,7 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 		return setRadius(radius, radius);
 	}
 
-	/// Set the radius for the item sensor to scan.
+	/// Set the radius for the item sensor to scan
 	///
 	/// @param xz The X/Z coordinate radius, in blocks
 	/// @param y  The Y coordinate radius, in blocks

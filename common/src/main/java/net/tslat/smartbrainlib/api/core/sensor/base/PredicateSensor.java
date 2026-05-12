@@ -9,11 +9,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// An abstract sensor class used for sensors that utilise some form of predication in their function.
-/// This allows for instance-based configuration of the predicate and the sensor.
+/// An abstract sensor class used for sensors that utilise some form of predication in their function<br/>
+/// This allows for instance-based configuration of the predicate and the sensor
 ///
-/// @param <T> The predicate target type, used for whatever the sensor might need
 /// @param <BO> The brain owner entity
+/// @param <T> The predicate target type, used for whatever the sensor might need
 public abstract class PredicateSensor<BO extends LivingEntity, T> extends ExtendedSensor<BO> {
 	private BiPredicate<BO, T> predicate;
 

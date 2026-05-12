@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// A sensor that sets the [MemoryModuleType#VISIBLE_VILLAGER_BABIES] memory by checking the existing visible entities for nearby babies of the same entity type.
+/// A sensor that sets the [MemoryModuleType#VISIBLE_VILLAGER_BABIES] memory by checking the existing visible entities for nearby babies of the same entity type
 ///
 /// @see net.minecraft.world.entity.ai.sensing.VillagerBabiesSensor
 /// @param <BO> The brain owner entity
@@ -32,7 +32,7 @@ public class NearbyBabySensor<BO extends LivingEntity> extends NearestVisibleEnt
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage.
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public NearbyBabySensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (NearbyBabySensor<BO>)super.setPredicate(predicate);

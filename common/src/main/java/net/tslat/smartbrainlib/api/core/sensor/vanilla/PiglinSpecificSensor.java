@@ -35,9 +35,9 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 /// A replication of vanilla's [net.minecraft.world.entity.ai.sensing.PiglinSpecificSensor]<br/>
-/// Not really useful, but included for completeness' sake and legibility.
+/// Not really useful, but included for completeness' sake and legibility
 ///
-/// Handles most of the [Piglin]'s memories at once.
+/// Handles most of the [Piglin]'s memories at once
 ///
 /// @param <BO> The brain owner entity
 public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSensor<BO> {

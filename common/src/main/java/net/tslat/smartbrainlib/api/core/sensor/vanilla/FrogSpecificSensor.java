@@ -20,10 +20,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// A replication of vanilla's [net.minecraft.world.entity.ai.sensing.FrogAttackablesSensor].<br/>
-/// Not really useful, but included for completeness' sake and legibility.
+/// A replication of vanilla's [net.minecraft.world.entity.ai.sensing.FrogAttackablesSensor]<br/>
+/// Not really useful, but included for completeness' sake and legibility
 ///
-/// Handles the Frog's tongue target.
+/// Handles the Frog's tongue target
 ///
 /// @param <BO> The brain owner entity
 public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
@@ -45,7 +45,7 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage.
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public FrogSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (FrogSpecificSensor<BO>)super.setPredicate(predicate);

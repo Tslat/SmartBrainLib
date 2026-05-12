@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// A sensor that sets the memory state for the last damage source and attacker.
+/// A sensor that sets the memory state for the last damage source and attacker
 ///
 /// @param <BO> The brain owner entity
 public class HurtBySensor<BO extends LivingEntity> extends PredicateSensor<BO, DamageSource> {
@@ -60,7 +60,7 @@ public class HurtBySensor<BO extends LivingEntity> extends PredicateSensor<BO, D
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.HURT_BY.get();

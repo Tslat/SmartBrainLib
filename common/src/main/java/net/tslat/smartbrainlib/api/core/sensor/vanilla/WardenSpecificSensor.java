@@ -87,7 +87,7 @@ public class WardenSpecificSensor<BO extends Warden> extends NearbyLivingEntityS
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.WARDEN_SPECIFIC.get();

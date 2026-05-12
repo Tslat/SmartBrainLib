@@ -31,7 +31,7 @@ public class UnreachableTargetSensor<BO extends LivingEntity> extends ExtendedSe
 	protected long lastUnpathableTime = 0;
 
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.UNREACHABLE_TARGET.get();

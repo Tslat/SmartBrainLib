@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// A sensor that looks for a nearby [POI][net.minecraft.world.entity.ai.village.poi.PoiTypes] block that matches a villager's secondary profession.
+/// A sensor that looks for a nearby [POI][net.minecraft.world.entity.ai.village.poi.PoiTypes] block that matches a villager's secondary profession
 ///
 /// Functionally a replica of [net.minecraft.world.entity.ai.sensing.SecondaryPoiSensor]
 ///
@@ -38,7 +38,7 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 		scanRate(_ -> 40);
 	}
 
-	/// Set the radius for the sensor to scan.
+	/// Set the radius for the sensor to scan
 	///
 	/// @param radius The coordinate radius, in blocks
 	public SecondaryPoiSensor<BO> setRadius(int radius) {

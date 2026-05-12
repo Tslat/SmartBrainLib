@@ -32,7 +32,7 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 		setPredicate((_, target) -> target instanceof IronGolem && target.isAlive());
 	}
 
-	/// Set the number of ticks the entity should remember that the golem is there.
+	/// Set the number of ticks the entity should remember that the golem is there
 	public NearbyGolemSensor<BO> setMemoryTime(int ticks) {
 		this.timeToRemember = ticks;
 
@@ -74,7 +74,7 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_GOLEM.get();

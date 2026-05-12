@@ -91,7 +91,7 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_BLOCKS.get();
