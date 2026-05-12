@@ -1,189 +1,137 @@
 package net.tslat.smartbrainlib.api.core.schedule;
 
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.MultimapBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.level.Level;
+import net.tslat.smartbrainlib.api.SmartBrainBuilder;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.api.core.SmartBrain;
+import net.tslat.smartbrainlib.api.internal.SmartBrain;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToIntFunction;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Function;
 
-/**
- * SBL-implementation of an activity schedule for {@link SmartBrain}s.
- * <p>
- * This segment of the Brain system is used to timeline activities, allowing you to run activity groups and tasks on a tick-based schedule.
- * <p>
- * Activities scheduled using this system will <b>override</b> the activity priorities from {@link SmartBrainOwner#getActivityPriorities()} at tick time
- */
-public class SmartBrainSchedule {
-	private final Type type;
-	private final Int2ObjectArrayMap<Activity> timeline = new Int2ObjectArrayMap<>(0);
-	private final ListMultimap<Integer, Consumer<LivingEntity>> callbacks = MultimapBuilder.hashKeys(0).arrayListValues().build();
+/// SmartBrainLib implementation of a context [Activity] schedule for [SmartBrainOwner]s
+///
+/// This is an approximate equivalent of [Brain#schedule], but omitting the data-driven aspects of it as SBL is intentionally not data-driven,
+/// and expanding it to support numerous other contexts.
+///
+/// Override [SmartBrainBuilder#getSchedule()] in your brain builder to give an entity's [SmartBrain] a schedule
+public class SmartBrainSchedule<BO extends LivingEntity & SmartBrainOwner<BO>, N extends Number & Comparable<N>> {
+	protected final Type<BO, N> type;
+	protected final Object2ReferenceArrayMap<N, Activity> timeline = new Object2ReferenceArrayMap<>();
 
-	private boolean sortedTimeline = true;
-
-	public SmartBrainSchedule() {
-		this(Type.DAYTIME);
-	}
-
-	public SmartBrainSchedule(Type type) {
+	protected SmartBrainSchedule(Type<BO, N> type) {
 		this.type = type;
 	}
 
-	/**
-	 * Set the active {@link Activity} for the brain at the given tick/time
-	 * @param tick The tick/time to activate the activity
-	 * @param activity The activity to set as active at the given time
-	 * @return this
-	 */
-	public SmartBrainSchedule activityAt(int tick, Activity activity) {
-		this.timeline.put(tick, activity);
+	/// Create a new [SmartBrainSchedule] instance that runs on a 'daytime' cycle
+	public static <BO extends LivingEntity & SmartBrainOwner<BO>> SmartBrainSchedule<BO, Long> byDaytime() {
+		return createCustom(Type.<BO, Long>ascending(entity -> {
+			final Level level = entity.level();
+			final MinecraftServer server = entity.level().getServer();
 
-		this.sortedTimeline = false;
+			//noinspection DataFlowIssue
+			return level.dimensionType().defaultClock().map(server.clockManager()::getTotalTicks).orElse(0L) % 24000L;
+		}));
+	}
+
+	/// Create a new [SmartBrainSchedule] instance that runs based on the entity's age
+	///
+	/// **<u>NOTE:</u>** By default, entities do not save their age, so a custom provider is required
+	///
+	/// @param ageProvider The age provider for this schedule
+	public static <BO extends LivingEntity & SmartBrainOwner<BO>> SmartBrainSchedule<BO, Long> byEntityAge(Function<BO, Long> ageProvider) {
+		return createCustom(Type.ascending(ageProvider));
+	}
+
+	/// Create a new [SmartBrainSchedule] instance that runs based on the percentage of health the entity has remaining
+	///
+	/// This can be used for things like health-threshold phases
+	public static <BO extends LivingEntity & SmartBrainOwner<BO>> SmartBrainSchedule<BO, Float> byHealthThreshold() {
+		return createCustom(Type.<BO, Float>descending(entity -> entity.getHealth() / entity.getMaxHealth()));
+	}
+
+	/// Create a new [SmartBrainSchedule] instance using a custom [Type] for value management
+	public static <BO extends LivingEntity & SmartBrainOwner<BO>, N extends Number & Comparable<N>> SmartBrainSchedule<BO, N> createCustom(Type<BO, N> type) {
+		return new SmartBrainSchedule<>(type);
+	}
+
+	/// Set the active [Activity] for the brain at the given marker value
+	///
+	/// @param value The marker value that the activity should be valid from
+	/// @param activity The activity to set as active past the given value
+	@SuppressWarnings("UnusedReturnValue")
+    public SmartBrainSchedule<BO, N> activityAt(N value, Activity activity) {
+		this.timeline.put(value, activity);
+		sortSchedule();
 
 		return this;
 	}
 
-	/**
-	 * Add a callback to run at the given tick
-	 * @param tick The tick/time to run the callback at
-	 * @param callback The callback to run at the given time
-	 * @return this
-	 */
-	public SmartBrainSchedule doAt(int tick, Consumer<LivingEntity> callback) {
-		this.callbacks.put(tick, callback);
+	/// Sort the schedule to its natural order
+	protected void sortSchedule() {
+		@SuppressWarnings("unchecked")
+		final N[] keys = (N[])this.timeline.keySet().toArray(new Number[0]);
+		final Object2ReferenceArrayMap<N, Activity> copy = new Object2ReferenceArrayMap<>(this.timeline);
 
-		return this;
-	}
-
-	/**
-	 * Adds a dynamically-scheduled task for a given tick-time in the future
-	 * @param brainOwner The owner of the brain
-	 * @param delay The delay time (in ticks) before the task should be called
-	 * @param task The task to run after the given delay
-	 */
-	public void scheduleTask(LivingEntity brainOwner, int delay, Consumer<LivingEntity> task) {
-		this.callbacks.put(this.type.resolveDelay(brainOwner, delay), entity -> task.accept(brainOwner));
-	}
-
-	/**
-	 * Remove all entries from the schedule, clearing it out
-	 */
-	public void clearSchedule() {
-		this.callbacks.clear();
 		this.timeline.clear();
-	}
-
-	/**
-	 * Tick the schedule and return the activity to switch the entity to, if applicable
-	 * @param brainOwner The owner of the brain that contains this schedule
-	 * @return The activity to set as active based on the current tick, or null if none to set
-	 */
-	@Nullable
-	public Activity tick(LivingEntity brainOwner) {
-		int tick = this.type.resolve(brainOwner);
-
-		if (!this.callbacks.isEmpty()) {
-			this.callbacks.get(tick).forEach(consumer -> consumer.accept(brainOwner));
-
-			if (this.type == Type.AGE)
-				this.callbacks.removeAll(tick);
-		}
-
-		if (!this.timeline.isEmpty()) {
-			if (!this.sortedTimeline)
-				sortTimeline();
-
-			int index = -1;
-			Activity activity = null;
-
-			for (Int2ObjectMap.Entry<Activity> entry : this.timeline.int2ObjectEntrySet()) {
-				index++;
-
-				if (entry.getIntKey() >= tick) {
-					if (entry.getIntKey() == tick)
-						activity = entry.getValue();
-
-					break;
-				}
-
-				activity = entry.getValue();
-			}
-
-			if (this.type == Type.AGE && index + 1 >= this.timeline.size())
-				this.timeline.clear();
-
-			return activity;
-		}
-
-		return null;
-	}
-
-	private void sortTimeline() {
-		Int2ObjectArrayMap<Activity> copy = new Int2ObjectArrayMap<>(this.timeline);
-		int[] keys = copy.keySet().toArray(new int[0]);
-
 		Arrays.sort(keys);
-		this.timeline.clear();
 
-		for (int key : keys) {
+		for (N key : keys) {
 			this.timeline.put(key, copy.get(key));
 		}
-
-		this.sortedTimeline = true;
 	}
 
-	public final Activity getActivityAt(int tick) {
-		if (this.type == Type.AGE)
-			return Activity.IDLE;
-
-		Activity activity = Activity.IDLE;
-
-		for (Int2ObjectMap.Entry<Activity> entry : this.timeline.int2ObjectEntrySet()) {
-			if (entry.getIntKey() >= tick)
-				return activity;
-
-			activity = entry.getValue();
-		}
-
-		return activity;
+	public @Nullable Activity tick(BO entity) {
+		return getActivityAt(this.type.valueProvider.apply(entity));
 	}
 
-	/**
-	 * The type of scheduling this scheduler is using (I.E. how it determines the input tick)
-	 */
-	public enum Type {
-		/**
-		 * Time of day (0-24000 ticks)
-		 */
-		DAYTIME(e -> (int)(e.level().getDayTime() % 24000L), (e, t) -> (int)((e.level().getDayTime() + t) % 24000L)),
-		/**
-		 * Age of the brain owner (0+).<br>
-		 * This makes the schedule a 'run-once' per entity
-		 */
-		AGE(e -> e.tickCount, (e, t) -> e.tickCount + t);
+	/// Get the current [Activity] for the value provided
+	public @Nullable Activity getActivityAt(N value) {
+		Activity last = null;
 
-		final ToIntFunction<LivingEntity> tickResolver;
-		final ToIntBiFunction<LivingEntity, Integer> delayResolver;
+		for (Map.Entry<N, Activity> entry : this.timeline.entrySet()) {
+			if (this.type.comparator.compare(entry.getKey(), value) > 0)
+				return last;
 
-		Type(ToIntFunction<LivingEntity> tickResolver, ToIntBiFunction<LivingEntity, Integer> delayResolver) {
-			this.tickResolver = tickResolver;
-			this.delayResolver = delayResolver;
+			last = entry.getValue();
 		}
 
-		public int resolve(LivingEntity entity) {
-			return this.tickResolver.applyAsInt(entity);
+		return last;
+	}
+
+	/// Value type class for [SmartBrainSchedule]s
+	///
+	/// This class determines the type of timeline this schedule follows, as well as how to assess it.<br/>
+	/// This allows for schedules to operate on more than just basic daytime operations
+	public static class Type<T extends LivingEntity, N extends Number & Comparable<N>> {
+		protected final Function<T, N> valueProvider;
+		protected final Comparator<N> comparator;
+
+		protected Type(Function<T, N> valueProvider, Comparator<N> comparator) {
+			this.valueProvider = valueProvider;
+			this.comparator = comparator;
 		}
 
-		public int resolveDelay(LivingEntity entity, int delay) {
-			return this.delayResolver.applyAsInt(entity, delay);
+		/// Create a new [SmartBrainSchedule.Type] that considers larger values to come after smaller numbers (such as an increasing tick count)
+		public static <T extends LivingEntity, N extends Number & Comparable<N>> Type<T, N> ascending(Function<T, N> valueProvider) {
+			return custom(valueProvider, Comparator.naturalOrder());
+		}
+
+		/// Create a new [SmartBrainSchedule.Type] that considers smaller values to come after larger numbers (such as a health threshold)
+		public static <T extends LivingEntity, N extends Number & Comparable<N>> Type<T, N> descending(Function<T, N> valueProvider) {
+			return custom(valueProvider, Comparator.reverseOrder());
+		}
+
+		/// Create a new [SmartBrainSchedule.Type] with custom progression handling
+		public static <T extends LivingEntity, N extends Number & Comparable<N>> Type<T, N> custom(Function<T, N> valueProvider, Comparator<N> comparator) {
+			return new Type<>(valueProvider, comparator);
 		}
 	}
 }

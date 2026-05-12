@@ -9,10 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.ToIntFunction;
 
-/**
- * Extension of {@link SetRandomHoverTarget}, with a configurable weight to allow for more 'flying'-like movement
- * <p>Additionally expands the vertical path search radius to 10, over the default of 7</p>
- */
+/// Extension of [SetRandomHoverTarget], with a configurable weight to allow for more 'flying'-like movement
+///
+/// Additionally expands the vertical path search radius to 10, over the default of 7
 public class SetRandomFlyingTarget<E extends PathfinderMob> extends SetRandomHoverTarget<E> {
     protected ToIntFunction<E> verticalWeight = entity -> -2;
 
@@ -20,12 +19,10 @@ public class SetRandomFlyingTarget<E extends PathfinderMob> extends SetRandomHov
         setRadius(10, 10);
     }
 
-    /**
-     * Sets the function that determines a vertical position offset for target positions.<br>
-     * Flight patterns will tend towards this direction, with bigger values pulling more strongly
-     * @param function The function
-     * @return this
-     */
+    /// Sets the function that determines a vertical position offset for target positions.
+    /// Flight patterns will tend towards this direction, with bigger values pulling more strongly
+    /// @param function The function
+    /// @return this
     public SetRandomFlyingTarget<E> verticalWeight(ToIntFunction<E> function) {
         this.verticalWeight = function;
 

@@ -8,10 +8,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.List;
 
-/**
- * Do nothing at all.
- * @param <E> The entity
- */
+/// Do nothing at all.
+/// @param <E> The entity
 public class Idle<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

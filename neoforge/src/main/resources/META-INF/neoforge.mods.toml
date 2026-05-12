@@ -1,21 +1,25 @@
 modLoader="javafml"
 loaderVersion="${neoforge_loader_version_range}"
+issueTrackerURL="${mod_issues_tracker}"
 license="${mod_license}"
-issueTrackerURL="${issues_url}"
 
 [[mods]]
     modId="${mod_id}"
     version="${version}"
     displayName="${mod_display_name}"
+    displayURL="${mod_homepage}"
     logoFile="logo.png"
+    credits="${mod_authors}"
     authors="${mod_authors}"
-    displayTest="IGNORE_SERVER_VERSION"
     description='''
 ${mod_description}
 '''
 
+[[mixins]]
+    config = "${mod_id}.mixins.json"
+
 [[accessTransformers]]
-file = "META-INF/accesstransformer.cfg"
+    file = "META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]]
     modId="neoforge"
@@ -23,6 +27,7 @@ file = "META-INF/accesstransformer.cfg"
     versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
+
 [[dependencies.${mod_id}]]
     modId="minecraft"
     type="required"

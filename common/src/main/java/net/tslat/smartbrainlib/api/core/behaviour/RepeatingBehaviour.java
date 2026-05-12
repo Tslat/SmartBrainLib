@@ -10,12 +10,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/**
- * Wrapper behaviour for a behaviour that should repeat from the start once finished, unless otherwise stated
- * <br>
- * While running and repeating, this behaviour is considered as still running.<br>
- * It will stop when it either runs out of repeats or the stop condition is met.
- */
+/// Wrapper behaviour for a behaviour that should repeat from the start once finished, unless otherwise stated
+///
+/// While running and repeating, this behaviour is considered as still running.
+/// It will stop when it either runs out of repeats or the stop condition is met.
 public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
     protected final ExtendedBehaviour<E> child;
 
@@ -41,38 +39,32 @@ public class RepeatingBehaviour<E extends LivingEntity> extends ExtendedBehaviou
         return this.child == null ? List.of() : this.child.getMemoryRequirements();
     }
 
-    /**
-     * Set the predicate that determines whether the wrapped behaviour should repeat or not at any given time
-     *
-     * @param predicate The predicate
-     * @return this
-     */
+    /// Set the predicate that determines whether the wrapped behaviour should repeat or not at any given time
+    ///
+    /// @param predicate The predicate
+    /// @return this
     public RepeatingBehaviour<E> repeatingWhen(Predicate<E> predicate) {
         this.shouldRepeat = predicate;
 
         return this;
     }
 
-    /**
-     * Limit the amount of repeats this behaviour should have when running.
-     * <br>
-     * 1 repeat results in the wrapped behaviour running twice
-     *
-     * @param repeats The number of times to repeat the behaviour
-     * @return this
-     */
+    /// Limit the amount of repeats this behaviour should have when running.
+    ///
+    /// 1 repeat results in the wrapped behaviour running twice
+    ///
+    /// @param repeats The number of times to repeat the behaviour
+    /// @return this
     public RepeatingBehaviour<E> repeatNTimes(int repeats) {
         return repeatNTimes(entity -> repeats);
     }
 
-    /**
-     * Limit the amount of repeats this behaviour should have when running.
-     * <br>
-     * 1 repeat results in the wrapped behaviour running twice
-     *
-     * @param function The number of times to repeat the behaviour
-     * @return this
-     */
+    /// Limit the amount of repeats this behaviour should have when running.
+    ///
+    /// 1 repeat results in the wrapped behaviour running twice
+    ///
+    /// @param function The number of times to repeat the behaviour
+    /// @return this
     public RepeatingBehaviour<E> repeatNTimes(ToIntFunction<E> function) {
         this.repeatCountProvider = function;
 

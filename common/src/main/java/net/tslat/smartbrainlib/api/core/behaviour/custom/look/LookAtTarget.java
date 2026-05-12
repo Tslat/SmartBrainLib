@@ -8,20 +8,18 @@ import net.minecraft.world.entity.ai.behavior.PositionTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
-/**
- * Look at the look target for as long as it is present
- * <p>
- * Additionally, invalidates the look target if it is an {@link EntityTracker} and the entity has expired
- *
- * @param <E> The entity
- */
+/// Look at the look target for as long as it is present
+///
+/// Additionally, invalidates the look target if it is an [EntityTracker] and the entity has expired
+///
+/// @param <E> The entity
 public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.LOOK_TARGET);
 
 	public LookAtTarget() {
 		noTimeout();
@@ -47,11 +45,9 @@ public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
 		BrainUtil.withMemory(entity, MemoryModuleType.LOOK_TARGET, target -> entity.getLookControl().setLookAt(target.currentPosition()));
 	}
 
-	/**
-	 * Check and expire the look target if it is no longer valid
-	 *
-	 * @return true if the look target is valid
-	 */
+	/// Check and expire the look target if it is no longer valid
+	///
+	/// @return true if the look target is valid
 	protected boolean testAndInvalidateLookTarget(E entity) {
 		PositionTracker lookTarget = BrainUtil.getMemory(entity, MemoryModuleType.LOOK_TARGET);
 

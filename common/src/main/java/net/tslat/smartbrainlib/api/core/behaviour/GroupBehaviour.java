@@ -5,21 +5,18 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.object.SBLShufflingList;
+import net.tslat.smartbrainlib.library.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-/**
- * Functional replacement to {@link net.minecraft.world.entity.ai.behavior.GateBehavior} due to the very poor way it is implemented.
- * <p>
- * In particular, this allows nesting of group behaviours without breaking behaviour flow entirely.<br>
- * It also allows for utilising the various callbacks and conditions that {@link ExtendedBehaviour} offers.
- * <p>
- * NOTE: Only supports ExtendedBehaviour implementations as sub-behaviours. This is due to access-modifiers on the vanilla behaviours making this prohibitively annoying to work with.
- */
+/// Functional replacement to [net.minecraft.world.entity.ai.behavior.GateBehavior] due to the very poor way it is implemented.
+///
+/// In particular, this allows nesting of group behaviours without breaking behaviour flow entirely.
+/// It also allows for utilising the various callbacks and conditions that [ExtendedBehaviour] offers.
+///
+/// NOTE: Only supports ExtendedBehaviour implementations as sub-behaviours. This is due to access-modifiers on the vanilla behaviours making this prohibitively annoying to work with.
 public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected final SBLShufflingList<ExtendedBehaviour<? super E>> behaviours;
 
@@ -55,8 +52,8 @@ public abstract class GroupBehaviour<E extends LivingEntity> extends ExtendedBeh
 		return List.of();
 	}
 
-	public Iterator<ExtendedBehaviour<? super E>> getBehaviours() {
-		return this.behaviours.iterator();
+	public Iterable<ExtendedBehaviour<? super E>> getBehaviours() {
+		return this.behaviours;
 	}
 
 	@Nullable

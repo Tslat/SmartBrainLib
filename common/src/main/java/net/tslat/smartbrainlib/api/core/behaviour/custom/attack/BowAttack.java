@@ -9,10 +9,8 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Items;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
-/**
- * Extended behaviour for charging and firing a
- * {@link BowItem bow}.
- */
+/// Extended behaviour for charging and firing a
+/// [bow][BowItem].
 public class BowAttack<E extends LivingEntity & RangedAttackMob> extends AnimatableRangedAttack<E> {
 	public BowAttack(int delayTicks) {
 		super(delayTicks);

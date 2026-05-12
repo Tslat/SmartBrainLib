@@ -5,12 +5,10 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Consumer;
 
-/**
- * An abstract behaviour used for tasks that should have a start, and then a followup delayed action. <br>
- * This is most useful for things like attacks that have associated animations, or action which require a charge up or prep time. <br>
- *
- * @param <E> The entity
- */
+/// An abstract behaviour used for tasks that should have a start, and then a followup delayed action.
+/// This is most useful for things like attacks that have associated animations, or action which require a charge up or prep time.
+///
+/// @param <E> The entity
 public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected final int delayTime;
 	protected long delayFinishedAt = 0;
@@ -22,11 +20,9 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 		runFor(entity -> Math.max(delayTicks, 60));
 	}
 
-	/**
-	 * A callback for when the delayed action is called.
-	 * @param callback The callback
-	 * @return this
-	 */
+	/// A callback for when the delayed action is called.
+	/// @param callback The callback
+	/// @return this
 	public final DelayedBehaviour<E> whenActivating(Consumer<E> callback) {
 		this.delayedCallback = callback;
 
@@ -68,10 +64,8 @@ public abstract class DelayedBehaviour<E extends LivingEntity> extends ExtendedB
 		}
 	}
 
-	/**
-	 * The action to take once the delay period has elapsed.
-	 *
-	 * @param entity The owner of the brain
-	 */
+	/// The action to take once the delay period has elapsed.
+	///
+	/// @param entity The owner of the brain
 	protected void doDelayedAction(E entity) {}
 }

@@ -10,23 +10,21 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-/**
- * Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
- * Defaults:
- * <ul>
- *     <li>40-tick firing interval, decreased to 20 ticks when on {@link Difficulty Hard Difficulty}</li>
- *     <li>16-block firing radius</li>
- * </ul>
- */
+/// Extended behaviour for ranged attacking. Natively supports animation hit delays or other delays.
+/// Defaults:
+///
+///   - 40-tick firing interval, decreased to 20 ticks when on [Hard Difficulty][Difficulty]
+///   - 16-block firing radius
+///
 public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> extends DelayedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected ToIntFunction<E> attackIntervalSupplier = entity -> entity.level().getDifficulty() == Difficulty.HARD ? 20 : 40;
 	protected float attackRadius;
@@ -40,22 +38,18 @@ public class AnimatableRangedAttack<E extends LivingEntity & RangedAttackMob> ex
 		attackRadius(16);
 	}
 
-	/**
-	 * Set the time between attacks.
-	 * @param supplier The tick value provider
-	 * @return this
-	 */
+	/// Set the time between attacks.
+	/// @param supplier The tick value provider
+	/// @return this
 	public AnimatableRangedAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
 	}
 
-	/**
-	 * Set the radius in blocks that the entity should be able to fire on targets.
-	 * @param radius The radius, in blocks
-	 * @return this
-	 */
+	/// Set the radius in blocks that the entity should be able to fire on targets.
+	/// @param radius The radius, in blocks
+	/// @return this
 	public AnimatableRangedAttack<E> attackRadius(float radius) {
 		this.attackRadius = radius * radius;
 

@@ -4,19 +4,17 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
-import net.tslat.smartbrainlib.object.SBLShufflingList;
+import net.tslat.smartbrainlib.library.object.SBLShufflingList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Group behaviour that attempts to run all sub-behaviours in order, running any that apply.<br>
- * This allows for wrapping entire groups of behaviours in overarching conditions or nesting them in other groups.<br>
- * This will count this behaviour as running if any of the child behaviours are running.
- * @param <E> The entity
- */
+/// Group behaviour that attempts to run all sub-behaviours in order, running any that apply.
+/// This allows for wrapping entire groups of behaviours in overarching conditions or nesting them in other groups.
+/// This will count this behaviour as running if any of the child behaviours are running.
+/// @param <E> The entity
 public final class AllApplicableBehaviours<E extends LivingEntity> extends GroupBehaviour<E> {
 	@SafeVarargs
 	public AllApplicableBehaviours(Pair<ExtendedBehaviour<? super E>, Integer>... behaviours) {

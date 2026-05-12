@@ -1,6 +1,13 @@
 {
     "pack": {
-        "description": "SmartBrainLib Resources",
-        "pack_format": 15
+        "description": "${mod_display_name} Resources",
+        "max_format": [
+            100,
+            1
+        ],
+        "min_format": [
+            100,
+            1
+        ]
     }
 }

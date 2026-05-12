@@ -1,6 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        mavenCentral()
 
         // Fabric
         exclusiveContent {
@@ -11,9 +12,8 @@ pluginManagement {
                 }
             }
             filter {
-                includeGroup("net.fabricmc")
+                includeGroupAndSubgroups("net.fabricmc")
                 includeGroup("fabric-loom")
-                includeGroup("net.fabricmc.unpick")
             }
         }
 
@@ -31,6 +31,19 @@ pluginManagement {
             }
         }
 
+        // Forge
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Forge"
+                    url = uri("https://maven.minecraftforge.net/")
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("net.minecraftforge")
+            }
+        }
+
         // Mixin
         exclusiveContent {
             forRepository {
@@ -43,19 +56,6 @@ pluginManagement {
                 includeGroupAndSubgroups("org.spongepowered")
             }
         }
-
-        // Parchment
-        exclusiveContent {
-            forRepository {
-                maven {
-                    name = "Parchment"
-                    url = uri("https://maven.parchmentmc.org")
-                }
-            }
-            filter {
-                includeGroupAndSubgroups("org.parchmentmc")
-            }
-        }
     }
 }
 
@@ -63,7 +63,10 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = "SmartBrainLib"
+// Keep this lowercase, without spaces or symbols
+rootProject.name = "smartbrainlib"
+
 include("common")
 include("fabric")
+include("forge")
 include("neoforge")

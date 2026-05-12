@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.TriPredicate;
+import net.tslat.smartbrainlib.library.interfaces.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -19,18 +19,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Special-case behaviour for setting secondary, tertiary, etc attack targets.<br>
- * This is useful for entities that concurrently target multiple entities, and use additional memory modules to store the additional targets.<br>
- * Uses {@link MemoryModuleType#NEAREST_PLAYERS} and {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} for its retrieval of additional targets.<br>
- * This behaviour will skip the usual pathing and alerting functionality as it is assumed they will be handled under the primary target.<br>
- * <br>
- * Defaults:<br>
- * <ul>
- *     <li>Will target any not-invulnerable player</li>
- *     <li>Avoids setting memories if a previous memory in the list is already set to the same target, and including {@link MemoryModuleType#ATTACK_TARGET}</li>
- * </ul>
- */
+/// Special-case behaviour for setting secondary, tertiary, etc attack targets.
+/// This is useful for entities that concurrently target multiple entities, and use additional memory modules to store the additional targets.
+/// Uses [MemoryModuleType#NEAREST_PLAYERS] and [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] for its retrieval of additional targets.
+/// This behaviour will skip the usual pathing and alerting functionality as it is assumed they will be handled under the primary target.
+///
+/// Defaults:
+///
+///   - Will target any not-invulnerable player
+///   - Avoids setting memories if a previous memory in the list is already set to the same target, and including [MemoryModuleType#ATTACK_TARGET]
+///
 public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour<E> {
 	private final List<MemoryModuleType<? extends LivingEntity>> targetingMemories = new ObjectArrayList<>();
 
@@ -38,39 +36,31 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	protected TriConsumer<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> targetCallback = (owner, memory, target) -> {};
 	protected boolean avoidDuplicateTargets = true;
 
-	/**
-	 * Set the predicate to determine whether a given entity should be targeted or not.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given entity should be targeted or not.
+	/// @param predicate The predicate
+	/// @return this
 	public SetAdditionalAttackTargets<E> attackablePredicate(TriPredicate<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> predicate) {
 		this.canAttackPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Sets the callback for when a target is being successfully set to a memory.
-	 */
+	/// Sets the callback for when a target is being successfully set to a memory.
 	public SetAdditionalAttackTargets<E> whenTargeting(TriConsumer<E, MemoryModuleType<? extends LivingEntity>, LivingEntity> callback) {
 		this.targetCallback = callback;
 
 		return this;
 	}
 
-	/**
-	 * Add {@link MemoryModuleType memories} to the list of tertiary memories to set targets for.<br>
-	 * This appends to any existing memories already added to this behaviour, and the functionality of this behaviour is order-dependent.
-	 */
+	/// Add [memories][MemoryModuleType] to the list of tertiary memories to set targets for.
+	/// This appends to any existing memories already added to this behaviour, and the functionality of this behaviour is order-dependent.
 	public SetAdditionalAttackTargets<E> withMemories(MemoryModuleType<? extends LivingEntity>... targetMemories) {
 		this.targetingMemories.addAll(List.of(targetMemories));
 
 		return this;
 	}
 
-	/**
-	 * Allow for the tertiary target memories to be set to the same as the previous modules if no new target is available
-	 */
+	/// Allow for the tertiary target memories to be set to the same as the previous modules if no new target is available
 	public SetAdditionalAttackTargets<E> allowDuplicateTargeting() {
 		this.avoidDuplicateTargets = false;
 

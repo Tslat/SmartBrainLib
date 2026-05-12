@@ -14,7 +14,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 import org.jetbrains.annotations.Nullable;
@@ -23,24 +23,22 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/**
- * Sets the attack target of the entity, utilising a few sources of targets. <br>
- * In order:
- * <ol>
- *     <li>The {@link MemoryModuleType#NEAREST_ATTACKABLE} memory value</li>
- *     <li>The {@link MemoryModuleType#HURT_BY_ENTITY} memory value</li>
- *     <li>The closest applicable entity from the {@link MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES} memory value</li>
- * </ol>
- * Defaults:
- * <ul>
- *     <li>Targets any live entity, as long as it's not a creative-mode player</li>
- *     <li>Does not alert nearby allies when retaliating</li>
- *     <li>If enabled, only alerts allies of the same class, if they don't already have a target themselves</li>
- * </ul>
- * @param <E> The entity
- */
+/// Sets the attack target of the entity, utilising a few sources of targets.
+/// In order:
+/// <ol>
+///   - The [MemoryModuleType#NEAREST_ATTACKABLE] memory value
+///   - The [MemoryModuleType#HURT_BY_ENTITY] memory value
+///   - The closest applicable entity from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory value
+/// </ol>
+/// Defaults:
+///
+///   - Targets any live entity, as long as it's not a creative-mode player
+///   - Does not alert nearby allies when retaliating
+///   - If enabled, only alerts allies of the same class, if they don't already have a target themselves
+///
+/// @param <E> The entity
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || (!player.getAbilities().invulnerable && entity.level().getDifficulty() != Difficulty.PEACEFUL));
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
@@ -60,54 +58,44 @@ public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
 	protected LivingEntity toTarget = null;
 	protected MemoryModuleType<? extends LivingEntity> priorityTargetMemory = MemoryModuleType.NEAREST_ATTACKABLE;
 
-	/**
-	 * Set the predicate to determine whether a given entity should be targeted or not.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given entity should be targeted or not.
+	/// @param predicate The predicate
+	/// @return this
 	public TargetOrRetaliate<E> attackablePredicate(Predicate<LivingEntity> predicate) {
 		this.canAttackPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the memory type that is checked first to target an entity.
-	 * Useful for switching to player-only targeting
-	 * @return this
-	 */
+	/// Set the memory type that is checked first to target an entity.
+	/// Useful for switching to player-only targeting
+	/// @return this
 	public TargetOrRetaliate<E> useMemory(MemoryModuleType<? extends LivingEntity> memory) {
 		this.priorityTargetMemory = memory;
 
 		return this;
 	}
 
-	/**
-	 * Set the predicate to determine whether the brain owner should alert nearby allies of the same entity type when retaliating
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether the brain owner should alert nearby allies of the same entity type when retaliating
+	/// @param predicate The predicate
+	/// @return this
 	public TargetOrRetaliate<E> alertAlliesWhen(BiPredicate<E, Entity> predicate) {
 		this.alertAlliesPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the predicate to determine whether a given entity should be alerted to the target as an ally of the brain owner.<br>
-	 * Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given entity should be alerted to the target as an ally of the brain owner.
+	/// Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
+	/// @param predicate The predicate
+	/// @return this
 	public TargetOrRetaliate<E> isAllyIf(BiPredicate<E, LivingEntity> predicate) {
 		this.allyPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Disable the ability to occasionally swap targets if a higher priority target source has one
-	 */
+	/// Disable the ability to occasionally swap targets if a higher priority target source has one
 	public TargetOrRetaliate<E> noTargetSwapping() {
 		this.canSwapTarget = false;
 

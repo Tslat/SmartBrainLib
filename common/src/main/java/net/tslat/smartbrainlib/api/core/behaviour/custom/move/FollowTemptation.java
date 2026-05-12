@@ -10,28 +10,26 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
+import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 
-/**
- * {@link ExtendedBehaviour ExtendedBehaviour} equivalent of vanilla's {@link net.minecraft.world.entity.ai.behavior.FollowTemptation FollowTemptation}.<br>
- * Has the entity follow a relevant temptation target (I.E. a player holding a tempting item).<br>
- * Will continue running for as long as the entity is being tempted.<br>
- * Defaults:
- * <ul>
- *     <li>Follows the temptation target indefinitely</li>
- *     <li>Will stop following if panicked or if it has an active breed target</li>
- *     <li>Will not follow a temptation target again for 5 seconds after stopping</li>
- *     <li>Considers 2.5 blocks 'close enough' for the purposes of following temptation</li>
- *     <li>1x speed modifier while following</li>
- * </ul>
- */
+/// [ExtendedBehaviour][ExtendedBehaviour] equivalent of vanilla's [FollowTemptation][net.minecraft.world.entity.ai.behavior.FollowTemptation].
+/// Has the entity follow a relevant temptation target (I.E. a player holding a tempting item).
+/// Will continue running for as long as the entity is being tempted.
+/// Defaults:
+///
+///   - Follows the temptation target indefinitely
+///   - Will stop following if panicked or if it has an active breed target
+///   - Will not follow a temptation target again for 5 seconds after stopping
+///   - Considers 2.5 blocks 'close enough' for the purposes of following temptation
+///   - 1x speed modifier while following
+///
 public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
 
 	protected ToFloatBiFunction<E, Player> speedMod = (entity, temptingPlayer) -> 1f;
 	protected BiPredicate<E, Player> shouldFollow = (entity, temptingPlayer) -> !entity.hasPassenger(temptingPlayer);
@@ -44,45 +42,37 @@ public class FollowTemptation<E extends PathfinderMob> extends ExtendedBehaviour
 		noTimeout();
 	}
 
-	/**
-	 * Set the movespeed modifier for the entity when following the tempting player.
-	 * @param speedModifier The movespeed modifier/multiplier
-	 * @return this
-	 */
+	/// Set the movespeed modifier for the entity when following the tempting player.
+	/// @param speedModifier The movespeed modifier/multiplier
+	/// @return this
 	public FollowTemptation<E> speedMod(final ToFloatBiFunction<E, Player> speedModifier) {
 		this.speedMod = speedModifier;
 
 		return this;
 	}
 
-	/**
-	 * Determine whether the entity should follow the tempting player or not
-	 * @param predicate The temptation predicate
-	 * @return this
-	 */
+	/// Determine whether the entity should follow the tempting player or not
+	/// @param predicate The temptation predicate
+	/// @return this
 	public FollowTemptation<E> followIf(final BiPredicate<E, Player> predicate) {
 		this.shouldFollow = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Sets the amount (in blocks) that the mob can be considered 'close enough' to their temptation that they can stop pathfinding
-	 * @param closeEnoughMod The distance modifier
-	 * @return this
-	 */
+	/// Sets the amount (in blocks) that the mob can be considered 'close enough' to their temptation that they can stop pathfinding
+	/// @param closeEnoughMod The distance modifier
+	/// @return this
 	public FollowTemptation<E> closeEnoughDist(final ToFloatBiFunction<E, Player> closeEnoughMod) {
 		this.closeEnoughWhen = closeEnoughMod;
 
 		return this;
 	}
 
-	/**
-	 * Sets the length of time (in ticks) the entity should ignore temptation after having previously been tempted.<br>
-	 * NOTE: This could be ignored if the {@link FollowTemptation#followIf} predicate has been overriden
-	 * @param cooldownFunction The cooldown function
-	 * @return this
-	 */
+	/// Sets the length of time (in ticks) the entity should ignore temptation after having previously been tempted.
+	/// NOTE: This could be ignored if the [FollowTemptation#followIf] predicate has been overriden
+	/// @param cooldownFunction The cooldown function
+	/// @return this
 	public FollowTemptation<E> temptationCooldown(final Object2IntFunction<E> cooldownFunction) {
 		this.temptationCooldown = cooldownFunction;
 

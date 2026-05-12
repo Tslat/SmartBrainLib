@@ -9,22 +9,20 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 
-/**
- * Invalidates the current {@link MemoryModuleType#ATTACK_TARGET attack target} if the given conditions are met.<br>
- * Defaults:
- * <ul>
- *     <li>Will give up trying to path to the target if it hasn't been able to reach it in 200 ticks</li>
- *     <li>Invalidates the target if it's a creative or spectator mode player</li>
- * </ul>
- */
+/// Invalidates the current [attack target][MemoryModuleType#ATTACK_TARGET] if the given conditions are met.
+/// Defaults:
+///
+///   - Will give up trying to path to the target if it hasn't been able to reach it in 200 ticks
+///   - Invalidates the target if it's a creative or spectator mode player
+///
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 	protected BiPredicate<E, LivingEntity> targetInvalidIf = (entity, target) ->
 			(target instanceof Player player && player.getAbilities().invulnerable) ||
@@ -32,27 +30,21 @@ public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBeha
 			!entity.canAttack(target);
 	protected long pathfindingAttentionSpan = 200;
 
-	/**
-	 * Sets a custom predicate to invalidate the attack target if none of the previous checks invalidate it first.<br>
-	 * Overrides the default player gamemode check
-	 */
+	/// Sets a custom predicate to invalidate the attack target if none of the previous checks invalidate it first.
+	/// Overrides the default player gamemode check
 	public InvalidateAttackTarget<E> invalidateIf(BiPredicate<E, LivingEntity> predicate) {
 		this.targetInvalidIf = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Skips the check to see if the entity has been unable to path to its target for a while
-	 */
+	/// Skips the check to see if the entity has been unable to path to its target for a while
 	public InvalidateAttackTarget<E> ignoreFailedPathfinding() {
 		return stopTryingToPathAfter(0);
 	}
 
-	/**
-	 * Sets the attention span for the brain owner's pathfinding. If the entity has been unable to find a good path to
-	 * the target after this time, it will invalidate the target.
-	 */
+	/// Sets the attention span for the brain owner's pathfinding. If the entity has been unable to find a good path to
+	/// the target after this time, it will invalidate the target.
 	public InvalidateAttackTarget<E> stopTryingToPathAfter(long ticks) {
 		this.pathfindingAttentionSpan = ticks;
 

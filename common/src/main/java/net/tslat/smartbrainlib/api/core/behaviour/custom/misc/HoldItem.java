@@ -13,55 +13,45 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-/**
- * Equips the entity with an item in its {@link InteractionHand hand}. <br>
- * Can be set to an {@link ItemStack#EMPTY empty ItemStack} to act as unequipping. <br>
- * Defaults:
- * <ul>
- *     <li>Equips to the main hand</li>
- *     <li>Deletes the item it was holding prior to equipping the new item</li>
- * </ul>
- */
+/// Equips the entity with an item in its [hand][InteractionHand].
+/// Can be set to an [empty ItemStack][ItemStack#EMPTY] to act as unequipping.
+/// Defaults:
+///
+///   - Equips to the main hand
+///   - Deletes the item it was holding prior to equipping the new item
+///
 public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected Function<E, ItemStack> stackFunction = entity -> ItemStack.EMPTY;
 	protected Function<E, InteractionHand> handDecider = entity -> InteractionHand.MAIN_HAND;
 	protected BiPredicate<E, ItemStack> dropItemOnUnequip = (entity, stack) -> false;
 
-	/**
-	 * Sets the function to determine which hand to equip the item in.
-	 * @param function The function
-	 * @return this
-	 */
+	/// Sets the function to determine which hand to equip the item in.
+	/// @param function The function
+	/// @return this
 	public HoldItem<E> toHand(Function<E, InteractionHand> function) {
 		this.handDecider = function;
 
 		return this;
 	}
 
-	/**
-	 * Sets the function to determine the item to equip.
-	 * @param function The itemstack function
-	 * @return this
-	 */
+	/// Sets the function to determine the item to equip.
+	/// @param function The itemstack function
+	/// @return this
 	public HoldItem<E> withStack(Function<E, ItemStack> function) {
 		this.stackFunction = function;
 
 		return this;
 	}
 
-	/**
-	 * Sets the behaviour to drop the previously equipped item when equipping the new item.
-	 * @return this
-	 */
+	/// Sets the behaviour to drop the previously equipped item when equipping the new item.
+	/// @return this
 	public HoldItem<E> dropItemOnUnequip() {
 		return dropItemOnUnequip((entity, stack) -> true);
 	}
 
-	/**
-	 * Sets the predicate to determine whether the entity should drop the previously equipped item when equipping the new item.
-	 * @param dropPredicate The predicate
-	 * @return this
-	 */
+	/// Sets the predicate to determine whether the entity should drop the previously equipped item when equipping the new item.
+	/// @param dropPredicate The predicate
+	/// @return this
 	public HoldItem<E> dropItemOnUnequip(BiPredicate<E, ItemStack> dropPredicate) {
 		this.dropItemOnUnequip = dropPredicate;
 

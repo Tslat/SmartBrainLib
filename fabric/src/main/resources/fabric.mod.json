@@ -1,41 +1,36 @@
 {
-  "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${version}",
-
-  "name": "${mod_display_name}",
-  "description": "${mod_description}",
-  "authors": [
-    "${mod_authors}"
-  ],
-  "contact": {
-    "homepage": "${homepage_url}",
-    "sources": "${sources_url}"
-  },
-
-  "license": "${mod_license}",
-  "icon": "logo.png",
-
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "net.tslat.smartbrainlib.SmartBrainLib"
-    ],
-    "client": [
-      "net.tslat.smartbrainlib.example.boilerplate.SBLClient"
-    ]
-  },
-  "accessWidener": "smartbrainlib.accesswidener",
-
-  "depends": {
-    "fabricloader": ">=${fabric_loader_version_range}",
-    "fabric-api": "*",
-    "minecraft": ">=${minecraft_version}",
-    "java": ">=${java_version}"
-  },
-  "custom": {
-    "lithium:options": {
-      "mixin.ai.task.memory_change_counting": false
-    }
-  }
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${version}",
+	"name": "${mod_display_name}",
+	"description": "${mod_description}",
+	"authors": [
+		"${mod_authors}"
+	],
+	"contact": {
+		"homepage": "${mod_homepage}",
+		"issues": "${mod_issues_tracker}",
+		"sources": "${mod_git_repo}"
+	},
+	"license": "${mod_license}",
+	"icon": "${mod_id}.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.tslat.smartbrainlib.SmartBrainLib"
+		],
+		"client": [
+			"net.tslat.smartbrainlib.example.boilerplate.SBLExampleClient"
+		]
+	},
+	"mixins": [
+		"${mod_id}.mixins.json"
+	],
+	"accessWidener": "${mod_id}.classtweaker",
+	"depends": {
+   		"fabricloader": ">=${fabric_loader_version_range}",
+		"fabric-api": ">=${fabric_api_version_range}",
+		"java": ">=${java_version}",
+		"minecraft": ">=${minecraft_version}"
+	}
 }

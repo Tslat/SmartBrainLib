@@ -10,25 +10,21 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.List;
 
-/**
- * Replacement for {@link net.minecraft.world.entity.ai.goal.FloatGoal} or {@link net.minecraft.world.entity.ai.behavior.Swim}. <br>
- * Causes the entity to rise to the surface of water and float at the surface.
- * Defaults:
- * <ul>
- *     <li>80% chance per tick to jump</li>
- *     <li>Applies to water</li>
- * </ul>
- */
+/// Replacement for [net.minecraft.world.entity.ai.goal.FloatGoal] or [net.minecraft.world.entity.ai.behavior.Swim].
+/// Causes the entity to rise to the surface of water and float at the surface.
+/// Defaults:
+///
+///   - 80% chance per tick to jump
+///   - Applies to water
+///
 public class FloatToSurfaceOfFluid<E extends Mob> extends ExtendedBehaviour<E> {
 	protected float riseChance = 0.8f;
 	protected boolean canFloatPrevious;
 
-	/**
-	 * Set the chance per tick that the entity will 'jump' in water, rising up towards the surface.
-	 *
-	 * @param chance The chance, between 0 and 1 (inclusive)
-	 * @return this
-	 */
+	/// Set the chance per tick that the entity will 'jump' in water, rising up towards the surface.
+	///
+	/// @param chance The chance, between 0 and 1 (inclusive)
+	/// @return this
 	public FloatToSurfaceOfFluid<E> riseChance(float chance) {
 		this.riseChance = chance;
 

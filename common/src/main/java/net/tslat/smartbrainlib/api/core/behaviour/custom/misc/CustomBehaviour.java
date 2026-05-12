@@ -10,11 +10,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-/**
- * A behaviour module that invokes a callback. <br>
- * Useful for handling custom minor actions that are either too specific to warrant a new behaviour, or not worth implementing into a full behaviour. <br>
- * Set the condition for running via {@link ExtendedBehaviour#startCondition(Predicate)}
- */
+/// A behaviour module that invokes a callback.
+/// Useful for handling custom minor actions that are either too specific to warrant a new behaviour, or not worth implementing into a full behaviour.
+/// Set the condition for running via [ExtendedBehaviour#startCondition(Predicate)]
 public final class CustomBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private Consumer<E> callback;
 
@@ -22,10 +20,8 @@ public final class CustomBehaviour<E extends LivingEntity> extends ExtendedBehav
 		this.callback = callback;
 	}
 
-	/**
-	 * Replace the callback function
-	 * @return this
-	 */
+	/// Replace the callback function
+	/// @return this
 	public CustomBehaviour<E> callback(Consumer<E> callback) {
 		this.callback = callback;
 

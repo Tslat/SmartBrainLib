@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.registry;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,23 +12,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/**
- * Registry class for custom {@link MemoryModuleType Memory Types}
- */
+/// Registry class for custom [Memory Types][MemoryModuleType]
 public final class SBLMemoryTypes {
-	public static void init() {}
-
 	public static final Supplier<MemoryModuleType<List<Projectile>>> INCOMING_PROJECTILES = register("incoming_projectiles");
 	public static final Supplier<MemoryModuleType<Boolean>> TARGET_UNREACHABLE = register("target_unreachable");
 	public static final Supplier<MemoryModuleType<Boolean>> SPECIAL_ATTACK_COOLDOWN = register("special_attack_cooldown");
 	public static final Supplier<MemoryModuleType<List<Pair<BlockPos, BlockState>>>> NEARBY_BLOCKS = register("nearby_blocks");
 	public static final Supplier<MemoryModuleType<List<ItemEntity>>> NEARBY_ITEMS = register("nearby_items");
 
-	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
-		return register(id, Optional.empty());
-	}
+	//<editor-fold defaultstate="collapsed" desc="<Boilerplate>">
+	public static void init() {}
 
-	private static <T> Supplier<MemoryModuleType<T>> register(String id, Optional<Codec<T>> codec) {
-		return SBLConstants.SBL_LOADER.registerMemoryType(id, codec);
+	/// Register a basic memory type with no serialization
+	///
+	/// `SmartBrainLib` doesn't serialize memories anyway
+	private static <T> Supplier<MemoryModuleType<T>> register(String id) {
+		return SBLConstants.PLATFORM.registerMemoryType(id, Optional.empty());
 	}
+	//</editor-fold>
 }

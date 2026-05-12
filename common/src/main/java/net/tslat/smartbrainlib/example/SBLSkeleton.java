@@ -1,10 +1,8 @@
 package net.tslat.smartbrainlib.example;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -13,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
@@ -35,45 +31,40 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliat
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
+import org.apache.logging.log4j.util.InternalApi;
 
 import java.util.List;
 
-/**
- * Example Skeleton using the SBL brain system
- */
-public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton> {
+/// Example Skeleton implementation using the SBL brain system
+@InternalApi
+public final class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton> {
 	public SBLSkeleton(EntityType<? extends SBLSkeleton> entityType, Level level) {
 		super(entityType, level);
 	}
 
+	/// Let's make sure we're definitely not using any goals
 	@Override
-	protected final void registerGoals() {}
-	// Let's make sure we're definitely not using any goals
+	protected void registerGoals() {}
 	@Override
-	public final void reassessWeaponGoal() {}
+	public void reassessWeaponGoal() {}
 
+	/// Add our sensors - these handle passively detecting and remembering nearby environmental factors
 	@Override
-	protected Brain.Provider<?> brainProvider() {
-		return new SmartBrainProvider<>(this);
-	}
-
-	// Add our sensors - these handle passively detecting and remembering nearby environmental factors
-	@Override
-	public List<? extends ExtendedSensor<? extends SBLSkeleton>> getSensors() {
-		return ObjectArrayList.of(
+	public List<? extends ExtendedSensor<?>> getSensors(SBLSkeleton owner) {
+		return List.of(
 				new NearbyPlayersSensor<>(), // Keep track of nearby players
 				new NearbyLivingEntitySensor<SBLSkeleton>() // Keep track of nearby entities the Skeleton is interested in
-						.setPredicate((target, entity) ->
+						.setPredicate((_, target) ->
 											  target instanceof Player ||
-											  target instanceof IronGolem ||
-											  target instanceof Wolf ||
-											  (target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
+								              target instanceof IronGolem ||
+								              target instanceof Wolf ||
+								              (target instanceof Turtle turtle && turtle.isBaby() && !turtle.isInWater())));
 	}
 
-	// Add our core tasks - this group runs every tick regardless of any other activities the skeleton may be running
+	/// Add our core tasks - this group runs every tick regardless of any other activities the skeleton may be running
 	@Override
-	public BrainActivityGroup<? extends SBLSkeleton> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(
+	public List<? extends BehaviorControl<?>> getAlwaysRunningBehaviours(SBLSkeleton owner) {
+		return List.of(
 				new AvoidSun<>(), // Keep pathfinder avoiding the sun
 				new EscapeSun<>() // Escape the sun
 						.cooldownFor(entity -> 20),
@@ -87,10 +78,10 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 				new MoveToWalkTarget<>()); // Move to the current walk target
 	}
 
-	// Add our idle tasks - this group runs automatically if no other activites are running (such as fighting)
+	/// Add our idle tasks - this group runs automatically if no other activites are running (such as fighting)
 	@Override
-	public BrainActivityGroup<? extends SBLSkeleton> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
+	public List<? extends BehaviorControl<?>> getIdleBehaviours(SBLSkeleton owner) {
+		return List.of(
 				new FirstApplicableBehaviour<SBLSkeleton>( // Run only one of the below behaviours, trying each one in order. Include explicit generic typing because javac is silly
 						new TargetOrRetaliate<>(), // Set the attack target
 						new SetPlayerLookTarget<>(), // Set the look target to a nearby player if available
@@ -102,10 +93,10 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 								.runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
-	// Add our fight tasks - this group only runs when the skeleton has a target to attack, as dictated by TargetOrRetaliate
+	/// Add our fight tasks - this group only runs when the skeleton has a target to attack, as dictated by TargetOrRetaliate
 	@Override
-	public BrainActivityGroup<? extends SBLSkeleton> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
+	public List<? extends BehaviorControl<?>> getFightingBehaviours(SBLSkeleton owner) {
+		return List.of(
 				new InvalidateAttackTarget<>(), // Invalidate the attack target if it's no longer applicable
 				new SetWalkTargetToAttackTarget<>() // Run at the target if not holding a bow
 						.startCondition(entity -> !isHoldingBow(entity) && (!entity.level().isBrightOutside() || (entity.isOnFire() && entity.level().canSeeSky(entity.blockPosition())))),
@@ -114,16 +105,10 @@ public class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSkeleton
 								.startCondition(SBLSkeleton::isHoldingBow),
 						new AnimatableMeleeAttack<>(0) // Melee attack
 								.whenStarting(entity -> setAggressive(true))
-								.whenStopping(entity -> setAggressive(false)))
-		);
+								.whenStopping(entity -> setAggressive(false))));
 	}
 
-	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		tickBrain(this);
-	}
-
-	// Easy predicate to save on redundant code
+	/// Easy predicate to save on redundant code
 	private static boolean isHoldingBow(LivingEntity livingEntity) {
 		return livingEntity.isHolding(stack -> stack.getItem() instanceof BowItem);
 	}

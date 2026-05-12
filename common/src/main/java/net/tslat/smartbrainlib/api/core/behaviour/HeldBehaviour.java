@@ -5,11 +5,9 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Predicate;
 
-/**
- * An abstract behaviour used for tasks that should have an ongoing effect, optionally with an early finish.<br>
- * This is most useful for things like attacks with multi-tick effects such as beams or flamethrowers, or other prolonged actions.
- * @param <E> The entity
- */
+/// An abstract behaviour used for tasks that should have an ongoing effect, optionally with an early finish.
+/// This is most useful for things like attacks with multi-tick effects such as beams or flamethrowers, or other prolonged actions.
+/// @param <E> The entity
 public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected Predicate<E> tickConsumer = entity -> true;
 	protected int runningTime = 0;
@@ -18,19 +16,15 @@ public abstract class HeldBehaviour<E extends LivingEntity> extends ExtendedBeha
 		noTimeout();
 	}
 
-	/**
-	 * Set the per-tick handler for this held behaviour
-	 * @param tickConsumer The consumer to handle the per-action tick. Return false to end the behaviour, or true to continue running
-	 */
+	/// Set the per-tick handler for this held behaviour
+	/// @param tickConsumer The consumer to handle the per-action tick. Return false to end the behaviour, or true to continue running
 	public HeldBehaviour<E> onTick(Predicate<E> tickConsumer) {
 		this.tickConsumer = tickConsumer;
 
 		return this;
 	}
 
-	/**
-	 * Gets the amount of ticks this behaviour has been held for
-	 */
+	/// Gets the amount of ticks this behaviour has been held for
 	public int getRunningTime() {
 		return this.runningTime;
 	}

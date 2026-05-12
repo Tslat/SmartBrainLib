@@ -11,25 +11,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.object.TriPredicate;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
+import net.tslat.smartbrainlib.library.interfaces.TriPredicate;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
 
-/**
- * Gradually breaks then destroys a block. <br>
- * Finds blocks based on the {@link SBLMemoryTypes#NEARBY_BLOCKS} memory module. <br>
- * Defaults:
- * <ul>
- *     <li>Breaks doors</li>
- *     <li>Takes 240 ticks to break the block</li>
- * </ul>
- */
+/// Gradually breaks then destroys a block.
+/// Finds blocks based on the [SBLMemoryTypes#NEARBY_BLOCKS] memory module.
+/// Defaults:
+///
+///   - Breaks doors
+///   - Takes 240 ticks to break the block
+///
 public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected TriPredicate<E, BlockPos, BlockState> targetBlockPredicate = (entity, pos, state) -> state.is(BlockTags.DOORS);
 	protected TriPredicate<E, BlockPos, BlockState> stopPredicate = (entity, pos, state) -> false;
@@ -41,33 +39,27 @@ public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected int breakTime = 0;
 	protected int breakProgress = -1;
 
-	/**
-	 * Set the condition for when the entity should stop breaking the block.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the condition for when the entity should stop breaking the block.
+	/// @param predicate The predicate
+	/// @return this
 	public BreakBlock<E> stopBreakingIf(TriPredicate<E, BlockPos, BlockState> predicate) {
 		this.stopPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Sets the predicate for valid blocks to break.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Sets the predicate for valid blocks to break.
+	/// @param predicate The predicate
+	/// @return this
 	public BreakBlock<E> forBlocks(TriPredicate<E, BlockPos, BlockState> predicate) {
 		this.targetBlockPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Determines the amount of time (in ticks) it takes to break the given block.
-	 * @param function The function
-	 * @return this
-	 */
+	/// Determines the amount of time (in ticks) it takes to break the given block.
+	/// @param function The function
+	/// @return this
 	public BreakBlock<E> timeToBreak(TriFunction<E, BlockPos, BlockState, Integer> function) {
 		this.digTimePredicate = function;
 

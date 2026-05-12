@@ -4,10 +4,8 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
-/**
- * Extension of MoveToWalkTarget, but auto-marking the sprinting flag depending on the movespeed.<br>
- * This can be useful for using sprint animations on the client.
- */
+/// Extension of MoveToWalkTarget, but auto-marking the sprinting flag depending on the movespeed.
+/// This can be useful for using sprint animations on the client.
 public class WalkOrRunToWalkTarget<E extends PathfinderMob> extends MoveToWalkTarget<E> {
 	@Override
 	protected void startOnNewPath(E entity) {

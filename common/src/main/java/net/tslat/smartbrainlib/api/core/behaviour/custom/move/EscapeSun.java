@@ -11,23 +11,21 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Sets the {@link MemoryModuleType#WALK_TARGET walk target} to a safe position if caught in the sun. <br>
- * Defaults:
- * <ul>
- *     <li>Only if not currently fighting something</li>
- *     <li>Only if already burning from the sun</li>
- * </ul>
- * @param <E> The entity
- */
+/// Sets the [walk target][MemoryModuleType#WALK_TARGET] to a safe position if caught in the sun.
+/// Defaults:
+///
+///   - Only if not currently fighting something
+///   - Only if already burning from the sun
+///
+/// @param <E> The entity
 public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.WALK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.WALK_TARGET);
 
 	protected float speedModifier = 1;
 
@@ -37,11 +35,9 @@ public class EscapeSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		noTimeout();
 	}
 
-	/**
-	 * Set the movespeed modifier for when the entity tries to escape the sun
-	 * @param speedMod The speed modifier
-	 * @return this
-	 */
+	/// Set the movespeed modifier for when the entity tries to escape the sun
+	/// @param speedMod The speed modifier
+	/// @return this
 	public EscapeSun<E> speedModifier(float speedMod) {
 		this.speedModifier = speedMod;
 

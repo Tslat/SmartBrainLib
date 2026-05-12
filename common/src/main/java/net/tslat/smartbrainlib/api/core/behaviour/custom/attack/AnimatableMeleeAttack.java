@@ -9,23 +9,21 @@ import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-/**
- * Extended behaviour for melee attacking. Natively supports animation hit delays or other delays. <br>
- * Defaults:
- * <ul>
- *     <li>20 tick attack interval</li>
- * </ul>
- * @param <E> The entity
- */
+/// Extended behaviour for melee attacking. Natively supports animation hit delays or other delays.
+/// Defaults:
+///
+///   - 20 tick attack interval
+///
+/// @param <E> The entity
 public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 
@@ -36,11 +34,9 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 		super(delayTicks);
 	}
 
-	/**
-	 * Set the time between attacks.
-	 * @param supplier The tick value provider
-	 * @return this
-	 */
+	/// Set the time between attacks.
+	/// @param supplier The tick value provider
+	/// @return this
 	public AnimatableMeleeAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 

@@ -10,11 +10,8 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.List;
-import java.util.function.Predicate;
 
-/**
- * Makes the entity use (block) using a shield if it's currently in the entity's hands
- */
+/// Makes the entity use (block) using a shield if it's currently in the entity's hands
 public class BlockWithShield<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected InteractionHand hand = InteractionHand.MAIN_HAND;
 

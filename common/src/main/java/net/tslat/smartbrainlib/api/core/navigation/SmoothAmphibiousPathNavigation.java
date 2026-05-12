@@ -8,25 +8,21 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Extension of the vanilla {@link AmphibiousPathNavigation} with some tweaks for smoother pathfinding:
- * <ul>
- *     <li>Patched {@link Path} implementation to use proper rounding</li>
- *     <li>Extensible {@link #prefersShallowSwimming()} implementation for ease-of-use</li>
- * </ul>
- * <p>
- * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a ground-based walking entity
- */
+/// Extension of the vanilla [AmphibiousPathNavigation] with some tweaks for smoother pathfinding:
+///
+///   - Patched [Path] implementation to use proper rounding
+///   - Extensible [#prefersShallowSwimming()] implementation for ease-of-use
+///
+///
+/// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
 public class SmoothAmphibiousPathNavigation extends AmphibiousPathNavigation implements ExtendedNavigator {
     public SmoothAmphibiousPathNavigation(Mob mob, Level level) {
         super(mob, level);
     }
 
-    /**
-     * Determine whether the navigator should prefer shallow swimming patterns
-     * <p>
-     * Adjusts path node penalty when determining paths
-     */
+    /// Determine whether the navigator should prefer shallow swimming patterns
+    ///
+    /// Adjusts path node penalty when determining paths
     public boolean prefersShallowSwimming() {
         return false;
     }
@@ -42,9 +38,7 @@ public class SmoothAmphibiousPathNavigation extends AmphibiousPathNavigation imp
         return super.getPath();
     }
 
-    /**
-     * Patch {@link Path#getEntityPosAtNode} to use a proper rounding check
-     */
+    /// Patch [Path#getEntityPosAtNode] to use a proper rounding check
     @Override
     protected PathFinder createPathFinder(int maxVisitedNodes) {
         this.nodeEvaluator = new AmphibiousNodeEvaluator(prefersShallowSwimming());

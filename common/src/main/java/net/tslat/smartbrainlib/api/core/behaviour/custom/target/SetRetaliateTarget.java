@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
 
@@ -18,18 +18,16 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/**
- * Sets the attack target of the entity based on the last entity to hurt it if a target isn't already set. <br>
- * Defaults:
- * <ul>
- *     <li>Targets any live entity, as long as it's not a creative mode player</li>
- *     <li>Does not alert nearby allies when retaliating</li>
- *     <li>If enabled, only alerts allies of the same class, if they don't already have a target themselves</li>
- * </ul>
- * @param <E> The entity
- */
+/// Sets the attack target of the entity based on the last entity to hurt it if a target isn't already set.
+/// Defaults:
+///
+///   - Targets any live entity, as long as it's not a creative mode player
+///   - Does not alert nearby allies when retaliating
+///   - If enabled, only alerts allies of the same class, if they don't already have a target themselves
+///
+/// @param <E> The entity
 public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.HURT_BY_ENTITY).noMemory(MemoryModuleType.ATTACK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.HURT_BY_ENTITY).noMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 
@@ -47,34 +45,28 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 		return lastHurtBy == null || !ally.isAlliedTo(lastHurtBy);
 	};
 
-	/**
-	 * Set the predicate to determine whether a given entity should be targeted or not.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given entity should be targeted or not.
+	/// @param predicate The predicate
+	/// @return this
 	public SetRetaliateTarget<E> attackablePredicate(Predicate<LivingEntity> predicate) {
 		this.canAttackPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the predicate to determine whether the brain owner should alert nearby allies of the same entity type when retaliating
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether the brain owner should alert nearby allies of the same entity type when retaliating
+	/// @param predicate The predicate
+	/// @return this
 	public SetRetaliateTarget<E> alertAlliesWhen(BiPredicate<E, Entity> predicate) {
 		this.alertAlliesPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the predicate to determine whether a given entity should be alerted to the target as an ally of the brain owner.<br>
-	 * Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given entity should be alerted to the target as an ally of the brain owner.
+	/// Overriding replaces the default predicate, so be sure to include any portions of the default predicate in your own if applicable
+	/// @param predicate The predicate
+	/// @return this
 	public SetRetaliateTarget<E> isAllyIf(BiPredicate<E, LivingEntity> predicate) {
 		this.allyPredicate = predicate;
 

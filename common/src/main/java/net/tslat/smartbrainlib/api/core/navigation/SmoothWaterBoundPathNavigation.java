@@ -9,26 +9,22 @@ import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Extension of the vanilla {@link WaterBoundPathNavigation} navigator with some tweaks for smoother pathfinding:
- * <ul>
- *     <li>Smoothed unit rounding to better accommodate edge-cases</li>
- *     <li>Patched {@link Path} implementation to use proper rounding</li>
- *     <li>Extensible {@link #canBreach()} implementation for ease-of-use</li>
- * </ul>
- * <p>
- * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a water-based swimming entity
- */
+/// Extension of the vanilla [WaterBoundPathNavigation] navigator with some tweaks for smoother pathfinding:
+///
+///   - Smoothed unit rounding to better accommodate edge-cases
+///   - Patched [Path] implementation to use proper rounding
+///   - Extensible [#canBreach()] implementation for ease-of-use
+///
+///
+/// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a water-based swimming entity
 public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation implements ExtendedNavigator {
     public SmoothWaterBoundPathNavigation(Mob mob, Level level) {
         super(mob, level);
     }
 
-    /**
-     * Determine whether the entity can breach the surface as part of its pathing
-     * <p>
-     * Defaults to false for non-dolphins
-     */
+    /// Determine whether the entity can breach the surface as part of its pathing
+    ///
+    /// Defaults to false for non-dolphins
     public boolean canBreach() {
         return this.mob.getType() == EntityType.DOLPHIN;
     }
@@ -44,9 +40,7 @@ public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation imp
         return super.getPath();
     }
 
-    /**
-     * Patch {@link Path#getEntityPosAtNode} to use a proper rounding check
-     */
+    /// Patch [Path#getEntityPosAtNode] to use a proper rounding check
     @Override
     protected PathFinder createPathFinder(int maxVisitedNodes) {
         this.nodeEvaluator = new SwimNodeEvaluator(this.allowBreaching = canBreach());

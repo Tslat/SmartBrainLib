@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.tslat.smartbrainlib.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "common.LivingEntityMixin",
+    "common.MobMixin"
+  ],
+  "client": [
+  ]
+}

@@ -1,0 +1,55 @@
+classTweaker v1 official
+
+# Brain
+extendable class net/minecraft/world/entity/ai/Brain$Provider
+accessible method net/minecraft/world/entity/ai/Brain$Provider <init> (Ljava/util/Collection;Ljava/util/Collection;Lnet/minecraft/world/entity/ai/Brain$ActivitySupplier;)V
+accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryMap$Value;)V
+accessible method net/minecraft/world/entity/ai/Brain registerMemory (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;)V
+accessible method net/minecraft/world/entity/ai/Brain tickSensors (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+accessible method net/minecraft/world/entity/ai/Brain getMemorySlotIfPresent (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;)Lnet/minecraft/world/entity/ai/memory/MemorySlot;
+extendable method net/minecraft/world/entity/ai/Brain getMemorySlotIfPresent (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;)Lnet/minecraft/world/entity/ai/memory/MemorySlot;
+accessible method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
+extendable method net/minecraft/world/entity/ai/Brain forgetOutdatedMemories ()V
+accessible method net/minecraft/world/entity/ai/Brain activityRequirementsAreMet (Lnet/minecraft/world/entity/schedule/Activity;)Z
+accessible method net/minecraft/world/entity/ai/Brain setActiveActivity (Lnet/minecraft/world/entity/schedule/Activity;)V
+accessible field net/minecraft/world/entity/ai/Brain availableBehaviorsByPriority Ljava/util/Map;
+mutable field net/minecraft/world/entity/ai/Brain availableBehaviorsByPriority Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain sensors Ljava/util/Map;
+mutable field net/minecraft/world/entity/ai/Brain sensors Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain activityRequirements Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain activityMemoriesToEraseWhenStopped Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain memories Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain coreActivities Ljava/util/Set;
+accessible field net/minecraft/world/entity/ai/Brain defaultActivity Lnet/minecraft/world/entity/schedule/Activity;
+accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;J)V
+extendable method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;J)V
+accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;)V
+# Behaviour
+extendable method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
+accessible method net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities <init> ()V
+accessible field net/minecraft/world/entity/ai/behavior/GateBehavior behaviors Lnet/minecraft/world/entity/ai/behavior/ShufflingList;
+accessible field net/minecraft/world/entity/ai/behavior/Behavior entryCondition Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/behavior/Behavior status Lnet/minecraft/world/entity/ai/behavior/Behavior$Status;
+accessible field net/minecraft/world/entity/ai/behavior/Behavior endTimestamp J
+accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
+mutable field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities nearbyEntities Ljava/util/List;
+accessible field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities lineOfSightTest Ljava/util/function/Predicate;
+mutable field net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities lineOfSightTest Ljava/util/function/Predicate;
+
+# Sensor
+extendable method net/minecraft/world/entity/ai/sensing/Sensor tick (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;)V
+
+# Entity
+accessible method net/minecraft/world/entity/Entity setSharedFlag (IZ)V
+
+# Pathfinding
+extendable class net/minecraft/world/level/pathfinder/Path
+accessible method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
+extendable method net/minecraft/world/entity/ai/navigation/GroundPathNavigation getSurfaceY ()I
+accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
+accessible field net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation allowBreaching Z
+
+# World
+accessible method net/minecraft/world/level/Level getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+accessible method net/minecraft/server/level/ServerLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;
+accessible method net/minecraft/client/multiplayer/ClientLevel getEntities ()Lnet/minecraft/world/level/entity/LevelEntityGetter;

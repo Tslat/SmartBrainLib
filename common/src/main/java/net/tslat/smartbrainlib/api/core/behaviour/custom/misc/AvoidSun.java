@@ -11,9 +11,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
 import java.util.List;
 
-/** Avoid the sun if not wearing a hat
- * @param <E> The entity
- */
+/// Avoid the sun if not wearing a hat
+/// @param <E> The entity
 public class AvoidSun<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	@Override
 	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {

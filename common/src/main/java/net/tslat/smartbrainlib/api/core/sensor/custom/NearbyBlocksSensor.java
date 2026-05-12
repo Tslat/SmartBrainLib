@@ -8,79 +8,124 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
-import net.tslat.smartbrainlib.object.SquareRadius;
+import net.tslat.smartbrainlib.api.core.sensor.base.PredicateSensor;
+import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.*;
 
-/**
- * Sensor for identifying and memorising nearby blocks using the {@link SBLMemoryTypes#NEARBY_BLOCKS} memory module. <br>
- * Defaults:
- * <ul>
- *     <li>1-block radius</li>
- *     <li>Ignores air blocks</li>
- * </ul>
- */
-public class NearbyBlocksSensor<E extends LivingEntity> extends PredicateSensor<BlockState, E> {
-	private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.NEARBY_BLOCKS.get());
+/// Sensor for identifying and memorising nearby blocks using the [SBLMemoryTypes#NEARBY_BLOCKS] memory module
+///
+/// @param <BO> The brain owner entity
+public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor<BO, Pair<BlockPos, BlockState>> {
+	protected static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
-	protected SquareRadius radius = new SquareRadius(1, 1);
+	protected Function<BO, SquareRadius> radius = _ -> new SquareRadius(8, 2);
 
 	public NearbyBlocksSensor() {
-		setPredicate((state, entity) -> !state.isAir());
+		scanRate(30);
+		setPredicate((_, posState) -> !posState.getSecond().isAir());
 	}
 
+	/// Set the radius for the sensor to scan
+	///
+	/// @param radius The coordinate radius, in blocks
+	public NearbyBlocksSensor<BO> detectionRadius(double radius) {
+		return detectionRadius(radius, radius);
+	}
+
+	/// Set the radius for the sensor to scan
+	///
+	/// @param xz The X/Z coordinate radius, in blocks
+	/// @param y The Y coordinate radius, in blocks
+	public NearbyBlocksSensor<BO> detectionRadius(double xz, double y) {
+		return detectionRadius(_ -> new SquareRadius(xz, y));
+	}
+
+	/// Set a custom radius function for the sensor to scan
+	///
+	/// @param radiusFunction The custom function to determine the radius of the scan
+	public NearbyBlocksSensor<BO> detectionRadius(Function<BO, SquareRadius> radiusFunction) {
+		this.radius = radiusFunction;
+
+		return this;
+	}
+
+	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	public NearbyBlocksSensor<BO> setPredicate(BiPredicate<BO, Pair<BlockPos, BlockState>> predicate) {
+		return (NearbyBlocksSensor<BO>)super.setPredicate(predicate);
+	}
+
+	/// Set the scan rate for this sensor
+	public NearbyBlocksSensor<BO> scanRate(int scanRate) {
+		return (NearbyBlocksSensor<BO>)super.scanRate(scanRate);
+	}
+
+	/// Set the scan rate provider for this sensor
+	///
+	/// The provider will be sampled every time the sensor does a scan
 	@Override
-	public List<MemoryModuleType<?>> memoriesUsed() {
-		return MEMORIES;
+	public NearbyBlocksSensor<BO> scanRate(ToIntFunction<BO> function) {
+		return (NearbyBlocksSensor<BO>)super.scanRate(function);
 	}
 
+	/// Set a callback function for when the sensor completes a scan
+	@Override
+	public NearbyBlocksSensor<BO> afterScanning(Consumer<BO> callback) {
+		return (NearbyBlocksSensor<BO>)super.afterScanning(callback);
+	}
+
+	/// Set a condition that must be met in order to perform a scan
+	///
+	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@Override
+	public NearbyBlocksSensor<BO> onlyScanIf(Predicate<BO> predicate) {
+		return (NearbyBlocksSensor<BO>)super.onlyScanIf(predicate);
+	}
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
+	/// @return The [SensorType] of the sensor, used for reverse lookups.
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_BLOCKS.get();
 	}
 
-	/**
-	 * Set the radius for the sensor to scan
-	 * @param radius The coordinate radius, in blocks
-	 * @return this
-	 */
-	public NearbyBlocksSensor<E> setRadius(double radius) {
-		return setRadius(radius, radius);
-	}
-
-	/**
-	 * Set the radius for the sensor to scan.
-	 * @param xz The X/Z coordinate radius, in blocks
-	 * @param y The Y coordinate radius, in blocks
-	 * @return this
-	 */
-	public NearbyBlocksSensor<E> setRadius(double xz, double y) {
-		this.radius = new SquareRadius(xz, y);
-
-		return this;
-	}
-
+	/// The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain<br/>
+	/// Bonus points if it's a statically cached list
+	///
+	/// @return The list of memory types saves by this sensor
 	@Override
-	protected void doTick(ServerLevel level, E entity) {
-		List<Pair<BlockPos, BlockState>> blocks = new ObjectArrayList<>();
+	public List<MemoryModuleType<?>> memoriesUsed() {
+		return MEMORIES;
+	}
 
-		for (BlockPos pos : BlockPos.betweenClosed(entity.blockPosition().subtract(this.radius.toVec3i()), entity.blockPosition().offset(this.radius.toVec3i()))) {
-			BlockState state = level.getBlockState(pos);
+	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
+	///
+	/// @param level The level the entity is in
+	/// @param entity The owner of the brain
+	@Override
+	protected void doTick(ServerLevel level, BO entity) {
+		final List<Pair<BlockPos, BlockState>> blocks = new ObjectArrayList<>();
+		final SquareRadius radius = this.radius.apply(entity);
 
-			if (this.predicate().test(state, entity))
+		for (BlockPos pos : BlockPos.betweenClosed(radius.inflateAABB(entity.getBoundingBox()))) {
+			final BlockState state = level.getBlockState(pos);
+
+			if (predicate().test(entity, Pair.of(pos, state)))
 				blocks.add(Pair.of(pos.immutable(), state));
 		}
 
-		if (blocks.isEmpty()) {
-			BrainUtil.clearMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get());
-		}
-		else {
-			BrainUtil.setMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), blocks);
-		}
+		if (!blocks.isEmpty())
+			blocks.sort(Comparator.comparingDouble(pair -> pair.getFirst().distToCenterSqr(entity.position())));
+
+		BrainUtil.setMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), blocks);
 	}
+	//</editor-fold>
 }

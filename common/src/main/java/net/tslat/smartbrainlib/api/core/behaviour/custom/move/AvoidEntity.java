@@ -10,24 +10,22 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-/**
- * Try to move away from certain entities when they get too close. <br>
- * Defaults:
- * <ul>
- *     <li>3 block minimum distance</li>
- *     <li>7 block maximum distance</li>
- *     <li>1x move speed modifier</li>
- * </ul>
- */
+/// Try to move away from certain entities when they get too close.
+/// Defaults:
+///
+///   - 3 block minimum distance
+///   - 7 block maximum distance
+///   - 1x move speed modifier
+///
 public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> avoidingPredicate = target -> false;
 	protected float noCloserThanSqr = 9f;
@@ -40,44 +38,36 @@ public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		noTimeout();
 	}
 
-	/**
-	 * Set the minimum distance the target entity should be allowed to come before the entity starts retreating.
-	 * @param blocks The distance, in blocks
-	 * @return this
-	 */
+	/// Set the minimum distance the target entity should be allowed to come before the entity starts retreating.
+	/// @param blocks The distance, in blocks
+	/// @return this
 	public AvoidEntity<E> noCloserThan(float blocks) {
 		this.noCloserThanSqr = blocks * blocks;
 
 		return this;
 	}
 
-	/**
-	 * Set the maximum distance the target entity should be before the entity stops retreating.
-	 * @param blocks The distance, in blocks
-	 * @return this
-	 */
+	/// Set the maximum distance the target entity should be before the entity stops retreating.
+	/// @param blocks The distance, in blocks
+	/// @return this
 	public AvoidEntity<E> stopCaringAfter(float blocks) {
 		this.stopAvoidingAfterSqr = blocks * blocks;
 
 		return this;
 	}
 
-	/**
-	 * Sets the predicate for entities to avoid.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Sets the predicate for entities to avoid.
+	/// @param predicate The predicate
+	/// @return this
 	public AvoidEntity<E> avoiding(Predicate<LivingEntity> predicate) {
 		this.avoidingPredicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the movespeed modifier for when the entity is running away.
-	 * @param mod The speed multiplier modifier
-	 * @return this
-	 */
+	/// Set the movespeed modifier for when the entity is running away.
+	/// @param mod The speed multiplier modifier
+	/// @return this
 	public AvoidEntity<E> speedModifier(float mod) {
 		this.speedModifier = mod;
 

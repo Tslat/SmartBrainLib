@@ -7,18 +7,16 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
-/**
- * Set the {@link MemoryModuleType#LOOK_TARGET} of the brain owner to the current {@link MemoryModuleType#ATTACK_TARGET}, replacing the existing look target.<br>
- * This is mostly superceded by {@link net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget SetWalkTargetToAttackTarget}, but can be useful if you want the brain owner to look at the target without pathing to it
- * @param <E> The entity
- */
+/// Set the [MemoryModuleType#LOOK_TARGET] of the brain owner to the current [MemoryModuleType#ATTACK_TARGET], replacing the existing look target.
+/// This is mostly superceded by [SetWalkTargetToAttackTarget][net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget], but can be useful if you want the brain owner to look at the target without pathing to it
+/// @param <E> The entity
 public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected LivingEntity target = null;
 

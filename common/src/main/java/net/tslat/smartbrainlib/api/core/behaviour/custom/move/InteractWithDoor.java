@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.object.TriPredicate;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
+import net.tslat.smartbrainlib.library.interfaces.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.Iterator;
@@ -24,20 +24,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.ToIntFunction;
 
-/**
- * SmartBrainLib equivalent of vanilla's {@link net.minecraft.world.entity.ai.behavior.InteractWithDoor}
- * <p>
- * By default, it causes entities who are traversing a doorway to open an interceding door, then close it once it has walked through,
- * without interrupting the path.
- * It will also hold the door open if other entities are traversing the doorway at the same time
- * <p>
- * Defaults:
- * <ul>
- *     <li>Holds doors open for entities of the same type within 2 blocks of the door</li>
- * </ul>
- */
+/// SmartBrainLib equivalent of vanilla's [net.minecraft.world.entity.ai.behavior.InteractWithDoor]
+///
+/// By default, it causes entities who are traversing a doorway to open an interceding door, then close it once it has walked through,
+/// without interrupting the path.
+/// It will also hold the door open if other entities are traversing the doorway at the same time
+///
+/// Defaults:
+///
+///   - Holds doors open for entities of the same type within 2 blocks of the door
+///
 public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<E> {
-    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.PATH).usesMemories(MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_LIVING_ENTITIES);
+    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(3).hasMemory(MemoryModuleType.PATH).usesMemories(MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_LIVING_ENTITIES);
 
     protected ToIntFunction<E> doorInteractionDelay = entity -> 20;
     protected TriPredicate<E, LivingEntity, BlockPos> holdDoorsOpenFor = (entity, other, doorPos) -> entity.getType() == other.getType() && doorPos.closerToCenterThan(other.position(), 2);
@@ -45,26 +43,22 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
     protected int doorCloseCooldown = -1;
     protected Node lastNode = null;
 
-    /**
-     * Set the predicate that determines what other entities this entity will hold open a door for and under what conditions
-     *
-     * @param predicate The predicate to test when checking whether an entity should have the door held open for it
-     * @return this
-     */
+    /// Set the predicate that determines what other entities this entity will hold open a door for and under what conditions
+    ///
+    /// @param predicate The predicate to test when checking whether an entity should have the door held open for it
+    /// @return this
     public InteractWithDoor<E> holdDoorsOpenFor(TriPredicate<E, LivingEntity, BlockPos> predicate) {
         this.holdDoorsOpenFor = predicate;
 
         return this;
     }
 
-    /**
-     * Set the tick delay between moving to/away from a door and interacting with it.
-     * <p>
-     * This should be considered more of a guideline than a hard-and-fast rule
-     *
-     * @param delay The time between traversing to/from a door, and interacting with it, in ticks
-     * @return this
-     */
+    /// Set the tick delay between moving to/away from a door and interacting with it.
+    ///
+    /// This should be considered more of a guideline than a hard-and-fast rule
+    ///
+    /// @param delay The time between traversing to/from a door, and interacting with it, in ticks
+    /// @return this
     public InteractWithDoor<E> doorInteractionDelay(ToIntFunction<E> delay) {
         this.doorInteractionDelay = delay;
 
@@ -133,7 +127,7 @@ public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<
             if (isInteractableDoor(doorState)) {
                 DoorBlock doorBlock = (DoorBlock)doorState.getBlock();
 
-                if (doorBlock.isOpen(doorState) && !shouldHoldDoorOpenForOthers(entity, doorPos, BrainUtil.memoryOrDefault(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, List::of)))
+                if (doorBlock.isOpen(doorState) && !shouldHoldDoorOpenForOthers(entity, doorPos, BrainUtil.memoryOrDefault(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, List.of())))
                     doorBlock.setOpen(entity, level, doorState, doorPos, false);
             }
 

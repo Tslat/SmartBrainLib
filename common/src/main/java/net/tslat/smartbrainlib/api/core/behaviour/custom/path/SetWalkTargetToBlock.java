@@ -10,8 +10,8 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
-import net.tslat.smartbrainlib.object.ToFloatBiFunction;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
+import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
@@ -19,12 +19,10 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntBiFunction;
 
-/**
- * Path setting behaviour for walking to/near a block position.
- * @param <E> The entity
- */
+/// Path setting behaviour for walking to/near a block position.
+/// @param <E> The entity
 public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (entity, block) -> true;
 	protected ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedMod = (owner, pos) -> 1f;
@@ -32,33 +30,27 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 
 	protected Pair<BlockPos, BlockState> target = null;
 
-	/**
-	 * Set the predicate to determine whether a given position/state should be the target path
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate to determine whether a given position/state should be the target path
+	/// @param predicate The predicate
+	/// @return this
 	public SetWalkTargetToBlock<E> predicate(final BiPredicate<E, Pair<BlockPos, BlockState>> predicate) {
 		this.predicate = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set the movespeed modifier for the entity when moving to the target.
-	 * @param speedModifier The movespeed modifier/multiplier
-	 * @return this
-	 */
+	/// Set the movespeed modifier for the entity when moving to the target.
+	/// @param speedModifier The movespeed modifier/multiplier
+	/// @return this
 	public SetWalkTargetToBlock<E> speedMod(ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedModifier) {
 		this.speedMod = speedModifier;
 
 		return this;
 	}
 
-	/**
-	 * Set the distance (in blocks) that is 'close enough' for the entity to be considered at the target position
-	 * @param function The function
-	 * @return this
-	 */
+	/// Set the distance (in blocks) that is 'close enough' for the entity to be considered at the target position
+	/// @param function The function
+	/// @return this
 	public SetWalkTargetToBlock<E> closeEnoughWhen(final ToIntBiFunction<E, Pair<BlockPos, BlockState>> function) {
 		this.closeEnoughDist = function;
 

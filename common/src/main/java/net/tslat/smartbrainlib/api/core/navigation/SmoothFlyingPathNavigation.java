@@ -8,14 +8,12 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Extension of the vanilla {@link FlyingPathNavigation} with some tweaks for smoother pathfinding:
- * <ul>
- *     <li>Patched {@link Path} implementation to use proper rounding</li>
- * </ul>
- * <p>
- * Override {@link Mob#createNavigation(Level)} and return a new instance of this if your entity is a ground-based walking entity
- */
+/// Extension of the vanilla [FlyingPathNavigation] with some tweaks for smoother pathfinding:
+///
+///   - Patched [Path] implementation to use proper rounding
+///
+///
+/// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
 public class SmoothFlyingPathNavigation extends FlyingPathNavigation implements ExtendedNavigator {
     public SmoothFlyingPathNavigation(Mob mob, Level level) {
         super(mob, level);
@@ -32,9 +30,7 @@ public class SmoothFlyingPathNavigation extends FlyingPathNavigation implements 
         return super.getPath();
     }
 
-    /**
-     * Patch {@link Path#getEntityPosAtNode} to use a proper rounding check
-     */
+    /// Patch [Path#getEntityPosAtNode] to use a proper rounding check
     @Override
     protected PathFinder createPathFinder(int maxVisitedNodes) {
         this.nodeEvaluator = new FlyNodeEvaluator();

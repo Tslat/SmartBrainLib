@@ -11,19 +11,25 @@ out
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/*
+!.idea/scopes
 
 # gradle
 build
 .gradle
+logs
 
 # other
 eclipse
 run
-logs
-libs/*
+runs
 
-# Platform
-forge*changelog.txt
-/NeoForge/runs/**
-fabric/runs
+# Errors
+hs_err_pid*
+replay_pid*
+
+# allow gradlew
+!core/gradle/wrapper
+!core/gradlew.bat
+!gradle/wrapper
+!gradlew.bat

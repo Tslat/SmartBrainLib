@@ -10,22 +10,20 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 
-/**
- * Flee the current attack target. <br>
- * Defaults:
- * <ul>
- *     <li>20 block flee distance</li>
- *     <li>1x move speed modifier</li>
- * </ul>
- * @param <E> The entity
- */
+/// Flee the current attack target.
+/// Defaults:
+///
+///   - 20 block flee distance
+///   - 1x move speed modifier
+///
+/// @param <E> The entity
 public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.ATTACK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected int fleeDistance = 20;
 	protected float speedModifier = 1;
@@ -36,22 +34,18 @@ public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 		noTimeout();
 	}
 
-	/**
-	 * Set the maximum distance the entity should try to flee to
-	 * @param blocks The distance, in blocks
-	 * @return this
-	 */
+	/// Set the maximum distance the entity should try to flee to
+	/// @param blocks The distance, in blocks
+	/// @return this
 	public FleeTarget<E> fleeDistance(int blocks) {
 		this.fleeDistance = blocks;
 
 		return this;
 	}
 
-	/**
-	 * Set the movespeed modifier for when the entity is running away.
-	 * @param mod The speed multiplier modifier
-	 * @return this
-	 */
+	/// Set the movespeed modifier for when the entity is running away.
+	/// @param mod The speed multiplier modifier
+	/// @return this
 	public FleeTarget<E> speedModifier(float mod) {
 		this.speedModifier = mod;
 

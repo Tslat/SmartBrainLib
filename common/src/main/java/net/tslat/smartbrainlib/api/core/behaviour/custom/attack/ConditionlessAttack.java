@@ -9,7 +9,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,13 +18,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/**
- * Attack behaviour that doesn't require line of sight or proximity to target, or to even have a target at all. This is useful for special attacks. <br>
- * Set the actual condition for activation via {@link ExtendedBehaviour#startCondition(Predicate)}
- * @param <E> The entity
- */
+/// Attack behaviour that doesn't require line of sight or proximity to target, or to even have a target at all. This is useful for special attacks.
+/// Set the actual condition for activation via [ExtendedBehaviour#startCondition(Predicate)]
+/// @param <E> The entity
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 	protected boolean requireTarget = false;
@@ -37,32 +35,26 @@ public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviou
 		super(delayTicks);
 	}
 
-	/**
-	 * Set the time between attacks.
-	 * @param supplier The tick value provider
-	 * @return this
-	 */
+	/// Set the time between attacks.
+	/// @param supplier The tick value provider
+	/// @return this
 	public ConditionlessAttack<E> attackInterval(ToIntFunction<E> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
 	}
 
-	/**
-	 * Set that the attack requires that the entity have an attack target set to activate.
-	 * @return this
-	 */
+	/// Set that the attack requires that the entity have an attack target set to activate.
+	/// @return this
 	public ConditionlessAttack<E> requiresTarget() {
 		this.requireTarget = true;
 
 		return this;
 	}
 
-	/**
-	 * Set the callback for the actual attack when the delay time has elapsed
-	 * @param consumer The callback
-	 * @return this
-	 */
+	/// Set the callback for the actual attack when the delay time has elapsed
+	/// @param consumer The callback
+	/// @return this
 	public ConditionlessAttack<E> attack(Consumer<E> consumer) {
 		this.effect = consumer;
 

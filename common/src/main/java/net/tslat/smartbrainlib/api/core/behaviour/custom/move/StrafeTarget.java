@@ -6,22 +6,20 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * Movement behaviour to handle strafing. <br>
- * Defaults:
- * <ul>
- *     <li>Continues strafing until the target is no longer in memory</li>
- * </ul>
- * @param <E> The entity
- */
+/// Movement behaviour to handle strafing.
+/// Defaults:
+///
+///   - Continues strafing until the target is no longer in memory
+///
+/// @param <E> The entity
 public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected boolean strafingLaterally = false;
 	protected boolean strafingBack = false;
@@ -32,33 +30,27 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	protected Predicate<E> stopStrafingWhen = entity -> false;
 	protected float speedMod = 1;
 
-	/**
-	 * Set a custom condition for when the strafing should end.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set a custom condition for when the strafing should end.
+	/// @param predicate The predicate
+	/// @return this
 	public StrafeTarget<E> stopStrafingWhen(Predicate<E> predicate) {
 		this.stopStrafingWhen = predicate;
 
 		return this;
 	}
 
-	/**
-	 * Set how far the entity should attempt to stay away from the target whilst strafing.
-	 * @param distance The distance, in blocks
-	 * @return this
-	 */
+	/// Set how far the entity should attempt to stay away from the target whilst strafing.
+	/// @param distance The distance, in blocks
+	/// @return this
 	public StrafeTarget<E> strafeDistance(float distance) {
 		this.strafeDistanceSqr = distance * distance;
 
 		return this;
 	}
 
-	/**
-	 * Set the movespeed modifier for when the entity is strafing.
-	 * @param modifier The multiplier for movement speed
-	 * @return this
-	 */
+	/// Set the movespeed modifier for when the entity is strafing.
+	/// @param modifier The multiplier for movement speed
+	/// @return this
 	public StrafeTarget<E> speedMod(float modifier) {
 		this.speedMod = modifier;
 

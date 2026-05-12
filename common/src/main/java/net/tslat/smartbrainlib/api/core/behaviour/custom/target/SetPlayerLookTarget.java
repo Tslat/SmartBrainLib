@@ -9,30 +9,26 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/**
- * Set the {@link MemoryModuleType#LOOK_TARGET} of the brain owner from {@link MemoryModuleType#NEAREST_PLAYERS}
- * @param <E> The entity
- */
+/// Set the [MemoryModuleType#LOOK_TARGET] of the brain owner from [MemoryModuleType#NEAREST_PLAYERS]
+/// @param <E> The entity
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.NEAREST_PLAYERS).noMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.NEAREST_PLAYERS).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected BiPredicate<E, Player> lookPredicate = this::defaultPredicate;
 	protected Predicate<Player> predicate = pl -> true;
 
 	protected Player target = null;
 
-	/**
-	 * Set the predicate for the player to look at.
-	 * @param predicate The predicate
-	 * @return this
-	 */
+	/// Set the predicate for the player to look at.
+	/// @param predicate The predicate
+	/// @return this
 	public SetPlayerLookTarget<E> lookPredicate(BiPredicate<E, Player> predicate) {
 		this.lookPredicate = predicate;
 
