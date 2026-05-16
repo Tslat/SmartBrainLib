@@ -2,16 +2,15 @@ package net.tslat.smartbrainlib.api.core.navigation;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.FlyNodeEvaluator;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Extension of the vanilla [FlyingPathNavigation] with some tweaks for smoother pathfinding:
-///
-///   - Patched [Path] implementation to use proper rounding
-///
+/// - Patched [Path] implementation to use proper rounding
 ///
 /// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
 public class SmoothFlyingPathNavigation extends FlyingPathNavigation implements ExtendedNavigator {
@@ -19,14 +18,15 @@ public class SmoothFlyingPathNavigation extends FlyingPathNavigation implements 
         super(mob, level);
     }
 
+    /// Helper overload getter for retrieving the entity from [PathNavigation#mob]
     @Override
     public Mob getMob() {
         return this.mob;
     }
 
-    @Nullable
+    /// Helper overload getter for retrieving the path from [PathNavigation#path]
     @Override
-    public Path getPath() {
+    public @Nullable Path getPath() {
         return super.getPath();
     }
 

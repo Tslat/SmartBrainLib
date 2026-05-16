@@ -11,7 +11,7 @@ import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public interface ExtendedNavigator {
     Mob getMob();
 
     /// Helper overload getter for retrieving the path from [PathNavigation#path]
-    Path getPath();
+    @Nullable Path getPath();
 
     /// @return Whether the given path type can be pathed onto, or otherwise be considered a pathable surface
     default boolean canPathOnto(PathType pathType) {
@@ -78,8 +78,7 @@ public interface ExtendedNavigator {
     /// Wrap a Path instance in a new instance, patching out the [Path#getEntityPosAtNode(Entity, int)] implementation for smoother pathing
     ///
     /// @return A new Path instance, or null if the input Path was null
-    @Nullable
-    default Path patchPath(@Nullable Path path) {
+    default @Nullable Path patchPath(@Nullable Path path) {
         return path == null ? null : new Path(path.nodes, path.getTarget(), path.canReach()) {
             @Override
             public Vec3 getEntityPosAtNode(Entity entity, int nodeIndex) {
@@ -91,9 +90,8 @@ public interface ExtendedNavigator {
     /// Create a PathFinder instance patching out the [Path#getEntityPosAtNode(Entity, int)] implementation for smoother pathing
     default PathFinder createSmoothPathFinder(NodeEvaluator nodeEvaluator, int maxVisitedNodes) {
         return new PathFinder(nodeEvaluator, maxVisitedNodes) {
-            @Nullable
             @Override
-            public Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
+            public @Nullable Path findPath(PathNavigationRegion navigationRegion, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
                 return patchPath(super.findPath(navigationRegion, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier));
             }
         };
@@ -141,7 +139,7 @@ public interface ExtendedNavigator {
     }
 
     /// Recursively sweep the edges of a given area, identifying collisions for colliding faces of a pseudo-bounds determined by ray-casts
-    /// projected from the bounds leading edge, then cross-checking interceptions for the relevant face.
+    /// projected from the bound's leading edge, then cross-checking interceptions for the relevant face.
     ///
     /// This is a quick algorithm based on Andy Hall's <a href="https://github.com/fenomas/voxel-aabb-sweep/tree/d3ef85b19c10e4c9d2395c186f9661b052c50dc7">voxel-aabb-sweep</a>
     ///
@@ -242,7 +240,7 @@ public interface ExtendedNavigator {
 
     /// Container object for voxel ray traversal details
     ///
-    /// Each array represent [x, y, z] vector coordinates
+    /// Each array represents [x, y, z] vector coordinates
     ///
     /// @param minPos               The minimum-pos coordinate for the given axis
     /// @param leadingEdgeBound     The maximum-pos axis-aligned coordinate for the given axis

@@ -8,13 +8,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Extension of the vanilla [WallClimberNavigation] with some tweaks for smoother pathfinding:
-///
-///   - Patched [Path] implementation to use proper rounding
-///   - Accessible [GroundPathNavigation#getSurfaceY()] override for extensibility
-///
+/// - Patched [Path] implementation to use proper rounding
+/// - Accessible [GroundPathNavigation#getSurfaceY()] override for extensibility
 ///
 /// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
 public class SmoothWallClimberNavigation extends WallClimberNavigation implements ExtendedNavigator {
@@ -22,14 +20,15 @@ public class SmoothWallClimberNavigation extends WallClimberNavigation implement
         super(mob, level);
     }
 
+    /// Helper overload getter for retrieving the entity from [PathNavigation#mob]
     @Override
     public Mob getMob() {
         return this.mob;
     }
 
-    @Nullable
+    /// Helper overload getter for retrieving the path from [PathNavigation#path]
     @Override
-    public Path getPath() {
+    public @Nullable Path getPath() {
         return super.getPath();
     }
 
@@ -44,7 +43,7 @@ public class SmoothWallClimberNavigation extends WallClimberNavigation implement
 
     /// Helper override to allow end-users to modify the fluids an entity can swim in
     ///
-    /// If using this to modify swimmable fluids, ensure you also override [PathNavigation#canUpdatePath()] as well
+    /// If using this to modify swimmable fluids, ensure you also override [PathNavigation#canUpdatePath()]
     ///
     /// @return The nearest safe surface height for the entity
     @Override

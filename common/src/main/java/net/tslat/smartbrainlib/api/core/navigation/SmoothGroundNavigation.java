@@ -9,17 +9,16 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Extension of the vanilla [GroundPathNavigation] with some tweaks for smoother pathfinding:
-///
-///   - Smoothed unit rounding to better accommodate edge-cases
-///   - Patched [Path] implementation to use proper rounding
-///   - Skip to vertical traversal first before continuing path nodes if appropriate
-///   - Accessible [GroundPathNavigation#getSurfaceY()] override for extensibility
-///
+/// - Smoothed unit rounding to better accommodate edge-cases
+/// - Patched [Path] implementation to use proper rounding
+/// - Skip to vertical traversal first before continuing path nodes if appropriate
+/// - Accessible [GroundPathNavigation#getSurfaceY()] override for extensibility
 ///
 /// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
+///
 /// @see ExtendedNavigator#canPathOnto
 /// @see ExtendedNavigator#canPathInto
 public class SmoothGroundNavigation extends GroundPathNavigation implements ExtendedNavigator {
@@ -27,14 +26,15 @@ public class SmoothGroundNavigation extends GroundPathNavigation implements Exte
         super(mob, level);
     }
 
+    /// Helper overload getter for retrieving the entity from [PathNavigation#mob]
     @Override
     public Mob getMob() {
         return this.mob;
     }
 
-    @Nullable
+    /// Helper overload getter for retrieving the path from [PathNavigation#path]
     @Override
-    public Path getPath() {
+    public @Nullable Path getPath() {
         return super.getPath();
     }
 

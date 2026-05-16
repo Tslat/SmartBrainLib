@@ -2,17 +2,16 @@ package net.tslat.smartbrainlib.api.core.navigation;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathFinder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// Extension of the vanilla [AmphibiousPathNavigation] with some tweaks for smoother pathfinding:
-///
-///   - Patched [Path] implementation to use proper rounding
-///   - Extensible [#prefersShallowSwimming()] implementation for ease-of-use
-///
+/// - Patched [Path] implementation to use proper rounding
+/// - Extensible [#prefersShallowSwimming()] implementation for ease-of-use
 ///
 /// Override [Mob#createNavigation(Level)] and return a new instance of this if your entity is a ground-based walking entity
 public class SmoothAmphibiousPathNavigation extends AmphibiousPathNavigation implements ExtendedNavigator {
@@ -27,14 +26,15 @@ public class SmoothAmphibiousPathNavigation extends AmphibiousPathNavigation imp
         return false;
     }
 
+    /// Helper overload getter for retrieving the entity from [PathNavigation#mob]
     @Override
     public Mob getMob() {
         return this.mob;
     }
 
-    @Nullable
+    /// Helper overload getter for retrieving the path from [PathNavigation#path]
     @Override
-    public Path getPath() {
+    public @Nullable Path getPath() {
         return super.getPath();
     }
 
