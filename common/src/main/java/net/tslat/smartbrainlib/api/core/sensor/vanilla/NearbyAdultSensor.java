@@ -1,13 +1,14 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
+import net.minecraft.world.entity.ai.sensing.AdultSensorAnyType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,13 @@ public class NearbyAdultSensor<BO extends LivingEntity> extends NearestVisibleEn
 		this.predicate = predicate;
 
 		return this;
+	}
+
+	/// Modify the detection [#setAdultPredicate] to support any friendly adult entity, rather than the same entity type as [BO]
+	///
+	/// @see AdultSensorAnyType
+	public NearbyAdultSensor<BO> supportAnyFriendlyAdult() {
+		return setAdultPredicate((entity, target) -> target.is(EntityTypeTags.FOLLOWABLE_FRIENDLY_MOBS) && !target.isBaby());
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
