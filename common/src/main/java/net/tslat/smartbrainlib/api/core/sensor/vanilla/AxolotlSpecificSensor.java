@@ -9,7 +9,6 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
@@ -28,7 +27,7 @@ import java.util.function.ToIntFunction;
 ///
 /// Handles the [Axolotl]'s hostility and targets
 ///
-/// @param <BO> The entity
+/// @param <BO> The brain owner entity
 public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
 	protected ToFloatBiFunction<BO, LivingEntity> detectionRange = (_, _) -> 8f;
 	protected BiPredicate<BO, LivingEntity> validTargetCondition = (entity, target) -> target.isInWater() && (target.is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) || (!BrainUtil.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN) && target.is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)));
