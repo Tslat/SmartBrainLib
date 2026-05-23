@@ -9,10 +9,11 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.library.object.MemoryTest;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
+import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 import org.apache.commons.lang3.function.ToBooleanBiFunction;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
 
 	protected ToFloatBiFunction<E, LivingEntity> speedMod = (owner, target) -> 1f;
 	protected ToIntBiFunction<E, LivingEntity> closeEnoughWhen = (owner, target) -> 0;
-	protected ToBooleanBiFunction<E, LivingEntity> targetEyePosition = (owner, target) -> false;
+	protected ToBooleanBiFunction<E, LivingEntity> targetEyePosition = (_, _) -> false;
 
 	/// Set the movespeed modifier for the entity when moving to the target.
 	///
@@ -61,7 +62,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
     ///
     /// @return this
     public SetWalkTargetToAttackTarget<E> targetEyePosition() {
-        return targetEyePosition((owner, target) -> true);
+        return targetEyePosition((_, _) -> true);
     }
 
     /// Sets the walk target location to be the target's eye height, rather than their feet.
@@ -76,7 +77,7 @@ public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviou
     }
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

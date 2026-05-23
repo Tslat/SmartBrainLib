@@ -5,9 +5,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,7 +25,7 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 	private static final MemoryTest CUSTOM_TARGETING_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected final boolean usingNearestAttackable;
-	protected Predicate<E> canAttackPredicate = entity -> true;
+	protected Predicate<E> canAttackPredicate = _ -> true;
 	protected Function<E, ? extends LivingEntity> targetFinder = entity -> BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE);
 
 	public SetAttackTarget() {
@@ -54,7 +55,7 @@ public class SetAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return this.usingNearestAttackable ? MEMORY_REQUIREMENTS : CUSTOM_TARGETING_REQUIREMENTS;
 	}
 

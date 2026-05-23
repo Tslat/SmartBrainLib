@@ -8,11 +8,12 @@ import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,9 +32,9 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
-	protected Predicate<E> avoidWaterPredicate = entity -> true;
+	protected Predicate<E> avoidWaterPredicate = _ -> true;
 	protected SquareRadius radius = new SquareRadius(10, 7);
-	protected BiPredicate<E, Vec3> positionPredicate = (entity, pos) -> true;
+	protected BiPredicate<E, Vec3> positionPredicate = (_, _) -> true;
 
 	/// Set the radius in which to look for walk positions.
 	/// @param radius The coordinate radius, in blocks
@@ -81,7 +82,7 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	/// Useful for hybrid or water-based entities.
 	/// @return this
 	public SetRandomWalkTarget<E> dontAvoidWater() {
-		return avoidWaterWhen(entity -> false);
+		return avoidWaterWhen(_ -> false);
 	}
 
 	/// Set the predicate to determine when the entity should avoid water walk targets;
@@ -94,7 +95,7 @@ public class SetRandomWalkTarget<E extends PathfinderMob> extends ExtendedBehavi
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

@@ -9,10 +9,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -32,7 +33,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 
 	protected LivingEntity toTarget = null;
-	protected BiPredicate<E, Entity> alertAlliesPredicate = (owner, attacker) -> false;
+	protected BiPredicate<E, Entity> alertAlliesPredicate = (_, _) -> false;
 	protected BiPredicate<E, LivingEntity> allyPredicate = (owner, ally) -> {
 		if (!owner.getClass().isAssignableFrom(ally.getClass()) || BrainUtil.getTargetOfEntity(ally) != null)
 			return false;
@@ -74,7 +75,7 @@ public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviou
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

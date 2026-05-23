@@ -267,7 +267,7 @@ public class EasyRandom implements RandomSource  {
 			if (level != null && safeSurfacePlacement)
 				mutablePos.set(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos));
 
-			if (level != null && statePredicate != null && statePredicate.test(level.getBlockState(mutablePos), mutablePos))
+			if (level == null || statePredicate == null || statePredicate.test(level.getBlockState(mutablePos), mutablePos))
 				return mutablePos.immutable();
 		}
 

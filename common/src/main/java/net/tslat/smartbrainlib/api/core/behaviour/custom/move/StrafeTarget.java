@@ -5,9 +5,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -27,7 +28,7 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	protected int targetingTime = 0;
 
 	protected float strafeDistanceSqr = 244;
-	protected Predicate<E> stopStrafingWhen = entity -> false;
+	protected Predicate<E> stopStrafingWhen = _ -> false;
 	protected float speedMod = 1;
 
 	/// Set a custom condition for when the strafing should end.
@@ -58,7 +59,7 @@ public class StrafeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> 
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

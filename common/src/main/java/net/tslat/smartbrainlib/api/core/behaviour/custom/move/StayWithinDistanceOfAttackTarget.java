@@ -11,10 +11,11 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -34,7 +35,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 
 	protected ToFloatBiFunction<E, LivingEntity> distMax = (entity, target) -> 20f;
 	protected ToFloatBiFunction<E, LivingEntity> distMin = (entity, target) -> 5f;
-	protected Predicate<E> stopWhen = entity -> false;
+	protected Predicate<E> stopWhen = _ -> false;
 	protected float speedMod = 1;
 	protected float repositionSpeedMod = 1.3f;
 
@@ -89,7 +90,7 @@ public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends E
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

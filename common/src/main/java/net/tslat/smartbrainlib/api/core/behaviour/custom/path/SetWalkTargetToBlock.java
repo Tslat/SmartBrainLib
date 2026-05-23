@@ -9,11 +9,12 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -24,7 +25,7 @@ import java.util.function.ToIntBiFunction;
 public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
-	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (entity, block) -> true;
+	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (_, _) -> true;
 	protected ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedMod = (owner, pos) -> 1f;
 	protected ToIntBiFunction<E, Pair<BlockPos, BlockState>> closeEnoughDist = (entity, pos) -> 2;
 
@@ -58,7 +59,7 @@ public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehav
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

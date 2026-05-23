@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api.core.sensor.base;
 import net.minecraft.world.entity.LivingEntity;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;

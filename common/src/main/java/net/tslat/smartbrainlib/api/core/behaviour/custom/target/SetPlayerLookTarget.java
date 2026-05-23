@@ -8,9 +8,10 @@ import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -22,7 +23,7 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.NEAREST_PLAYERS).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected BiPredicate<E, Player> lookPredicate = this::defaultPredicate;
-	protected Predicate<Player> predicate = pl -> true;
+	protected Predicate<Player> predicate = _ -> true;
 
 	protected Player target = null;
 
@@ -36,7 +37,7 @@ public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehavio
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

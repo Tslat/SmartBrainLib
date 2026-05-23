@@ -9,11 +9,12 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 import net.tslat.smartbrainlib.util.RandomUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,10 +34,10 @@ import java.util.function.ToIntFunction;
 public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.WALK_TARGET);
 
-	protected BiPredicate<E, BlockState> validPosition = (entity, state) -> false;
-	protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
+	protected BiPredicate<E, BlockState> validPosition = (_, _) -> false;
+	protected ToFloatBiFunction<E, Vec3> speedModifier = (_, _) -> 1f;
 	protected SquareRadius radius = new SquareRadius(10, 6);
-	protected ToIntFunction<E> tries = entity -> 10;
+	protected ToIntFunction<E> tries = _ -> 10;
 
 	protected Vec3 targetPos = null;
 
@@ -99,7 +100,7 @@ public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBe
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

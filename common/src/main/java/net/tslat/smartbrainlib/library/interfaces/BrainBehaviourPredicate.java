@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.schedule.Activity;
-import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.GroupBehaviour;
 
 import java.util.Stack;
 import java.util.function.Predicate;

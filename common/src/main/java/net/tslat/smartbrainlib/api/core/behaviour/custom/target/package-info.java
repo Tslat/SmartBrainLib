@@ -1,4 +1,4 @@
-/// Built-in [net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour] implementations related to setting, updating, or clearing targets.
+/// Built-in [net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour] implementations related to setting, updating, or clearing targets.
 ///
 /// Targets do not necessarily relate to attacking
 @NullMarked

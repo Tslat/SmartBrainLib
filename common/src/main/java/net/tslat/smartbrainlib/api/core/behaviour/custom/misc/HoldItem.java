@@ -7,7 +7,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.ItemStack;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -23,7 +24,7 @@ import java.util.function.Function;
 public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	protected Function<E, ItemStack> stackFunction = entity -> ItemStack.EMPTY;
 	protected Function<E, InteractionHand> handDecider = entity -> InteractionHand.MAIN_HAND;
-	protected BiPredicate<E, ItemStack> dropItemOnUnequip = (entity, stack) -> false;
+	protected BiPredicate<E, ItemStack> dropItemOnUnequip = (_, _) -> false;
 
 	/// Sets the function to determine which hand to equip the item in.
 	/// @param function The function
@@ -46,7 +47,7 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	/// Sets the behaviour to drop the previously equipped item when equipping the new item.
 	/// @return this
 	public HoldItem<E> dropItemOnUnequip() {
-		return dropItemOnUnequip((entity, stack) -> true);
+		return dropItemOnUnequip((_, _) -> true);
 	}
 
 	/// Sets the predicate to determine whether the entity should drop the previously equipped item when equipping the new item.
@@ -59,7 +60,7 @@ public class HoldItem<E extends LivingEntity> extends ExtendedBehaviour<E> {
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+	public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();
 	}
 

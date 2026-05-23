@@ -1,4 +1,4 @@
-/// Classes related to [net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour] instances and implementations
+/// Classes related to [net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour] instances and implementations
 @NullMarked
 package net.tslat.smartbrainlib.api.core.behaviour;
 

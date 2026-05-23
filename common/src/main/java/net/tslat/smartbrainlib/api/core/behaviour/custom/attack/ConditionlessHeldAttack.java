@@ -7,7 +7,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.core.behaviour.HeldBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.HeldBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,7 @@ import java.util.List;
 
 /// Attack behaviour for held attacks that doesn't require line of sight or proximity to target, or to even have a target at all.
 /// This is useful for special attacks.
-/// Set the actual condition for activation via [ExtendedBehaviour.startCondition][net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour#startCondition]
+/// Set the actual condition for activation via [ExtendedBehaviour.startCondition][ExtendedBehaviour#startCondition]
 /// @param <E> The entity
 public class ConditionlessHeldAttack<E extends LivingEntity> extends HeldBehaviour<E> {
 	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
@@ -35,7 +36,7 @@ public class ConditionlessHeldAttack<E extends LivingEntity> extends HeldBehavio
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return MEMORY_REQUIREMENTS;
 	}
 

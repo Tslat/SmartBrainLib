@@ -4,9 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -21,7 +22,7 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 	private final List<Pair<MemoryModuleType<?>, MemoryStatus>> memoryRequirements;
 
 	protected final MemoryModuleType<M> memory;
-	protected BiPredicate<E, M> customPredicate = (entity, target) -> true;
+	protected BiPredicate<E, M> customPredicate = (_, _) -> true;
 
 	public InvalidateMemory(MemoryModuleType<M> memory) {
 		super();
@@ -38,7 +39,7 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return this.memoryRequirements == null ? List.of() : this.memoryRequirements;
 	}
 

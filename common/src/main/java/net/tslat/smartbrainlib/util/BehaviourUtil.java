@@ -5,7 +5,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.GateBehavior;
 import net.minecraft.world.entity.schedule.Activity;
-import net.tslat.smartbrainlib.api.core.behaviour.GroupBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.GroupBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.BrainBehaviourPredicate;
 
 import java.util.*;

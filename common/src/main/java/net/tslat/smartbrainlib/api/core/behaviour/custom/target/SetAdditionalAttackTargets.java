@@ -10,9 +10,10 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.TriPredicate;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.Iterator;
@@ -68,7 +69,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 	}
 
 	@Override
-	protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
 		return List.of();
 	}
 
@@ -90,7 +91,7 @@ public class SetAdditionalAttackTargets<E extends Mob> extends ExtendedBehaviour
 		Set<LivingEntity> targetPool = new ObjectOpenHashSet<>();
 
 		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_PLAYERS, targetPool::addAll);
-		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, memory -> memory.findAll(target -> true).forEach(targetPool::add));
+		BrainUtil.withMemory(brain, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, memory -> memory.findAll(_ -> true).forEach(targetPool::add));
 
 		if (targetPool.isEmpty())
 			return;

@@ -7,11 +7,12 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.LambdaUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class SetRandomSwimTarget<E extends PathfinderMob> extends ExtendedBehavi
 
     protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
     protected SquareRadius radius = new SquareRadius(10, 7);
-    protected BiPredicate<E, Vec3> positionPredicate = (entity, pos) -> true;
+    protected BiPredicate<E, Vec3> positionPredicate = (_, _) -> true;
 
     /// Set the radius in which to look for swim positions.
     /// @param radius The coordinate radius, in blocks
@@ -74,7 +75,7 @@ public class SetRandomSwimTarget<E extends PathfinderMob> extends ExtendedBehavi
     }
 
     @Override
-    protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+    public List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
         return MEMORY_REQUIREMENTS;
     }
 
