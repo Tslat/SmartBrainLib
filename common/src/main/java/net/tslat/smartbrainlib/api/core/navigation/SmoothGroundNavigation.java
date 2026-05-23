@@ -79,6 +79,7 @@ public class SmoothGroundNavigation extends GroundPathNavigation implements Exte
     ///
     /// @return The node index for the nearest node representing a vertical traversal
     protected int getClosestVerticalTraversal(int safeSurfaceHeight) {
+        @SuppressWarnings("DataFlowIssue")
         final int nodesLength = this.path.getNodeCount();
 
         for (int nodeIndex = this.path.getNextNodeIndex(); nodeIndex < nodesLength; nodeIndex++) {
