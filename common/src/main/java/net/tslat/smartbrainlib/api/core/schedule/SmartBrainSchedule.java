@@ -74,6 +74,7 @@ public class SmartBrainSchedule<BO extends LivingEntity & SmartBrainOwner<BO>, N
 		return this;
 	}
 
+	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
 	/// Sort the schedule to its natural order
 	protected void sortSchedule() {
 		@SuppressWarnings("unchecked")
@@ -134,4 +135,5 @@ public class SmartBrainSchedule<BO extends LivingEntity & SmartBrainOwner<BO>, N
 			return new Type<>(valueProvider, comparator);
 		}
 	}
+	//</editor-fold>
 }
