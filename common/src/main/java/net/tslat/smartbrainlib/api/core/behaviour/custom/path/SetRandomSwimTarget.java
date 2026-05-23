@@ -26,7 +26,7 @@ import java.util.function.BiPredicate;
 ///   - 10-block vertical radius
 ///
 public class SetRandomSwimTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.WALK_TARGET);
+    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
     protected ToFloatBiFunction<E, Vec3> speedModifier = (entity, targetPos) -> 1f;
     protected SquareRadius radius = new SquareRadius(10, 7);

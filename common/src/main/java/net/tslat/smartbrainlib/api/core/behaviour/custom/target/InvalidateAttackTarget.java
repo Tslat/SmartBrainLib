@@ -22,7 +22,7 @@ import java.util.function.BiPredicate;
 ///   - Invalidates the target if it's a creative or spectator mode player
 ///
 public class InvalidateAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET).usesMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 	protected BiPredicate<E, LivingEntity> targetInvalidIf = (entity, target) ->
 			(target instanceof Player player && player.getAbilities().invulnerable) ||

@@ -16,7 +16,7 @@ import java.util.List;
 /// This is mostly superceded by [SetWalkTargetToAttackTarget][net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget], but can be useful if you want the brain owner to look at the target without pathing to it
 /// @param <E> The entity
 public class LookAtAttackTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected LivingEntity target = null;
 

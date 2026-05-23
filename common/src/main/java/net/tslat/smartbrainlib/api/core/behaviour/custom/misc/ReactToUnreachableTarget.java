@@ -16,7 +16,7 @@ import java.util.function.ToIntFunction;
 /// Calls a callback when the entity has been obstructed for a given period of time.
 /// @param <E> The entity
 public class ReactToUnreachableTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemories(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, SBLMemoryTypes.TARGET_UNREACHABLE.get());
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemories(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 
 	protected ToIntFunction<E> ticksToReact = entity -> 100;
 	protected BiConsumer<E, Boolean> callback = (entity, towering) -> {};

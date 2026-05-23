@@ -35,7 +35,7 @@ import java.util.function.ToIntBiFunction;
 ///
 /// @param <E> The entity
 public class Panic<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(3).hasMemory(MemoryModuleType.HURT_BY).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_PANICKING);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.HURT_BY).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_PANICKING);
 
 	protected BiPredicate<E, DamageSource> shouldPanicPredicate = (entity, damageSource) -> entity.isFreezing() || entity.isOnFire() || damageSource.getEntity() instanceof LivingEntity;
 	protected Function<E, Float> speedMod = entity -> 1.25f;

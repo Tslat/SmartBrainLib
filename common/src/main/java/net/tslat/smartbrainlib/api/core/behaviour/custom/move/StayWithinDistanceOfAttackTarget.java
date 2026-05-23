@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 ///
 /// @param <E> The entity
 public class StayWithinDistanceOfAttackTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected ToFloatBiFunction<E, LivingEntity> distMax = (entity, target) -> 20f;
 	protected ToFloatBiFunction<E, LivingEntity> distMin = (entity, target) -> 5f;

@@ -19,7 +19,7 @@ import java.util.function.ToIntFunction;
 /// Set the look target to a random nearby position
 /// @param <E> The entity
 public class SetRandomLookTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected FloatProvider runChance = ConstantFloat.of(0.02f);
 	protected ToIntFunction<E> lookTime = entity -> entity.getRandom().nextInt(20) + 20;

@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 /// Set the [MemoryModuleType#LOOK_TARGET] of the brain owner from [MemoryModuleType#NEAREST_PLAYERS]
 /// @param <E> The entity
 public class SetPlayerLookTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.NEAREST_PLAYERS).noMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.NEAREST_PLAYERS).noMemory(MemoryModuleType.LOOK_TARGET);
 
 	protected BiPredicate<E, Player> lookPredicate = this::defaultPredicate;
 	protected Predicate<Player> predicate = _ -> true;

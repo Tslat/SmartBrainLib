@@ -16,16 +16,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-/// Extended behaviour for melee attacking. Natively supports animation hit delays or other delays.
-/// Defaults:
+/// Extended behaviour for attacking with melee<br/>
+/// Natively supports animation hit delays or other delays
 ///
-///   - 20 tick attack interval
-///
-/// @param <E> The entity
-public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+/// @param <BO> The brain owner entity
+public class AnimatableMeleeAttack<BO extends Mob> extends DelayedBehaviour<BO> {
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
-	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
+	protected ToIntFunction<BO> attackIntervalSupplier = _ -> 20;
 
 	@Nullable
 	protected LivingEntity target = null;
@@ -37,7 +35,7 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	/// Set the time between attacks.
 	/// @param supplier The tick value provider
 	/// @return this
-	public AnimatableMeleeAttack<E> attackInterval(ToIntFunction<E> supplier) {
+	public AnimatableMeleeAttack<BO> attackInterval(ToIntFunction<BO> supplier) {
 		this.attackIntervalSupplier = supplier;
 
 		return this;
@@ -49,25 +47,25 @@ public class AnimatableMeleeAttack<E extends Mob> extends DelayedBehaviour<E> {
 	}
 
 	@Override
-	protected boolean checkExtraStartConditions(ServerLevel level, E entity) {
+	protected boolean checkExtraStartConditions(ServerLevel level, BO entity) {
 		this.target = BrainUtil.getTargetOfEntity(entity);
 
 		return entity.getSensing().hasLineOfSight(this.target) && entity.isWithinMeleeAttackRange(this.target);
 	}
 
 	@Override
-	protected void start(E entity) {
+	protected void start(BO entity) {
 		entity.swing(InteractionHand.MAIN_HAND);
 		BehaviorUtils.lookAtEntity(entity, this.target);
 	}
 
 	@Override
-	protected void stop(E entity) {
+	protected void stop(BO entity) {
 		this.target = null;
 	}
 
 	@Override
-	protected void doDelayedAction(E entity) {
+	protected void doDelayedAction(BO entity) {
 		BrainUtil.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, this.attackIntervalSupplier.applyAsInt(entity));
 
 		if (this.target == null)

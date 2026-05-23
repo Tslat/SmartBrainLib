@@ -23,7 +23,7 @@ import java.util.List;
 ///
 /// @param <E> The entity
 public class FleeTarget<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.ATTACK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected int fleeDistance = 20;
 	protected float speedModifier = 1;

@@ -35,7 +35,7 @@ import java.util.function.ToIntFunction;
 ///   - Holds doors open for entities of the same type within 2 blocks of the door
 ///
 public class InteractWithDoor<E extends LivingEntity> extends ExtendedBehaviour<E> {
-    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(3).hasMemory(MemoryModuleType.PATH).usesMemories(MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_LIVING_ENTITIES);
+    private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.PATH).usesMemories(MemoryModuleType.DOORS_TO_CLOSE, MemoryModuleType.NEAREST_LIVING_ENTITIES);
 
     protected ToIntFunction<E> doorInteractionDelay = entity -> 20;
     protected TriPredicate<E, LivingEntity, BlockPos> holdDoorsOpenFor = (entity, other, doorPos) -> entity.getType() == other.getType() && doorPos.closerToCenterThan(other.position(), 2);

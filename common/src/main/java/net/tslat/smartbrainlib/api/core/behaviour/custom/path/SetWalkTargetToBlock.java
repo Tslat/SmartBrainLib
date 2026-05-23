@@ -23,7 +23,7 @@ import java.util.function.ToIntBiFunction;
 /// Path setting behaviour for walking to/near a block position.
 /// @param <E> The entity
 public class SetWalkTargetToBlock<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected BiPredicate<E, Pair<BlockPos, BlockState>> predicate = (_, _) -> true;
 	protected ToFloatBiFunction<E, Pair<BlockPos, BlockState>> speedMod = (owner, pos) -> 1f;

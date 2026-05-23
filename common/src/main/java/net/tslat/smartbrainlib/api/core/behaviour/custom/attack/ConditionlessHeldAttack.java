@@ -20,7 +20,7 @@ import java.util.List;
 /// Set the actual condition for activation via [ExtendedBehaviour.startCondition][ExtendedBehaviour#startCondition]
 /// @param <E> The entity
 public class ConditionlessHeldAttack<E extends LivingEntity> extends HeldBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected boolean requireTarget = false;
 

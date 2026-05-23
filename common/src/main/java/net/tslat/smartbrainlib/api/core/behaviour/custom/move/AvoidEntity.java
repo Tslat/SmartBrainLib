@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 ///   - 1x move speed modifier
 ///
 public class AvoidEntity<E extends PathfinderMob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> avoidingPredicate = _ -> false;
 	protected float noCloserThanSqr = 9f;

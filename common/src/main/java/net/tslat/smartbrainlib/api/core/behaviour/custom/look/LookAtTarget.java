@@ -19,7 +19,7 @@ import java.util.List;
 ///
 /// @param <E> The entity
 public class LookAtTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.LOOK_TARGET);
 
 	public LookAtTarget() {
 		noTimeout();

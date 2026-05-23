@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 ///
 /// @param <E> The entity
 public class SetRetaliateTarget<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(2).hasMemory(MemoryModuleType.HURT_BY_ENTITY).noMemory(MemoryModuleType.ATTACK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.HURT_BY_ENTITY).noMemory(MemoryModuleType.ATTACK_TARGET);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || !player.getAbilities().invulnerable);
 

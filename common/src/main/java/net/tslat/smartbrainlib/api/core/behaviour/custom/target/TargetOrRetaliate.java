@@ -39,7 +39,7 @@ import java.util.function.Predicate;
 ///
 /// @param <E> The entity
 public class TargetOrRetaliate<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).usesMemories(MemoryModuleType.ATTACK_TARGET, MemoryModuleType.HURT_BY, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	protected Predicate<LivingEntity> canAttackPredicate = entity -> entity.isAlive() && (!(entity instanceof Player player) || (!player.getAbilities().invulnerable && entity.level().getDifficulty() != Difficulty.PEACEFUL));
 	protected BiPredicate<E, Entity> alertAlliesPredicate = (_, _) -> false;

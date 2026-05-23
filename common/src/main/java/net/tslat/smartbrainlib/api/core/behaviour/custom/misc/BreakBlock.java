@@ -28,7 +28,7 @@ import java.util.List;
 ///   - Takes 240 ticks to break the block
 ///
 public class BreakBlock<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(SBLMemoryTypes.NEARBY_BLOCKS.get());
 
 	protected TriPredicate<E, BlockPos, BlockState> targetBlockPredicate = (entity, pos, state) -> state.is(BlockTags.DOORS);
 	protected TriPredicate<E, BlockPos, BlockState> stopPredicate = (_, _, _) -> false;

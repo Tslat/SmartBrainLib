@@ -23,7 +23,7 @@ import java.util.function.ToIntBiFunction;
 ///
 /// @param <E> The entity
 public class SetWalkTargetToAttackTarget<E extends Mob> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(3).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.LOOK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(3).hasMemory(MemoryModuleType.ATTACK_TARGET).usesMemories(MemoryModuleType.WALK_TARGET, MemoryModuleType.LOOK_TARGET);
 
 	protected ToFloatBiFunction<E, LivingEntity> speedMod = (owner, target) -> 1f;
 	protected ToIntBiFunction<E, LivingEntity> closeEnoughWhen = (owner, target) -> 0;

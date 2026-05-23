@@ -17,7 +17,7 @@ import java.util.function.BiPredicate;
 /// Note that because vanilla animals do not store a reference to their parent or child, by default this behaviour just grabs the nearest
 /// animal of the same class and presumes it is the parent.
 public class FollowParent<E extends AgeableMob> extends FollowEntity<E, AgeableMob> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES);
 
 	private BiPredicate<E, AgeableMob> parentPredicate = (entity, other) -> entity.getClass() == other.getClass() && other.getAge() >= 0;
 

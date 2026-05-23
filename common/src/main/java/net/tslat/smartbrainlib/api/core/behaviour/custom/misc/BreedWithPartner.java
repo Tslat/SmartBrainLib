@@ -25,7 +25,7 @@ import java.util.function.ToIntBiFunction;
 ///   - Spend between 3 and 5.5 seconds to create the offspring
 ///
 public class BreedWithPartner<E extends Animal> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(4).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).noMemory(MemoryModuleType.BREED_TARGET).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(4).hasMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).noMemory(MemoryModuleType.BREED_TARGET).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET);
 
 	protected ToFloatBiFunction<E, Animal> speedMod = (entity, partner) -> 1f;
 	protected ToIntBiFunction<E, Animal> closeEnoughDist = (entity, partner) -> 2;

@@ -32,7 +32,7 @@ import java.util.function.ToIntFunction;
 ///
 /// @param <E> The entity
 public class SeekRandomNearbyPosition<E extends LivingEntity> extends ExtendedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.WALK_TARGET);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.WALK_TARGET);
 
 	protected BiPredicate<E, BlockState> validPosition = (_, _) -> false;
 	protected ToFloatBiFunction<E, Vec3> speedModifier = (_, _) -> 1f;

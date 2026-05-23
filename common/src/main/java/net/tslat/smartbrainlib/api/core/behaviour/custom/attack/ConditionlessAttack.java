@@ -22,7 +22,7 @@ import java.util.function.ToIntFunction;
 /// Set the actual condition for activation via [ExtendedBehaviour#startCondition(Predicate)]
 /// @param <E> The entity
 public class ConditionlessAttack<E extends LivingEntity> extends DelayedBehaviour<E> {
-	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.sized(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	private static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected ToIntFunction<E> attackIntervalSupplier = entity -> 20;
 	protected boolean requireTarget = false;

@@ -28,7 +28,7 @@ public class InvalidateMemory<E extends LivingEntity, M> extends ExtendedBehavio
 		super();
 
 		this.memory = memory;
-		this.memoryRequirements = MemoryTest.sized(1).hasMemory(this.memory);
+		this.memoryRequirements = MemoryTest.builder(1).hasMemory(this.memory);
 	}
 
 	/// Sets a custom predicate to invalidate the memory if none of the previous checks invalidate it first.
