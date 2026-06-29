@@ -3,28 +3,28 @@
     mod                             = "1.17-alpha-1"
 
 # Common
-    minecraft-range                 = "[26.1.2,)"
-    minecraft                       = "26.1.2"
-    neoform                         = "26.1.2-1"
+    minecraft-range                 = "[26.2,)"
+    minecraft                       = "26.2"
+    neoform                         = "26.2-1"
     java                            = "25"
 
 # Fabric
     fabric                          = "0.19.2"
     fabric-range                    = "0.18"
-    fabric-api                      = "0.148.2+26.1.2"
-    fabric-api-range                = "0.145.0+26.1.2"
+    fabric-api                      = "0.152.0+26.2"
+    fabric-api-range                = "0.152.0+26.2"
 
 # Forge
-    forge                           = "64.0.8"
-    forge-mc                        = "26.1.2-64.0.8"
-    forge-fml-range                 = "[64.0.0,)"
-    forge-range                     = "[64.0.0,)"
+    forge                           = "65.0.1"
+    forge-mc                        = "26.2-65.0.1"
+    forge-fml-range                 = "[65.0.1,)"
+    forge-range                     = "[65.0.1,)"
     forge-eventbusvalidator         = "7.0.4"
 
 # Neoforge
     neoforge-loader-range           = "[5,)"
-    neoforge                        = "26.1.2.48-beta"
-    neoforge-range                  = "[26.1.2.0-beta,)"
+    neoforge                        = "26.2.0.1-beta"
+    neoforge-range                  = "[26.2.0.1-beta,)"
 
 # Mixin
     mixin                           = "0.8.7"
