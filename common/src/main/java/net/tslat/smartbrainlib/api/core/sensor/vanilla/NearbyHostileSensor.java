@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectFloatPair;
 import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
@@ -26,17 +27,17 @@ import java.util.function.ToIntFunction;
 /// @param <BO> The brain owner entity
 public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
 	protected final Reference2FloatOpenHashMap<EntityType<?>> hostileDistanceMap = Util.make(new Reference2FloatOpenHashMap<>(11), map -> {
-		map.put(EntityType.DROWNED, 8f);
-		map.put(EntityType.HUSK, 8f);
-		map.put(EntityType.VEX, 8f);
-		map.put(EntityType.ZOMBIE, 8f);
-		map.put(EntityType.ZOMBIE_VILLAGER, 8f);
-		map.put(EntityType.VINDICATOR, 10f);
-		map.put(EntityType.ZOGLIN, 10f);
-		map.put(EntityType.EVOKER, 12f);
-		map.put(EntityType.ILLUSIONER, 12f);
-		map.put(EntityType.RAVAGER, 12f);
-		map.put(EntityType.PILLAGER, 15f);
+		map.put(EntityTypes.DROWNED, 8f);
+		map.put(EntityTypes.HUSK, 8f);
+		map.put(EntityTypes.VEX, 8f);
+		map.put(EntityTypes.ZOMBIE, 8f);
+		map.put(EntityTypes.ZOMBIE_VILLAGER, 8f);
+		map.put(EntityTypes.VINDICATOR, 10f);
+		map.put(EntityTypes.ZOGLIN, 10f);
+		map.put(EntityTypes.EVOKER, 12f);
+		map.put(EntityTypes.ILLUSIONER, 12f);
+		map.put(EntityTypes.RAVAGER, 12f);
+		map.put(EntityTypes.PILLAGER, 15f);
 	});
 	protected BiPredicate<BO, LivingEntity> hostilePredicate = (target, entity) -> {
 		final float distance = this.hostileDistanceMap.getOrDefault(target.getType(), -1);

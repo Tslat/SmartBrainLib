@@ -1,6 +1,6 @@
 package net.tslat.smartbrainlib.api.core.navigation;
 
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -25,7 +25,7 @@ public class SmoothWaterBoundPathNavigation extends WaterBoundPathNavigation imp
     ///
     /// Defaults to false for non-dolphins
     public boolean canBreach() {
-        return this.mob.getType() == EntityType.DOLPHIN;
+        return this.mob.getType() == EntityTypes.DOLPHIN;
     }
 
     /// Helper overload getter for retrieving the entity from [PathNavigation#mob]

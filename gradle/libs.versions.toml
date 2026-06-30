@@ -3,43 +3,41 @@
     mod                             = "2.0.0"
 
 # Common
-    minecraft-range                 = "[26.1.2,)"
-    minecraft                       = "26.1.2"
-    neoform                         = "26.1.2-1"
+    minecraft-range                 = "[26.2,)"
+    minecraft                       = "26.2"
+    neoform                         = "26.2-1"
     java                            = "25"
 
 # Fabric
-    fabric                          = "0.19.2"
-    fabric-range                    = "0.18"
-    fabric-api                      = "0.148.2+26.1.2"
-    fabric-api-range                = "0.145.0+26.1.2"
+    fabric                          = "0.19.3"
+    fabric-range                    = "0.19"
+    fabric-api                      = "0.153.0+26.2"
+    fabric-api-range                = "0.153.0+26.2"
 
 # Forge
-    forge                           = "64.0.8"
-    forge-mc                        = "26.1.2-64.0.8"
-    forge-fml-range                 = "[64.0.0,)"
-    forge-range                     = "[64.0.0,)"
+    forge                           = "65.0.1"
+    forge-mc                        = "26.2-65.0.1"
+    forge-fml-range                 = "[65.0.0,)"
+    forge-range                     = "[65.0.0,)"
     forge-eventbusvalidator         = "7.0.5"
 
 # Neoforge
     neoforge-loader-range           = "[5,)"
-    neoforge                        = "26.1.2.48-beta"
-    neoforge-range                  = "[26.1.2.0-beta,)"
+    neoforge                        = "26.2.0.7-beta"
+    neoforge-range                  = "[26.2.0.7-beta,)"
 
 # Mixin
     mixin                           = "0.8.7"
-    mixinextras                     = "0.5.3"
-    mixinextras-range               = "[0.5.3,)"
+    mixinextras                     = "0.5.4"
+    mixinextras-range               = "[0.5.4,)"
 
 # Plugins
     plugin-moddevgradle             = "2.0.141"
     plugin-minotaur                 = "2.9.0"
-    plugin-curseforge-gradle        = "1.2.30"
-    plugin-forge-gradle             = "[7.0.20,)"
+    plugin-curseforge-gradle        = "1.3.32"
+    plugin-forge-gradle             = "[7.0.28,)"
     plugin-forge-at                 = "[5.0.3,)"
-    plugin-forge-jarjar             = "[0.2.3,)"
-    plugin-loom                     = "1.16-SNAPSHOT"
-    plugin-idea-ext                 = "1.4.1"
+    plugin-loom                     = "1.17-SNAPSHOT"
 
 # See the below link for more information about version catalogues
 # https://docs.gradle.org/current/userguide/version_catalogs.html
@@ -66,8 +64,4 @@
     moddevgradle            = { id = "net.neoforged.moddev",                    version.ref = "plugin-moddevgradle" }
     forgegradle             = { id = "net.minecraftforge.gradle",               version.ref = "plugin-forge-gradle" }
     forge-at                = { id = "net.minecraftforge.accesstransformers",   version.ref = "plugin-forge-at" }
-    forge-jarjar            = { id = "net.minecraftforge.jarjar",               version.ref = "plugin-forge-jarjar" }
     loom                    = { id = "net.fabricmc.fabric-loom",                version.ref = "plugin-loom" }
-
-# Misc
-    ideaext                 = { id = "org.jetbrains.gradle.plugin.idea-ext",    version.ref = "plugin-idea-ext" }
