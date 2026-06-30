@@ -8,10 +8,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
@@ -45,6 +45,7 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	};
 
 	/// Set the predicate that determines a valid hostile entity
+	@ApiStatus.NonExtendable
 	public NearbyHostileSensor<BO> setHostilePredicate(BiPredicate<BO, LivingEntity> predicate) {
 		this.hostilePredicate = predicate;
 
@@ -54,6 +55,7 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	/// Clear the hostile types map and replace it with all the provided entries
 	///
 	/// @param entries The collection of entity types and distances to set the hostile types map to
+	@ApiStatus.NonExtendable
 	@SuppressWarnings("unchecked")
     public NearbyHostileSensor<BO> setHostiles(ObjectFloatPair<EntityType<?>>... entries) {
 		this.hostileDistanceMap.clear();
@@ -66,17 +68,15 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	}
 
 	/// Add an entity type to the hostile types map
-	///
-	/// @param entry The entity type and distance to which it should be considered
-	/// @return this
-	public NearbyHostileSensor<BO> addHostile(ObjectFloatPair<EntityType<?>> entry) {
-		this.hostileDistanceMap.put(entry.key(), entry.valueFloat());
+	@ApiStatus.NonExtendable
+	public NearbyHostileSensor<BO> addHostile(EntityType<?> entityType, float distance) {
+		this.hostileDistanceMap.put(entityType, distance);
 
 		return this;
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage.
+	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public NearbyHostileSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (NearbyHostileSensor<BO>)super.setPredicate(predicate);
@@ -110,13 +110,13 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_HOSTILE.get();
 	}
 
-	/// @return Which memory the sensor should set if an entity meets the given criteria.
+	/// @return Which memory the sensor should set if an entity meets the given criteria
 	@Override
 	public MemoryModuleType<LivingEntity> getMemory() {
 		return MemoryModuleType.NEAREST_HOSTILE;

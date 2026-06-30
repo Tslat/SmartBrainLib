@@ -16,6 +16,7 @@ import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -24,7 +25,7 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 /// A replication of vanilla's [net.minecraft.world.entity.ai.sensing.PiglinBruteSpecificSensor]<br/>
-/// Not really useful, but included for completeness' sake and legibility.
+/// Not really useful, but included for completeness' sake and legibility
 ///
 /// Keeps track of nearby [piglins][Piglin] and [nemesis][MemoryModuleType#NEAREST_VISIBLE_NEMESIS]
 ///
@@ -36,6 +37,7 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 	protected BiPredicate<BO, AbstractPiglin> piglinPredicate = (_, piglin) -> piglin.isAdult();
 
 	/// Set a custom predicate for determining valid "nemesis" entities
+	@ApiStatus.NonExtendable
 	public PiglinBruteSpecificSensor<BO> setNemesisPredicate(BiPredicate<BO, Mob> predicate) {
 		this.nemesisPredicate = predicate;
 
@@ -43,6 +45,7 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 	}
 
 	/// Set a custom predicate for determining valid [AbstractPiglin]s for the [MemoryModuleType#NEARBY_ADULT_PIGLINS] memory
+	@ApiStatus.NonExtendable
 	public PiglinBruteSpecificSensor<BO> setPiglinPredicate(BiPredicate<BO, AbstractPiglin> predicate) {
 		this.piglinPredicate = predicate;
 
@@ -51,6 +54,8 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public PiglinBruteSpecificSensor<BO> scanRate(int scanRate) {
 		return scanRate(_ -> scanRate);
 	}
@@ -58,12 +63,14 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinBruteSpecificSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (PiglinBruteSpecificSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinBruteSpecificSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (PiglinBruteSpecificSensor<BO>)super.afterScanning(callback);
@@ -72,13 +79,14 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinBruteSpecificSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (PiglinBruteSpecificSensor<BO>)super.onlyScanIf(predicate);
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.PIGLIN_BRUTE_SPECIFIC.get();
@@ -93,10 +101,11 @@ public class PiglinBruteSpecificSensor<BO extends LivingEntity> extends Extended
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Brain<BO> brain = BrainUtil.getBrain(entity);

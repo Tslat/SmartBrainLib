@@ -11,11 +11,11 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -41,6 +41,7 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 	/// Set the radius for the sensor to scan
 	///
 	/// @param radius The coordinate radius, in blocks
+	@ApiStatus.NonExtendable
 	public SecondaryPoiSensor<BO> setRadius(int radius) {
 		return setRadius(radius, radius);
 	}
@@ -49,6 +50,7 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 	///
 	/// @param xz The X/Z coordinate radius, in blocks
 	/// @param y  The Y coordinate radius, in blocks
+	@ApiStatus.NonExtendable
 	public SecondaryPoiSensor<BO> setRadius(double xz, double y) {
 		return setRadius(_ -> new SquareRadius(xz, y));
 	}
@@ -56,6 +58,7 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 	/// Set the radius function for the sensor to scan
 	///
 	/// @param function The radius function
+	@ApiStatus.NonExtendable
 	public SecondaryPoiSensor<BO> setRadius(Function<BO, SquareRadius> function) {
 		this.radius = function;
 
@@ -64,6 +67,8 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public SecondaryPoiSensor<BO> scanRate(int scanRate) {
 		return scanRate(_ -> scanRate);
 	}
@@ -71,12 +76,14 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public SecondaryPoiSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (SecondaryPoiSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public SecondaryPoiSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (SecondaryPoiSensor<BO>)super.afterScanning(callback);
@@ -85,13 +92,14 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public SecondaryPoiSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (SecondaryPoiSensor<BO>)super.onlyScanIf(predicate);
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.SECONDARY_POI.get();
@@ -106,10 +114,11 @@ public class SecondaryPoiSensor<BO extends Villager> extends ExtendedSensor<BO> 
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Set<Block> testPoiBlocks = entity.getVillagerData().profession().value().secondaryPoi();

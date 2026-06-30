@@ -75,10 +75,11 @@ public class HurtBySensor<BO extends LivingEntity> extends PredicateSensor<BO, D
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Brain<BO> brain = BrainUtil.getBrain(entity);

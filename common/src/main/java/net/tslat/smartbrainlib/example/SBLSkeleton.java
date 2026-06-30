@@ -67,13 +67,13 @@ public final class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSk
 		return List.of(
 				new AvoidSun<>(), // Keep pathfinder avoiding the sun
 				new EscapeSun<>() // Escape the sun
-						.cooldownFor(entity -> 20),
+						.cooldownFor(_ -> 20),
 				new AvoidEntity<>() // Run away from wolves
-						.avoiding(entity -> entity instanceof Wolf),
+						.avoiding(Wolf.class),
 				new LookAtTarget<>() // Look at the look target
 						.runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 300)),
 				new StrafeTarget<>()	// Strafe around target
-						.stopStrafingWhen(entity -> !isHoldingBow(entity))
+						.stopStrafingWhen((entity, _) -> !isHoldingBow(entity))
 						.startCondition(SBLSkeleton::isHoldingBow),
 				new MoveToWalkTarget<>()); // Move to the current walk target
 	}
@@ -104,8 +104,8 @@ public final class SBLSkeleton extends Skeleton implements SmartBrainOwner<SBLSk
 						new BowAttack<>(20) // Fire a bow, if holding one
 								.startCondition(SBLSkeleton::isHoldingBow),
 						new AnimatableMeleeAttack<>(0) // Melee attack
-								.whenStarting(entity -> setAggressive(true))
-								.whenStopping(entity -> setAggressive(false))));
+								.whenStarting(_ -> setAggressive(true))
+								.whenStopping(_ -> setAggressive(false))));
 	}
 
 	/// Easy predicate to save on redundant code

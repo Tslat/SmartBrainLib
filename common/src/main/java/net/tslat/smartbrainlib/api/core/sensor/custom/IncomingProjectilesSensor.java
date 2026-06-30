@@ -14,6 +14,7 @@ import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Comparator;
 import java.util.List;
@@ -43,11 +44,13 @@ public class IncomingProjectilesSensor<BO extends LivingEntity> extends Predicat
 	}
 
 	/// Set a custom radius for detecting projectiles around the entity
+	@ApiStatus.NonExtendable
 	public IncomingProjectilesSensor<BO> detectionRadius(float radius) {
 		return detectionRadius(_ -> radius);
 	}
 
 	/// Set a custom radius function for detecting projectiles around the entity
+	@ApiStatus.NonExtendable
 	public IncomingProjectilesSensor<BO> detectionRadius(ToFloatFunction<BO> radius) {
 		this.radius = radius;
 
@@ -56,11 +59,15 @@ public class IncomingProjectilesSensor<BO extends LivingEntity> extends Predicat
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
+	@Override
 	public IncomingProjectilesSensor<BO> setPredicate(BiPredicate<BO, Projectile> predicate) {
 		return (IncomingProjectilesSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public IncomingProjectilesSensor<BO> scanRate(int scanRate) {
 		return (IncomingProjectilesSensor<BO>)super.scanRate(scanRate);
 	}
@@ -68,12 +75,14 @@ public class IncomingProjectilesSensor<BO extends LivingEntity> extends Predicat
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public IncomingProjectilesSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (IncomingProjectilesSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public IncomingProjectilesSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (IncomingProjectilesSensor<BO>)super.afterScanning(callback);
@@ -82,6 +91,7 @@ public class IncomingProjectilesSensor<BO extends LivingEntity> extends Predicat
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public IncomingProjectilesSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (IncomingProjectilesSensor<BO>)super.onlyScanIf(predicate);
@@ -103,10 +113,11 @@ public class IncomingProjectilesSensor<BO extends LivingEntity> extends Predicat
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final List<Projectile> projectiles = EntityRetrievalUtil.getEntities(entity, this.radius.applyAsFloat(entity), Projectile.class, projectile -> predicate().test(entity, projectile));

@@ -93,7 +93,7 @@ public class TransformingListView<R, T> extends TransformingCollectionView<List<
 
 			@Override
 			public T next() {
-				return transformToView(TransformingListView.this.collection.get(++this.index));
+				return transformToView(TransformingListView.this.collection.get(this.index++));
 			}
 
 			@Override

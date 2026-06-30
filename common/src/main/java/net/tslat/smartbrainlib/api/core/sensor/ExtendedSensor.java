@@ -6,7 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.util.LambdaUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +30,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
 	public ExtendedSensor<BO> scanRate(int scanRate) {
 		return scanRate(_ -> scanRate);
 	}
@@ -37,6 +38,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	public ExtendedSensor<BO> scanRate(ToIntFunction<BO> function) {
 		this.scanRate = function;
 
@@ -44,6 +46,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	public ExtendedSensor<BO> afterScanning(Consumer<BO> callback) {
 		this.scanCallback = callback;
 
@@ -53,6 +56,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	public ExtendedSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		this.scanCondition = predicate;
 
@@ -60,7 +64,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Custom Implementation Boilerplate>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	public abstract SensorType<? extends ExtendedSensor<?>> type();
 
 	/// The list of memory types this sensor saves to. This should contain any memory the sensor sets a value for in the brain<br/>
@@ -79,10 +83,11 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 		return new ObjectOpenHashSet<>(memoriesUsed());
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
+	/// Handle the Sensor's actual function here
 	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// This is called once every [#scanRate] ticks
+	///
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {}
 	//</editor-fold>

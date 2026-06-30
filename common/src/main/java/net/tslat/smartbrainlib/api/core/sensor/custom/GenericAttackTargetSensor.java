@@ -9,6 +9,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.SensoryUtil;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.BiPredicate;
@@ -23,6 +24,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	protected BiPredicate<BO, LivingEntity> targetPredicate = SensoryUtil::isEntityAttackable;
 
 	/// Set a custom predicate for valid attackable targets
+	@ApiStatus.NonExtendable
 	public GenericAttackTargetSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
 		this.targetPredicate = predicate;
 
@@ -31,12 +33,15 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	@Override
 	public GenericAttackTargetSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (GenericAttackTargetSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public GenericAttackTargetSensor<BO> scanRate(int scanRate) {
 		return (GenericAttackTargetSensor<BO>)super.scanRate(scanRate);
 	}
@@ -44,12 +49,14 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public GenericAttackTargetSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (GenericAttackTargetSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public GenericAttackTargetSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (GenericAttackTargetSensor<BO>)super.afterScanning(callback);
@@ -58,6 +65,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public GenericAttackTargetSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (GenericAttackTargetSensor<BO>)super.onlyScanIf(predicate);

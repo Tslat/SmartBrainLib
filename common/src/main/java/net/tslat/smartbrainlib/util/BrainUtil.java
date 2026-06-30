@@ -13,6 +13,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
@@ -203,6 +204,29 @@ public final class BrainUtil {
 	/// @return True if the memory value is present, or false if the memory value is absent or unregistered
 	public static boolean hasMemory(Brain<?> brain, MemoryModuleType<?> memory) {
 		return brain.hasMemoryValue(memory);
+	}
+
+	/// Check whether an [Entity] has all of the provided memories set
+	///
+	/// @param entity The entity to check the memories of
+	/// @param memories The memories to check
+	/// @return True if all of the memory values are present, or false if any of the memory values are absent or unregistered
+	public static boolean hasMemories(LivingEntity entity, MemoryModuleType<?>... memories) {
+		return hasMemories(entity.getBrain(), memories);
+	}
+
+	/// Check whether a [Brain] has all of the provided memories set
+	///
+	/// @param brain The brain to check the memories of
+	/// @param memories The memories to check
+	/// @return True if all of the memory values are present, or false if any of the memory values are absent or unregistered
+	public static boolean hasMemories(Brain<?> brain, MemoryModuleType<?>... memories) {
+		for (MemoryModuleType<?> memory : memories) {
+			if (!hasMemory(brain, memory))
+				return false;
+		}
+		
+		return true;
 	}
 
 	/// Gets the ticks remaining until a memory expires
@@ -408,7 +432,7 @@ public final class BrainUtil {
 	/// @param entity The entity to retrieve the attacker for
 	/// @return The last entity to attack the given entity, or null if none present
 	public static @Nullable LivingEntity getLastAttacker(LivingEntity entity) {
-		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, (LivingEntity)null);
+		return memoryOrDefault(entity, MemoryModuleType.HURT_BY_ENTITY, (Supplier<LivingEntity>)entity::getLastAttacker);
 	}
 
 	/// Sets the attack target of the given [LivingEntity] and safely sets the non-brain attack target for compatibility purposes.<br/>
@@ -417,11 +441,16 @@ public final class BrainUtil {
 	/// @param entity The entity to set the target of
 	/// @param target The target entity to set, or null to clear the current target
 	public static void setTargetOfEntity(LivingEntity entity, @Nullable LivingEntity target) {
-		if (entity instanceof Mob mob)
+		if (entity instanceof Mob mob) {
 			mob.setTarget(target);
+			mob.setAggressive(target != null);
+		}
 
 		if (target == null) {
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
+			
+			if (getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == entity)
+				clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 		}
 		else {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);

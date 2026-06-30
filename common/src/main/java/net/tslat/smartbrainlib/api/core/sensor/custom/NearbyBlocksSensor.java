@@ -8,13 +8,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.PredicateSensor;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +37,7 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	/// Set the radius for the sensor to scan
 	///
 	/// @param radius The coordinate radius, in blocks
+	@ApiStatus.NonExtendable
 	public NearbyBlocksSensor<BO> detectionRadius(double radius) {
 		return detectionRadius(radius, radius);
 	}
@@ -44,6 +46,7 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	///
 	/// @param xz The X/Z coordinate radius, in blocks
 	/// @param y The Y coordinate radius, in blocks
+	@ApiStatus.NonExtendable
 	public NearbyBlocksSensor<BO> detectionRadius(double xz, double y) {
 		return detectionRadius(_ -> new SquareRadius(xz, y));
 	}
@@ -51,6 +54,7 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	/// Set a custom radius function for the sensor to scan
 	///
 	/// @param radiusFunction The custom function to determine the radius of the scan
+	@ApiStatus.NonExtendable
 	public NearbyBlocksSensor<BO> detectionRadius(Function<BO, SquareRadius> radiusFunction) {
 		this.radius = radiusFunction;
 
@@ -59,11 +63,15 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
+	@Override
 	public NearbyBlocksSensor<BO> setPredicate(BiPredicate<BO, Pair<BlockPos, BlockState>> predicate) {
 		return (NearbyBlocksSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public NearbyBlocksSensor<BO> scanRate(int scanRate) {
 		return (NearbyBlocksSensor<BO>)super.scanRate(scanRate);
 	}
@@ -71,12 +79,14 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyBlocksSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (NearbyBlocksSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyBlocksSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (NearbyBlocksSensor<BO>)super.afterScanning(callback);
@@ -85,6 +95,7 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyBlocksSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (NearbyBlocksSensor<BO>)super.onlyScanIf(predicate);
@@ -106,24 +117,25 @@ public class NearbyBlocksSensor<BO extends LivingEntity> extends PredicateSensor
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
-		final List<Pair<BlockPos, BlockState>> blocks = new ObjectArrayList<>();
+		final List<BlockInWorld> blocks = new ObjectArrayList<>();
 		final SquareRadius radius = this.radius.apply(entity);
 
 		for (BlockPos pos : BlockPos.betweenClosed(radius.inflateAABB(entity.getBoundingBox()))) {
 			final BlockState state = level.getBlockState(pos);
 
 			if (predicate().test(entity, Pair.of(pos, state)))
-				blocks.add(Pair.of(pos.immutable(), state));
+				blocks.add(new BlockInWorld(level, pos, false));
 		}
 
 		if (!blocks.isEmpty())
-			blocks.sort(Comparator.comparingDouble(pair -> pair.getFirst().distToCenterSqr(entity.position())));
+			blocks.sort(Comparator.comparingDouble(block -> block.getPos().distToCenterSqr(entity.position())));
 
 		BrainUtil.setMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), blocks);
 	}

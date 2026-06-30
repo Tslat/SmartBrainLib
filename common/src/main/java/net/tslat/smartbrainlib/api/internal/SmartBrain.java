@@ -1,3 +1,4 @@
+
 package net.tslat.smartbrainlib.api.internal;
 
 import com.google.common.collect.Iterables;
@@ -408,10 +409,6 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 		profiler.popPush("smartBrainActivityUpdate");
 		updateCurrentActivity(entity);
 		profiler.pop();
-
-		// TODO
-		/*if (entity instanceof Mob mob)
-			mob.setAggressive(BrainUtil.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));*/
 	}
 
 	@Override

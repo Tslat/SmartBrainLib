@@ -212,8 +212,8 @@ public interface SmartBrainBuilder<BO extends LivingEntity & SmartBrainOwner<BO>
 
             return makeBrain(owner, sensors, activities, memories, schedule, packedBrain);
         }
-        catch (ClassCastException e) {
-            SBLConstants.LOGGER.get().error("SmartBrainBuilder failed to create brain, an invalid sensor or activity was provided: {}", e.getMessage());
+        catch (ClassCastException ex) {
+            SBLConstants.LOGGER.get().error("SmartBrainBuilder failed to create brain, an invalid sensor or activity was provided", ex);
 
             return makeBrain(owner, List.of(), List.of(), new MemoryModuleType[0], null, Brain.Packed.EMPTY);
         }

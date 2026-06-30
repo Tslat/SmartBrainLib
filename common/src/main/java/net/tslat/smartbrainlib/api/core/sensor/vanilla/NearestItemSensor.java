@@ -6,13 +6,13 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.PredicateSensor;
 import net.tslat.smartbrainlib.library.object.SquareRadius;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.EntityRetrievalUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.*;
@@ -31,26 +31,23 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 		super((entity, item) -> entity.wantsToPickUp((ServerLevel)entity.level(), item.getItem()) && entity.hasLineOfSight(item));
 	}
 
-	/// Set the radius for the item sensor to scan
-	///
-	/// @param radius The coordinate radius, in blocks
-	/// @return this
+	/// Set the radius (in blocks) for the item sensor to scan
+	@ApiStatus.NonExtendable
 	public NearestItemSensor<BO> setRadius(double radius) {
 		return setRadius(radius, radius);
 	}
 
-	/// Set the radius for the item sensor to scan
+	/// Set the radius (in blocks) for the item sensor to scan
 	///
-	/// @param xz The X/Z coordinate radius, in blocks
-	/// @param y  The Y coordinate radius, in blocks
-	/// @return this
+	/// @param xz The X/Z coordinate radius
+	/// @param y  The Y coordinate radius
+	@ApiStatus.NonExtendable
 	public NearestItemSensor<BO> setRadius(double xz, double y) {
 		return setRadius(_ -> new SquareRadius(xz, y));
 	}
 
-	/// Set the radius for the sensor to scan
-	///
-	/// @param radiusFunction The function to determine the radius for the current scan tick
+	/// Set a function to determine the radius (in blocks) for the sensor to scan
+	@ApiStatus.NonExtendable
 	public NearestItemSensor<BO> setRadius(Function<BO, SquareRadius> radiusFunction) {
 		this.radius = radiusFunction;
 
@@ -59,11 +56,15 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
+	@Override
 	public NearestItemSensor<BO> setPredicate(BiPredicate<BO, ItemEntity> predicate) {
 		return (NearestItemSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public NearestItemSensor<BO> scanRate(int scanRate) {
 		return (NearestItemSensor<BO>)super.scanRate(scanRate);
 	}
@@ -71,12 +72,14 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestItemSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (NearestItemSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestItemSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (NearestItemSensor<BO>)super.afterScanning(callback);
@@ -85,13 +88,14 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestItemSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (NearestItemSensor<BO>)super.onlyScanIf(predicate);
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEAREST_ITEM.get();
@@ -106,10 +110,11 @@ public class NearestItemSensor<BO extends Mob> extends PredicateSensor<BO, ItemE
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final SquareRadius radius = this.radius.apply(entity);

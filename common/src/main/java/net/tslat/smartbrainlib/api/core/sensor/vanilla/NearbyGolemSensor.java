@@ -6,11 +6,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.golem.IronGolem;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -33,6 +33,7 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 	}
 
 	/// Set the number of ticks the entity should remember that the golem is there
+	@ApiStatus.NonExtendable
 	public NearbyGolemSensor<BO> setMemoryTime(int ticks) {
 		this.timeToRemember = ticks;
 
@@ -41,12 +42,14 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyGolemSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (NearbyGolemSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
 	public NearbyGolemSensor<BO> scanRate(int scanRate) {
 		return (NearbyGolemSensor<BO>)super.scanRate(scanRate);
 	}
@@ -54,12 +57,14 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyGolemSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (NearbyGolemSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyGolemSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (NearbyGolemSensor<BO>)super.afterScanning(callback);
@@ -68,6 +73,7 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public NearbyGolemSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (NearbyGolemSensor<BO>)super.onlyScanIf(predicate);
@@ -89,10 +95,11 @@ public class NearbyGolemSensor<BO extends LivingEntity> extends PredicateSensor<
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		BrainUtil.withMemory(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, entityList -> {

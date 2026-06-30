@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.library.object;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -48,5 +49,12 @@ public record SquareRadius(double xzRadius, double yRadius) {
 	/// @return An [AABB] instance of the input bounds, inflated by this radius' values in all directions
 	public AABB inflateAABB(AABB bounds) {
 		return bounds.inflate(this.xzRadius, this.yRadius, this.xzRadius);
+	}
+	
+	/// Generate a random [Vec3] within this radius' bounds of the origin point
+	public Vec3 getRandomPos(Vec3 origin, RandomSource random) {
+		final EasyRandom rand = EasyRandom.wrap(random);
+		
+		return origin.add(rand.valueBetween(-this.xzRadius, this.xzRadius), rand.valueBetween(-this.yRadius, this.yRadius), rand.valueBetween(-this.xzRadius, this.xzRadius));
 	}
 }

@@ -40,113 +40,117 @@ public class AllApplicableBehaviours<BO extends LivingEntity> extends GroupBehav
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Add an unweighted [ExtendedBehaviour] to the end of this `GroupBehaviour`'s list
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> add(ExtendedBehaviour<? super BO> behaviour) {
 		return (AllApplicableBehaviours<BO>)super.add(behaviour);
 	}
 
 	/// Add a weighted [ExtendedBehaviour] to the end of this `GroupBehaviour`'s list
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> add(ExtendedBehaviour<? super BO> behaviour, int weight) {
 		return (AllApplicableBehaviours<BO>)super.add(behaviour, weight);
 	}
 
-	/// A callback for when the task begins. Use this to trigger effects or handle things when the entity activates this task
+	/// Set a callback for when the behaviour successfully begins
 	///
-	/// @param callback The function to call when starting the behaviour, immediately prior to [#start(LivingEntity)]
+	/// This is called immediately prior to [#start(LivingEntity)]
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> whenStarting(Consumer<BO> callback) {
 		return (AllApplicableBehaviours<BO>)super.whenStarting(callback);
 	}
 
-	/// A callback for when the task stops. Use this to trigger effects or handle things when the entity ends this task
+	/// Set a callback for when the behaviour stops
 	///
-	/// Note that the task stopping does not necessarily mean it was successful
+	/// This is called immediately prior to [#stop(LivingEntity)]
 	///
-	/// @param callback The function to call when stopping the behaviour, immediately prior to [#stop(LivingEntity)]
+	/// Note that the behaviour stopping does not necessarily mean it was successful
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> whenStopping(Consumer<BO> callback) {
 		return (AllApplicableBehaviours<BO>)super.whenStopping(callback);
 	}
 
-	/// Set the length (in ticks) that the task should run for once activated, randomly selected between two values
-	/// The value used is in _ticks_
+	/// Set the number of ticks the behaviour should try to run for, once started
 	///
-	/// @param ticks The number of ticks to run for
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> runFor(int ticks) {
 		return (AllApplicableBehaviours<BO>)super.runFor(ticks);
 	}
 
-	/// Set the length (in ticks) that the task should run for once activated, randomly selected between two values
-	/// The value used is in _ticks_
-	///
-	/// @param minTicks The minimum number of ticks to run for
-	/// @param maxTicks The maximum number of ticks to run for
+	/// Set the range of ticks the behaviour should try to run for, once started<br/>
+	/// The actual duration will be a random number selected between the min and max values (inclusive) each time the behaviour is run
+	/// 
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> runFor(int minTicks, int maxTicks) {
 		return (AllApplicableBehaviours<BO>)super.runFor(minTicks, maxTicks);
 	}
 
-	/// Set the length (in ticks) that the task should run for once activated
+	/// Set a function to determine the number of ticks the behaviour should try to run for, once started
 	///
-	/// @param timeProvider A function for the tick value
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> runFor(ToIntFunction<BO> timeProvider) {
 		return (AllApplicableBehaviours<BO>)super.runFor(timeProvider);
 	}
 
-	/// Prevent a tick-based timeout for this behaviour; and instead rely exclusively on other conditions
+	/// Disable the tick-based timeout for this behaviour and instead rely exclusively on other conditions
 	/// such as [#getMemoryRequirements()] failing or [#stopIf(Predicate)]
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> noTimeout() {
 		return (AllApplicableBehaviours<BO>)super.noTimeout();
 	}
 
-	/// Set the length (in ticks) that the task should wait for between activations<br/>
-	/// This is the time between when the task stops, and it is able to start again
+	/// Set the number of ticks that this behaviour should be prevented from starting again after it has finished
 	///
-	/// @param ticks The number of ticks to cooldown for
+	/// This is the length of time between when this behaviour stops and it can start again
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> cooldownFor(int ticks) {
 		return (AllApplicableBehaviours<BO>)super.cooldownFor(ticks);
 	}
 
-	/// Set the length (in ticks) that the task should wait for between activations<br/>
-	/// This is the time between when the task stops, and it is able to start again
+	/// Set the range of ticks that this behaviour should be prevented from starting again after it has finished<br/>
+	/// The actual duration will be a random number selected between the min and max values (inclusive) each time the behaviour is stopped
 	///
-	/// @param minTicks The minimum number of ticks to cooldown for
-	/// @param maxTicks The maximum number of ticks to cooldown for
+	/// This is the length of time between when this behaviour stops and it can start again
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> cooldownFor(int minTicks, int maxTicks) {
 		return (AllApplicableBehaviours<BO>)super.cooldownFor(minTicks, maxTicks);
 	}
 
-	/// Set the length (in ticks) that the task should wait for between activations<br/>
-	/// This is the time between when the task stops, and it is able to start again
+	/// Set a function to determine the number of ticks that this behaviour should be prevented from starting again after it has finished
 	///
-	/// @param timeProvider A function for the tick value to cooldown for
+	/// This is the length of time between when this behaviour stops and it can start again
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> cooldownFor(ToIntFunction<BO> timeProvider) {
 		return (AllApplicableBehaviours<BO>)super.cooldownFor(timeProvider);
 	}
 
 	/// Set an additional condition for the behaviour to be able to start
 	///
-	/// Prevents this behaviour starting unless this predicate returns true.
-	///
-	/// @param predicate The condition for starting
+	/// Prevents this behaviour starting unless this predicate returns true
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> startCondition(Predicate<BO> predicate) {
 		return (AllApplicableBehaviours<BO>)super.startCondition(predicate);
 	}
 
-	/// Set an automatic condition for the behaviour to stop<br/>
-	/// Has no effect on one-shot behaviours that don't have a runtime
-	///
-	/// Stops the behaviour if it is active and this predicate returns true
-	///
-	/// @param predicate The condition to cause an early stop of the behaviour
+	/// Set a condition under which the behaviour should automatically stop<br/>
+	/// Has no effect on one-shot behaviours that don't tick or have a runtime
+	/// 
+	/// Stops the behaviour immediately if the predicate returns true, ready to run again
 	@ApiStatus.NonExtendable
+	@Override
 	public AllApplicableBehaviours<BO> stopIf(Predicate<BO> predicate) {
 		return (AllApplicableBehaviours<BO>)super.stopIf(predicate);
 	}
@@ -171,13 +175,12 @@ public class AllApplicableBehaviours<BO extends LivingEntity> extends GroupBehav
 		return lastSuccessfulBehaviour;
 	}
 
-	/// Check whether the behaviour should continue running<br/>
-	/// This is checked before [ExtendedBehaviour#tick(BO)]
+	/// Check any additional conditions for whether the behaviour should continue running<br/>
+	/// This is checked before [ExtendedBehaviour#tick(LivingEntity)]
+	/// 
+	/// The behaviour's [runtime][#runFor] has already been checked at this stage, and [#stopIf(Predicate)] will be checked immediately after this method if returning true 
 	///
 	/// Memories are not guaranteed to be in their required state here, so if you have required memories, it might be worth checking them here
-	///
-	/// @param entity The brain owner entity
-	/// @return Whether the behaviour should continue ticking
 	@Override
 	protected boolean shouldKeepRunning(BO entity) {
 		boolean stillValid = false;
@@ -188,10 +191,15 @@ public class AllApplicableBehaviours<BO extends LivingEntity> extends GroupBehav
 
 		return stillValid;
 	}
-
+	
 	/// Determine whether this behaviour has run for longer than its [Behavior#endTimestamp] allows it to run for
 	///
+	/// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+	///
 	/// This method should not modify the behaviour in any way and should only act as a read-only view of applicability
+	///
+	/// @see #runFor
+	@ApiStatus.Internal
 	@Override
 	protected boolean timedOut(long gameTime) {
 		boolean timedOut = true;
@@ -203,7 +211,11 @@ public class AllApplicableBehaviours<BO extends LivingEntity> extends GroupBehav
 
 		return timedOut;
 	}
-
+	
+	/// Perform any internal per-tick functionality for this behaviour
+	///
+	/// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+	@ApiStatus.Internal
 	@Override
 	protected void tick(ServerLevel level, BO owner, long gameTime) {
 		boolean stillRunning = false;
@@ -220,12 +232,16 @@ public class AllApplicableBehaviours<BO extends LivingEntity> extends GroupBehav
 		if (!stillRunning)
 			doStop(level, owner, gameTime);
 	}
-
+	
+	/// Perform any internal cleanup functionality on task stop for this behaviour
+	///
+	/// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+	@ApiStatus.Internal
 	@Override
 	protected void stop(ServerLevel level, BO entity, long gameTime) {
 		this.cooldownFinishedAt = gameTime + this.cooldownProvider.applyAsInt(entity);
 
-		this.taskStopCallback.accept(entity);
+		this.onStopCallback.accept(entity);
 		stop(entity);
 
 		for (ExtendedBehaviour<? super BO> behaviour : this.behaviours) {

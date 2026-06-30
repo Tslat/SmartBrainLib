@@ -3,7 +3,6 @@ package net.tslat.smartbrainlib.library.object;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.tslat.smartbrainlib.util.LambdaUtil;
 import net.tslat.smartbrainlib.util.SensoryUtil;
 import org.jspecify.annotations.Nullable;
 

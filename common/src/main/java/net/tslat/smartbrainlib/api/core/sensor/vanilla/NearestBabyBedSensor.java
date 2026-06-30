@@ -21,6 +21,7 @@ import net.tslat.smartbrainlib.api.core.sensor.base.PredicateSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -46,15 +47,13 @@ public class NearestBabyBedSensor<BO extends Mob> extends PredicateSensor<BO, Vo
 	}
 
 	/// Set the radius for the item sensor to scan
-	///
-	/// @param radius The radius
+	@ApiStatus.NonExtendable
 	public NearestBabyBedSensor<BO> setRadius(int radius) {
 		return setRadius(_ -> radius);
 	}
 
-	/// Set the radius for the item sensor to scan
-	///
-	/// @param radiusFunction The function to determine the radius at the current scan tick
+	/// Set a function to determine the radius for the item sensor to scan
+	@ApiStatus.NonExtendable
 	public NearestBabyBedSensor<BO> setRadius(ToIntFunction<BO> radiusFunction) {
 		this.radius = radiusFunction;
 
@@ -62,13 +61,17 @@ public class NearestBabyBedSensor<BO extends Mob> extends PredicateSensor<BO, Vo
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	/// Set the predicate for the sensor<br/>
+	/// The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestBabyBedSensor<BO> setPredicate(BiPredicate<BO, Void> predicate) {
 		return (NearestBabyBedSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public NearestBabyBedSensor<BO> scanRate(int scanRate) {
 		return (NearestBabyBedSensor<BO>)super.scanRate(scanRate);
 	}
@@ -76,12 +79,14 @@ public class NearestBabyBedSensor<BO extends Mob> extends PredicateSensor<BO, Vo
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestBabyBedSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (NearestBabyBedSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestBabyBedSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (NearestBabyBedSensor<BO>)super.afterScanning(callback);
@@ -90,6 +95,7 @@ public class NearestBabyBedSensor<BO extends Mob> extends PredicateSensor<BO, Vo
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public NearestBabyBedSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (NearestBabyBedSensor<BO>)super.onlyScanIf(predicate);
@@ -111,10 +117,11 @@ public class NearestBabyBedSensor<BO extends Mob> extends PredicateSensor<BO, Vo
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
         //noinspection DataFlowIssue

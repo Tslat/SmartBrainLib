@@ -16,6 +16,7 @@ import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -41,6 +42,7 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	protected BiPredicate<BO, BlockState> isRepellent = (_, state) -> state.is(BlockTags.HOGLIN_REPELLENTS);
 
 	/// Set a targeting condition for valid targets
+	@ApiStatus.NonExtendable
 	public HoglinSpecificSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
 		this.validTargetCondition = predicate;
 
@@ -48,6 +50,7 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for valid repellent blocks
+	@ApiStatus.NonExtendable
 	public HoglinSpecificSensor<BO> validRepellents(BiPredicate<BO, BlockState> predicate) {
 		this.isRepellent = predicate;
 
@@ -56,6 +59,8 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public HoglinSpecificSensor<BO> scanRate(int scanRate) {
 		return scanRate(_ -> scanRate);
 	}
@@ -63,11 +68,15 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
+	@Override
 	public HoglinSpecificSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (HoglinSpecificSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
+	@Override
 	public HoglinSpecificSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (HoglinSpecificSensor<BO>)super.afterScanning(callback);
 	}
@@ -75,6 +84,8 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
+	@Override
 	public HoglinSpecificSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (HoglinSpecificSensor<BO>)super.onlyScanIf(predicate);
 	}
@@ -95,10 +106,8 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 		return SBLSensors.HOGLIN_SPECIFIC.get();
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here.
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here<br/>
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Brain<BO> brain = BrainUtil.getBrain(entity);

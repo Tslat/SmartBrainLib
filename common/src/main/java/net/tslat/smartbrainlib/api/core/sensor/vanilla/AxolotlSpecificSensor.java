@@ -14,6 +14,7 @@ import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFiltered
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	protected BiPredicate<BO, LivingEntity> validTargetCondition = (entity, target) -> target.isInWater() && (target.is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) || (!BrainUtil.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN) && target.is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)));
 
 	/// Set the block range at which the entity can identify targets
+	@ApiStatus.NonExtendable
 	public AxolotlSpecificSensor<BO> detectionRange(ToFloatBiFunction<BO, LivingEntity> range) {
 		this.detectionRange = range;
 
@@ -40,6 +42,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	}
 
 	/// Set a targeting condition for valid targets
+	@ApiStatus.NonExtendable
 	public AxolotlSpecificSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
 		this.validTargetCondition = predicate;
 
@@ -48,12 +51,15 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	@Override
 	public AxolotlSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (AxolotlSpecificSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public AxolotlSpecificSensor<BO> scanRate(int scanRate) {
 		return (AxolotlSpecificSensor<BO>)super.scanRate(scanRate);
 	}
@@ -61,12 +67,14 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public AxolotlSpecificSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (AxolotlSpecificSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public AxolotlSpecificSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (AxolotlSpecificSensor<BO>)super.afterScanning(callback);
@@ -75,6 +83,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public AxolotlSpecificSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (AxolotlSpecificSensor<BO>)super.onlyScanIf(predicate);

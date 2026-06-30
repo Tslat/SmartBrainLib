@@ -12,6 +12,7 @@ import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import net.tslat.smartbrainlib.util.SensoryUtil;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	protected BiPredicate<BO, LivingEntity> validTargetCondition = (entity, target) -> Frog.canEat(target) && !BrainUtil.memoryOrDefault(entity, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS, List.of()).contains(target.getUUID());
 
 	/// Set the block range at which the entity can identify targets
+	@ApiStatus.NonExtendable
 	public FrogSpecificSensor<BO> detectionRange(ToFloatBiFunction<BO, LivingEntity> range) {
 		this.detectionRange = range;
 
@@ -38,6 +40,7 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	}
 
 	/// Set a targeting condition for valid targets
+	@ApiStatus.NonExtendable
 	public FrogSpecificSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
 		this.validTargetCondition = predicate;
 
@@ -46,24 +49,29 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	@Override
 	public FrogSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		return (FrogSpecificSensor<BO>)super.setPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public FrogSpecificSensor<BO> scanRate(int scanRate) {
 		return (FrogSpecificSensor<BO>)super.scanRate(scanRate);
 	}
 
 	/// Set the scan rate provider for this sensor.
-	/// The provider will be sampled every time the sensor does a scan.
+	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public FrogSpecificSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (FrogSpecificSensor<BO>)super.scanRate(function);
 	}
 
-	/// Set a callback function for when the sensor completes a scan.
+	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public FrogSpecificSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (FrogSpecificSensor<BO>)super.afterScanning(callback);
@@ -72,6 +80,7 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public FrogSpecificSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (FrogSpecificSensor<BO>)super.onlyScanIf(predicate);

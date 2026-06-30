@@ -3,6 +3,8 @@ package net.tslat.smartbrainlib.util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.tslat.smartbrainlib.library.object.ExtendedTargetingConditions;
 import org.jspecify.annotations.Nullable;
 
@@ -58,5 +60,14 @@ public final class SensoryUtil {
             return mob.getSensing().hasLineOfSight(target);
 
         return entity.hasLineOfSight(target);
+    }
+    
+    /// Determine whether the given target is currently within the [Attributes#FOLLOW_RANGE] of the entity
+    ///
+    /// Will assume `true` for entities with no `FOLLOW_RANGE` attribute
+    public static boolean isInFollowRange(LivingEntity entity, Entity target) {
+        final AttributeInstance followRange = entity.getAttribute(Attributes.FOLLOW_RANGE);
+        
+        return followRange == null || entity.closerThan(target, followRange.getValue());
     }
 }

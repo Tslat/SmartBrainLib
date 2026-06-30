@@ -1,9 +1,8 @@
 package net.tslat.smartbrainlib.api.core.sensor.base;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.util.LambdaUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -26,7 +25,9 @@ public abstract class PredicateSensor<BO extends LivingEntity, T> extends Extend
 		this.predicate = predicate;
 	}
 
-	/// Set the predicate for the sensor. The subclass of this class determines its usage
+	/// Set the predicate for the sensor<br/>
+	/// The subclass of this class determines its usage
+	@ApiStatus.NonExtendable
 	public PredicateSensor<BO, T> setPredicate(BiPredicate<BO, T> predicate) {
 		this.predicate = predicate;
 
@@ -35,6 +36,8 @@ public abstract class PredicateSensor<BO extends LivingEntity, T> extends Extend
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public PredicateSensor<BO, T> scanRate(int scanRate) {
 		return (PredicateSensor<BO, T>)super.scanRate(scanRate);
 	}
@@ -42,12 +45,14 @@ public abstract class PredicateSensor<BO extends LivingEntity, T> extends Extend
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PredicateSensor<BO, T> scanRate(ToIntFunction<BO> function) {
 		return (PredicateSensor<BO, T>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PredicateSensor<BO, T> afterScanning(Consumer<BO> callback) {
 		return (PredicateSensor<BO, T>)super.afterScanning(callback);
@@ -56,6 +61,7 @@ public abstract class PredicateSensor<BO extends LivingEntity, T> extends Extend
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public PredicateSensor<BO, T> onlyScanIf(Predicate<BO> predicate) {
 		return (PredicateSensor<BO, T>)super.onlyScanIf(predicate);

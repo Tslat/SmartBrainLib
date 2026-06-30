@@ -36,6 +36,7 @@ public class InWaterSensor<BO extends LivingEntity> extends PredicateSensor<BO, 
 	}
 
 	/// Set the scan rate for this sensor
+	@Override
 	public InWaterSensor<BO> scanRate(int scanRate) {
 		return (InWaterSensor<BO>)super.scanRate(scanRate);
 	}
@@ -78,10 +79,11 @@ public class InWaterSensor<BO extends LivingEntity> extends PredicateSensor<BO, 
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
         //noinspection DataFlowIssue

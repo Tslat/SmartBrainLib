@@ -6,13 +6,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /// A sensor to attempt to track whether the entity's target is currently obstructed either by blocks or a wall/tower of blocks
 ///
@@ -29,7 +31,35 @@ public class UnreachableTargetSensor<BO extends LivingEntity> extends ExtendedSe
 	protected static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.ATTACK_TARGET, SBLMemoryTypes.TARGET_UNREACHABLE.get());
 
 	protected long lastUnpathableTime = 0;
-
+	
+	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
+	/// Set the scan rate for this sensor
+	public UnreachableTargetSensor<BO> scanRate(int scanRate) {
+		return (UnreachableTargetSensor<BO>)super.scanRate(scanRate);
+	}
+	
+	/// Set the scan rate provider for this sensor
+	///
+	/// The provider will be sampled every time the sensor does a scan
+	@Override
+	public UnreachableTargetSensor<BO> scanRate(ToIntFunction<BO> function) {
+		return (UnreachableTargetSensor<BO>)super.scanRate(function);
+	}
+	
+	/// Set a callback function for when the sensor completes a scan
+	@Override
+	public UnreachableTargetSensor<BO> afterScanning(Consumer<BO> callback) {
+		return (UnreachableTargetSensor<BO>)super.afterScanning(callback);
+	}
+	
+	/// Set a condition that must be met in order to perform a scan
+	///
+	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@Override
+	public UnreachableTargetSensor<BO> onlyScanIf(Predicate<BO> predicate) {
+		return (UnreachableTargetSensor<BO>)super.onlyScanIf(predicate);
+	}
+	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
 	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
@@ -46,10 +76,11 @@ public class UnreachableTargetSensor<BO extends LivingEntity> extends ExtendedSe
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Brain<?> brain = entity.getBrain();

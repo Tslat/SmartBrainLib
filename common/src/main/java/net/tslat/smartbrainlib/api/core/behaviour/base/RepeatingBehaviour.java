@@ -9,6 +9,7 @@ import net.tslat.smartbrainlib.library.object.MemoryTest;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -34,29 +35,25 @@ public class RepeatingBehaviour<BO extends LivingEntity> extends ExtendedBehavio
     }
 
     /// Set the predicate that determines whether the wrapped behaviour should repeat or not at any given time
-    ///
-    /// @param predicate The predicate
-    /// @return this
+    @ApiStatus.NonExtendable
     public RepeatingBehaviour<BO> repeatingWhen(Predicate<BO> predicate) {
         this.shouldRepeat = predicate;
 
         return this;
     }
 
-    /// Limit the number of repeats this behaviour should have when running.
+    /// Limit the number of repeats this behaviour should have when running
     ///
     /// `1` repeat results in the wrapped behaviour running twice
-    ///
-    /// @param repeats The number of times to repeat the behaviour
+    @ApiStatus.NonExtendable
     public RepeatingBehaviour<BO> repeatNTimes(int repeats) {
         return repeatNTimes(_ -> repeats);
     }
 
-    /// Limit the number of repeats this behaviour should have when running.
+    /// Limit the number of repeats this behaviour should have when running
     ///
     /// `1` repeat results in the wrapped behaviour running twice
-    ///
-    /// @param function The number of times to repeat the behaviour
+    @ApiStatus.NonExtendable
     public RepeatingBehaviour<BO> repeatNTimes(ToIntFunction<BO> function) {
         this.repeatCountProvider = function;
 
@@ -64,103 +61,107 @@ public class RepeatingBehaviour<BO extends LivingEntity> extends ExtendedBehavio
     }
 
     //<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
-    /// A callback for when the task begins. Use this to trigger effects or handle things when the entity activates this task
+    /// Set a callback for when the behaviour successfully begins
     ///
-    /// @param callback The function to call when starting the behaviour, immediately prior to [#start(LivingEntity)]
+    /// This is called immediately prior to [#start(LivingEntity)]
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> whenStarting(Consumer<BO> callback) {
         return (RepeatingBehaviour<BO>)super.whenStarting(callback);
     }
-
-    /// A callback for when the task stops. Use this to trigger effects or handle things when the entity ends this task
+    
+    /// Set a callback for when the behaviour stops
     ///
-    /// Note that the task stopping does not necessarily mean it was successful
+    /// This is called immediately prior to [#stop(LivingEntity)]
     ///
-    /// @param callback The function to call when stopping the behaviour, immediately prior to [#stop(LivingEntity)]
+    /// Note that the behaviour stopping does not necessarily mean it was successful
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> whenStopping(Consumer<BO> callback) {
         return (RepeatingBehaviour<BO>)super.whenStopping(callback);
     }
-
-    /// Set the length (in ticks) that the task should run for once activated, randomly selected between two values
-    /// The value used is in _ticks_
-    ///
-    /// @param ticks The number of ticks to run for
+    
+    /// Set the number of ticks the behaviour should try to run for, once started
+	///
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> runFor(int ticks) {
         return (RepeatingBehaviour<BO>)super.runFor(ticks);
     }
 
-    /// Set the length (in ticks) that the task should run for once activated, randomly selected between two values
-    /// The value used is in _ticks_
-    ///
-    /// @param minTicks The minimum number of ticks to run for
-    /// @param maxTicks The maximum number of ticks to run for
+    /// Set the range of ticks the behaviour should try to run for, once started<br/>
+	/// The actual duration will be a random number selected between the min and max values (inclusive) each time the behaviour is run
+	/// 
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> runFor(int minTicks, int maxTicks) {
         return (RepeatingBehaviour<BO>)super.runFor(minTicks, maxTicks);
     }
 
-    /// Set the length (in ticks) that the task should run for once activated
-    ///
-    /// @param timeProvider A function for the tick value
+    /// Set a function to determine the number of ticks the behaviour should try to run for, once started
+	///
+	/// The behaviour may still be stopped before this time runs out through other conditions or manual stops
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> runFor(ToIntFunction<BO> timeProvider) {
         return (RepeatingBehaviour<BO>)super.runFor(timeProvider);
     }
 
-    /// Prevent a tick-based timeout for this behaviour; and instead rely exclusively on other conditions
-    /// such as [#getMemoryRequirements()] failing or [#stopIf(Predicate)]
+    /// Disable the tick-based timeout for this behaviour and instead rely exclusively on other conditions
+	/// such as [#getMemoryRequirements()] failing or [#stopIf(Predicate)]
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> noTimeout() {
         return (RepeatingBehaviour<BO>)super.noTimeout();
     }
 
-    /// Set the length (in ticks) that the task should wait for between activations<br/>
-    /// This is the time between when the task stops, and it is able to start again
-    ///
-    /// @param ticks The number of ticks to cooldown for
+    /// Set the number of ticks that this behaviour should be prevented from starting again after it has finished
+	///
+	/// This is the length of time between when this behaviour stops and it can start again
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> cooldownFor(int ticks) {
         return (RepeatingBehaviour<BO>)super.cooldownFor(ticks);
     }
 
-    /// Set the length (in ticks) that the task should wait for between activations<br/>
-    /// This is the time between when the task stops, and it is able to start again
-    ///
-    /// @param minTicks The minimum number of ticks to cooldown for
-    /// @param maxTicks The maximum number of ticks to cooldown for
+    /// Set the range of ticks that this behaviour should be prevented from starting again after it has finished<br/>
+	/// The actual duration will be a random number selected between the min and max values (inclusive) each time the behaviour is stopped
+	///
+	/// This is the length of time between when this behaviour stops and it can start again
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> cooldownFor(int minTicks, int maxTicks) {
         return (RepeatingBehaviour<BO>)super.cooldownFor(minTicks, maxTicks);
     }
 
-    /// Set the length (in ticks) that the task should wait for between activations<br/>
-    /// This is the time between when the task stops, and it is able to start again
-    ///
-    /// @param timeProvider A function for the tick value to cooldown for
+    /// Set a function to determine the number of ticks that this behaviour should be prevented from starting again after it has finished
+	///
+	/// This is the length of time between when this behaviour stops and it can start again
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> cooldownFor(ToIntFunction<BO> timeProvider) {
         return (RepeatingBehaviour<BO>)super.cooldownFor(timeProvider);
     }
 
     /// Set an additional condition for the behaviour to be able to start
     ///
-    /// Prevents this behaviour starting unless this predicate returns true.
+    /// Prevents this behaviour starting unless this predicate returns true
     ///
     /// @param predicate The condition for starting
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> startCondition(Predicate<BO> predicate) {
         return (RepeatingBehaviour<BO>)super.startCondition(predicate);
     }
 
-    /// Set an automatic condition for the behaviour to stop<br/>
-    /// Has no effect on one-shot behaviours that don't have a runtime
-    ///
-    /// Stops the behaviour if it is active and this predicate returns true
-    ///
-    /// @param predicate The condition to cause an early stop of the behaviour
+    /// Set a condition under which the behaviour should automatically stop<br/>
+	/// Has no effect on one-shot behaviours that don't tick or have a runtime
+	/// 
+	/// Stops the behaviour immediately if the predicate returns true, ready to run again
     @ApiStatus.NonExtendable
+    @Override
     public RepeatingBehaviour<BO> stopIf(Predicate<BO> predicate) {
         return (RepeatingBehaviour<BO>)super.stopIf(predicate);
     }
@@ -171,33 +172,60 @@ public class RepeatingBehaviour<BO extends LivingEntity> extends ExtendedBehavio
     ///
     /// Ideally, this would be a statically cached list
     ///
-    /// @see MemoryTest
     /// @return The [List] of [Memories][MemoryModuleType] and their associated required [status][MemoryStatus]
+    /// @see MemoryTest
     @Override
-    public List<MemoryCondition<?, ?>> getMemoryRequirements() {
+    public Set<MemoryCondition<?, ?>> getMemoryRequirements() {
         return this.child.getMemoryRequirements();
     }
-
+    
+    /// Check all behaviour start conditions to determine whether the behaviour can start or not
+    ///
+    /// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+    ///
+    /// @see #startCondition(Predicate)
+    /// @see #getMemoryRequirements()
+    /// @see #runFor
+    /// @see #checkExtraStartConditions(ServerLevel, LivingEntity)
+    @ApiStatus.Internal
     @Override
-    protected boolean doStartCheck(ServerLevel level, BO entity, long gameTime) {
-        return super.doStartCheck(level, entity, gameTime) && this.child.tryStart(level, entity, gameTime);
+    protected boolean canStart(ServerLevel level, BO entity, long gameTime) {
+        return super.canStart(level, entity, gameTime) && this.child.tryStart(level, entity, gameTime);
     }
-
+    
+    /// Start the behaviour<br/>
+    /// All pre-start checks have been checked and passed by this point
+    ///
+    /// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+    ///
+    /// @see #start(LivingEntity)
+    /// @see #whenStarting(Consumer)
+    @ApiStatus.Internal
     @Override
     protected void start(ServerLevel level, BO entity, long gameTime) {
         super.start(level, entity, gameTime);
 
         this.repeats = this.repeatCountProvider.applyAsInt(entity);
     }
-
+    
     /// Determine whether the conditions for this behaviour are still valid for the current tick
     ///
+    /// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+    ///
     /// This method should not modify the behaviour in any way and should only act as a read-only view of applicability
+    ///
+    /// @see #shouldKeepRunning(LivingEntity)
+    /// @see #stopIf(Predicate)
+    @ApiStatus.Internal
     @Override
     protected boolean canStillUse(ServerLevel level, BO entity, long gameTime) {
         return (this.child.getStatus() != Status.STOPPED || this.repeats > 0) && !this.stopCondition.test(entity);
     }
-
+    
+    /// Perform any internal per-tick functionality for this behaviour
+    ///
+    /// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+    @ApiStatus.Internal
     @Override
     protected void tick(ServerLevel level, BO entity, long gameTime) {
         super.tick(level, entity, gameTime);
@@ -211,7 +239,11 @@ public class RepeatingBehaviour<BO extends LivingEntity> extends ExtendedBehavio
         if (this.repeats > 0 && this.shouldRepeat.test(entity) && this.child.tryStart(level, entity, gameTime))
             this.repeats--;
     }
-
+    
+    /// Perform any internal cleanup functionality on task stop for this behaviour
+    ///
+    /// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
+    @ApiStatus.Internal
     @Override
     protected void stop(ServerLevel level, BO entity, long gameTime) {
         super.stop(level, entity, gameTime);

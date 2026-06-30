@@ -27,6 +27,7 @@ import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -60,6 +61,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	protected BiPredicate<BO, BlockState> isRepellent = (_, state) -> state.is(BlockTags.PIGLIN_REPELLENTS) && (!state.is(Blocks.SOUL_CAMPFIRE) || CampfireBlock.isLitCampfire(state));
 
 	/// Set a custom predicate for determining valid "nemesis" entities
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setNemesisPredicate(BiPredicate<BO, Mob> predicate) {
 		this.nemesisPredicate = predicate;
 
@@ -67,6 +69,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Hoglin]s for the [MemoryModuleType#NEAREST_VISIBLE_BABY_HOGLIN] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setBabyHoglinPredicate(BiPredicate<BO, Hoglin> predicate) {
 		this.babyHoglinPredicate = predicate;
 
@@ -74,6 +77,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Hoglin]s for the [MemoryModuleType#VISIBLE_ADULT_HOGLIN_COUNT] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setAdultHoglinPredicate(BiPredicate<BO, Hoglin> predicate) {
 		this.adultHoglinPredicate = predicate;
 
@@ -81,6 +85,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Hoglin]s for the [MemoryModuleType#NEAREST_VISIBLE_HUNTABLE_HOGLIN] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setHuntableHoglinPredicate(BiPredicate<BO, Hoglin> predicate) {
 		this.huntableHoglinPredicate = predicate;
 
@@ -88,6 +93,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Piglin]s for the [MemoryModuleType#NEAREST_VISIBLE_BABY_HOGLIN] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setBabyPiglinPredicate(BiPredicate<BO, Piglin> predicate) {
 		this.babyPiglinPredicate = predicate;
 
@@ -95,6 +101,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Piglin]s for the [MemoryModuleType#NEARBY_ADULT_PIGLINS] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setAdultPiglinPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		this.adultPiglinPredicate = predicate;
 
@@ -102,6 +109,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [LivingEntity]s for the [MemoryModuleType#NEAREST_VISIBLE_ZOMBIFIED] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setZombifiedPiglinPredicate(BiPredicate<BO, LivingEntity> predicate) {
 		this.zombifiedPiglinPredicate = predicate;
 
@@ -109,6 +117,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Player]s for the [MemoryModuleType#NEAREST_TARGETABLE_PLAYER_NOT_WEARING_GOLD] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setPlayerNotWearingGoldPredicate(BiPredicate<BO, Player> predicate) {
 		this.playerNotWearingGoldPredicate = predicate;
 
@@ -116,6 +125,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for determining valid [Player]s for the [MemoryModuleType#NEAREST_PLAYER_HOLDING_WANTED_ITEM] memory
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> setPlayerHoldingWantedItemPredicate(BiPredicate<BO, Player> predicate) {
 		this.playerHoldingWantedItemPredicate = predicate;
 
@@ -123,6 +133,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	}
 
 	/// Set a custom predicate for valid repellent blocks
+	@ApiStatus.NonExtendable
 	public PiglinSpecificSensor<BO> validRepellents(BiPredicate<BO, BlockState> predicate) {
 		this.isRepellent = predicate;
 
@@ -131,6 +142,8 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
 	/// Set the scan rate for this sensor
+	@ApiStatus.NonExtendable
+	@Override
 	public PiglinSpecificSensor<BO> scanRate(int scanRate) {
 		return scanRate(_ -> scanRate);
 	}
@@ -138,12 +151,14 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	/// Set the scan rate provider for this sensor
 	///
 	/// The provider will be sampled every time the sensor does a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinSpecificSensor<BO> scanRate(ToIntFunction<BO> function) {
 		return (PiglinSpecificSensor<BO>)super.scanRate(function);
 	}
 
 	/// Set a callback function for when the sensor completes a scan
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinSpecificSensor<BO> afterScanning(Consumer<BO> callback) {
 		return (PiglinSpecificSensor<BO>)super.afterScanning(callback);
@@ -152,13 +167,14 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 	/// Set a condition that must be met in order to perform a scan
 	///
 	/// Failing the predicate will skip that scan tick and will not try again until the next scan tick as defined by [#scanRate]
+	@ApiStatus.NonExtendable
 	@Override
 	public PiglinSpecificSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (PiglinSpecificSensor<BO>)super.onlyScanIf(predicate);
 	}
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
-	/// @return The [SensorType] of the sensor, used for reverse lookups.
+	/// @return The [SensorType] of the sensor, used for reverse lookups
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.PIGLIN_SPECIFIC.get();
@@ -173,10 +189,11 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 		return MEMORIES;
 	}
 
-	/// Handle the Sensor's actual function here. Be wary of the performance implications of computation-heavy checks here
-	///
-	/// @param level The level the entity is in
-	/// @param entity The owner of the brain
+	/// Handle the Sensor's actual function here
+	/// 
+	/// This is called once every [#scanRate] ticks
+	/// 
+	/// Be wary of the performance implications of computation-heavy checks here
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final Brain<BO> brain = BrainUtil.getBrain(entity);
