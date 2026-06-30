@@ -1,6 +1,6 @@
 # Changelog
 #### Version
-1.17
+2.0.0
 
 ## Changes
 ### API
@@ -12,6 +12,8 @@
 * Users no longer need to tick the brain, SBL ticks it automatically for you (unless you override `customServerAIStep` in your `mob`)
 * Users no longer need to return a `SmartBrainProvider` or `SmartBrain` instance in your entity class. SBL creates it automatically for you
 * Moved over to Jspecify's Nullability annotations per the new industry standard. See [here][https://jspecify.dev] for more information
+* Merged `SetRandomFlyingTarget` and `SetRandomHoverTarget` into `SetRandomFlyTarget`
+* Renamed `ExtendedBehaviour#doStartCheck` to `canStart`
 * Renamed `SBLLoader` to `SBLPlatform`
 * Renamed `SBLConstants#LOADER` to `SBLConstants#PLATFORM`
 * Removed `EntityRetrievalUtil#streamEntities` - Its benefits just weren't worth the confusion it caused
@@ -36,6 +38,7 @@
 * Added `BreezeSpecificSensor`
 * Updated `ExtendedBehaviour#getMemoryRequirements` to use the `MemoryCondition` interface that Mojang added
 * Renamed `SBLShufflingList` to `WeightedShuffleableList`
+* Removed `SeekRandomNearbyPosition`
 
 ### Internal
 * Greatly improved the Javadocs in `EntityRetrievalUtil`

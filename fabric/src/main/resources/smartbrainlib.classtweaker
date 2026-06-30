@@ -24,6 +24,7 @@ accessible field net/minecraft/world/entity/ai/Brain defaultActivity Lnet/minecr
 accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;J)V
 extendable method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;J)V
 accessible method net/minecraft/world/entity/ai/Brain setMemoryInternal (Lnet/minecraft/world/entity/ai/memory/MemoryModuleType;Ljava/lang/Object;)V
+
 # Behaviour
 extendable method net/minecraft/world/entity/ai/behavior/Behavior tryStart (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;J)Z
 accessible method net/minecraft/world/entity/ai/memory/NearestVisibleLivingEntities <init> ()V
