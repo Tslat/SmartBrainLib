@@ -80,7 +80,7 @@ modrinth {
     uploadFile.set(tasks.named<JarJar>("jarJar"))
     projectId.set(properties["modrinthProjectId"] as String)
     versionName = "Forge ${libs.versions.minecraft.asProvider().get()}"
-    versionType = "alpha"
+    versionType = "release"
     loaders.set(listOf("forge"))
     versionNumber.set(project.version.toString())
     gameVersions.set(listOf(libs.versions.minecraft.asProvider().get()))
@@ -101,7 +101,7 @@ tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
 
     val mainFile = upload(properties["curseforgeProjectId"], tasks.named<JarJar>("jarJar"))
     mainFile.displayName = "$modDisplayName Forge ${libs.versions.minecraft.asProvider().get()} ${project.version}"
-    mainFile.releaseType = "alpha"
+    mainFile.releaseType = "release"
     mainFile.addModLoader("Forge")
     mainFile.addGameVersion(libs.versions.minecraft.asProvider().get())
     mainFile.addJavaVersion("Java ${libs.versions.java.get()}")

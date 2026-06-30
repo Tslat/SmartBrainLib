@@ -57,7 +57,7 @@ modrinth {
     uploadFile.set(tasks.named<Jar>("jar"))
     projectId.set(properties["modrinthProjectId"] as String)
     versionName = "NeoForge ${libs.versions.minecraft.asProvider().get()}"
-    versionType = "alpha"
+    versionType = "release"
     loaders.set(listOf("neoforge"))
     versionNumber.set(project.version.toString())
     gameVersions.set(listOf(libs.versions.minecraft.asProvider().get()))
@@ -77,7 +77,7 @@ tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
 
     val mainFile = upload(properties["curseforgeProjectId"], tasks.jar)
     mainFile.displayName = "$modDisplayName NeoForge ${libs.versions.minecraft.asProvider().get()} ${project.version}"
-    mainFile.releaseType = "alpha"
+    mainFile.releaseType = "release"
     mainFile.addModLoader("NeoForge")
     mainFile.addGameVersion(libs.versions.minecraft.asProvider().get())
     mainFile.addJavaVersion("Java ${libs.versions.java.get()}")

@@ -55,7 +55,7 @@ modrinth {
     uploadFile.set(tasks.jar)
     projectId.set(properties["modrinthProjectId"] as String)
     versionName = "Fabric ${libs.versions.minecraft.asProvider().get()}"
-    versionType = "alpha"
+    versionType = "release"
     loaders.set(listOf("fabric"))
     versionNumber.set(project.version.toString())
     gameVersions.set(listOf(libs.versions.minecraft.asProvider().get()))
@@ -79,7 +79,7 @@ tasks.register<TaskPublishCurseForge>("publishToCurseForge") {
 
     val mainFile = upload(properties["curseforgeProjectId"], tasks.jar)
     mainFile.displayName = "$modDisplayName Fabric ${libs.versions.minecraft.asProvider().get()} ${project.version}"
-    mainFile.releaseType = "alpha"
+    mainFile.releaseType = "release"
     mainFile.addModLoader("Fabric")
     mainFile.addGameVersion(libs.versions.minecraft.asProvider().get())
     mainFile.addJavaVersion("Java ${libs.versions.java.get()}")
