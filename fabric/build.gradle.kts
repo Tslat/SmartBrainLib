@@ -18,9 +18,6 @@ dependencies {
     implementation(libs.fabric)
     implementation(libs.fabric.api)
     compileOnly(project(":common"))
-
-    // Mod Dependencies below
-    //implementation(libs.geckolib.fabric)
 }
 
 loom {

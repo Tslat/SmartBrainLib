@@ -18,9 +18,6 @@ neoForge {
 dependencies {
     compileOnly(libs.mixin)
     compileOnly(libs.mixinextras.common)
-
-    // Mod Dependencies below
-    //implementation(libs.geckolib.common)
 }
 
 //<editor-fold defaultstate="collapsed" desc="<Publishing>">
