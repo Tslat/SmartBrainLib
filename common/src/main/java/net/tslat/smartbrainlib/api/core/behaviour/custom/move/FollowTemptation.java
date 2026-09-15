@@ -32,7 +32,7 @@ import java.util.function.ToIntFunction;
 ///
 /// @param <BO> The brain owner entity
 public class FollowTemptation<BO extends PathfinderMob> extends ExtendedBehaviour<BO> {
-	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_TEMPTED, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
+	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(7).hasMemory(MemoryModuleType.TEMPTING_PLAYER).noMemory(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS).usesMemories(MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.IS_PANICKING, MemoryModuleType.BREED_TARGET);
 	
 	protected ToFloatBiFunction<BO, Player> speedModifier = (_, _) -> 1;
 	protected ToFloatBiFunction<BO, Player> closeEnoughDist = (_, _) -> 2.5f;
@@ -224,18 +224,6 @@ public class FollowTemptation<BO extends PathfinderMob> extends ExtendedBehaviou
 		return this.shouldFollow.test(entity, BrainUtil.getMemory(entity, MemoryModuleType.TEMPTING_PLAYER));
 	}
 	
-	/// Run the core functionality this behaviour has when starting<br/>
-	/// This method is called once per behaviour run
-	///
-	/// By this stage any memory requirements set in [#getMemoryRequirements()] are true, so any memories paired with [MemoryStatus#VALUE_PRESENT] are safe to retrieve
-	///
-	/// If you are not making a custom behaviour and are instead just using an existing behaviour; you would use [#whenStarting(Consumer)] instead of overriding this method
-	@MustBeInvokedByOverriders
-	@Override
-	protected void start(BO entity) {
-		BrainUtil.setMemory(entity, MemoryModuleType.IS_TEMPTED, true);
-	}
-	
 	/// Check any additional conditions for whether the behaviour should continue running<br/>
 	/// This is checked before [ExtendedBehaviour#tick(LivingEntity)]
 	///
@@ -287,7 +275,7 @@ public class FollowTemptation<BO extends PathfinderMob> extends ExtendedBehaviou
 		final int cooldownTicks = this.temptationCooldown.apply(entity);
 
 		BrainUtil.setForgettableMemory(entity, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, cooldownTicks, cooldownTicks);
-		BrainUtil.clearMemories(entity, MemoryModuleType.WALK_TARGET, MemoryModuleType.LOOK_TARGET, MemoryModuleType.IS_TEMPTED);
+		BrainUtil.clearMemories(entity, MemoryModuleType.WALK_TARGET, MemoryModuleType.LOOK_TARGET);
 	}
 	//</editor-fold>
 }

@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.declarative.MemoryCondition;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -25,7 +26,7 @@ import java.util.function.*;
 ///
 /// @param <BO> The brain owner entity
 @SuppressWarnings("UnusedReturnValue")
-public class AnimatableRangedAttack<BO extends LivingEntity & RangedAttackMob> extends DelayedBehaviour<BO> {
+public class AnimatableRangedAttack<BO extends Mob & RangedAttackMob> extends DelayedBehaviour<BO> {
 	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 
 	protected ToIntBiFunction<BO, @Nullable LivingEntity> attackInterval = (entity, _) -> entity.level().getDifficulty() == Difficulty.HARD ? 20 : 40;
@@ -90,7 +91,7 @@ public class AnimatableRangedAttack<BO extends LivingEntity & RangedAttackMob> e
 
 	/// Set a callback for when the behaviour successfully begins
 	///
-	/// This is called immediately prior to [#start(LivingEntity)]
+	/// This is called immediately prior to [#start(Mob)]
 	@ApiStatus.NonExtendable
 	@Override
 	public AnimatableRangedAttack<BO> whenStarting(Consumer<BO> callback) {
@@ -99,7 +100,7 @@ public class AnimatableRangedAttack<BO extends LivingEntity & RangedAttackMob> e
 
 	/// Set a callback for when the behaviour stops
 	///
-	/// This is called immediately prior to [#stop(LivingEntity)]
+	/// This is called immediately prior to [#stop(Mob)]
 	///
 	/// Note that the behaviour stopping does not necessarily mean it was successful
 	@ApiStatus.NonExtendable
@@ -224,12 +225,11 @@ public class AnimatableRangedAttack<BO extends LivingEntity & RangedAttackMob> e
 	/// By this stage any memory requirements set in [#getMemoryRequirements()] are true, so any memories paired with [MemoryStatus#VALUE_PRESENT] are safe to retrieve
 	///
 	/// If you are not making a custom behaviour and are instead just using an existing behaviour; you would use [#whenStarting(Consumer)] instead of overriding this method  
-	@MustBeInvokedByOverriders
 	@Override
 	protected void start(BO entity) {
 		//noinspection DataFlowIssue
 		BehaviorUtils.lookAtEntity(entity, this.target);
-		entity.swing(InteractionHand.MAIN_HAND);
+		entity.swingForAttack(InteractionHand.MAIN_HAND);
 	}
 
 	/// The action to take once the delay period has elapsed

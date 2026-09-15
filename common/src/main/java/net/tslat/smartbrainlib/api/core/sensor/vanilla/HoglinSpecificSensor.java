@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.blockscan.OrderedBlockMatcher;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
@@ -128,12 +129,13 @@ public class HoglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 			}
 		}
 
+		final OrderedBlockMatcher blockMatcher = level.findBlocksInBoxByManhattanDistance(entity.blockPosition(), 8, 4).filterState(state -> this.isRepellent.test(entity, state));
+
 		BrainUtil.setOrClearMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT_PIGLIN, nearestPiglin);
 		BrainUtil.setMemory(brain, MemoryModuleType.NEAREST_VISIBLE_ADULT_HOGLINS, hoglins);
 		BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_PIGLIN_COUNT, piglinCount);
 		BrainUtil.setMemory(brain, MemoryModuleType.VISIBLE_ADULT_HOGLIN_COUNT, hoglins.size());
-		BrainUtil.setOrClearMemory(brain, MemoryModuleType.NEAREST_REPELLENT, BlockPos.findClosestMatch(entity.blockPosition(), 8, 4, pos ->
-				this.isRepellent.test(entity, level.getBlockState(pos))).orElse(null));
+		BrainUtil.setOrClearMemory(brain, MemoryModuleType.NEAREST_REPELLENT, blockMatcher.findFirst().orElse(null));
 	}
 	//</editor-fold>
 }

@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.AbortableIterationConsumer;
+import net.minecraft.util.Continuation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -334,7 +335,7 @@ public final class EntityRetrievalUtil {
 				}
 			}
 
-			return AbortableIterationConsumer.Continuation.CONTINUE;
+			return Continuation.CONTINUE;
 		});
 
 		return Optional.ofNullable(closest.get());
@@ -1461,10 +1462,10 @@ public final class EntityRetrievalUtil {
 				foundEntities.add(entity);
 
 				if (foundEntities.size() >= max)
-					return AbortableIterationConsumer.Continuation.ABORT;
+					return Continuation.ABORT;
 			}
 
-			return AbortableIterationConsumer.Continuation.CONTINUE;
+			return Continuation.CONTINUE;
 		});
 
 		if (foundEntities.size() < max) {
@@ -1646,10 +1647,10 @@ public final class EntityRetrievalUtil {
 			if (isEntityInBounds(entity, bounds) && predicate.test(entity)) {
 				foundEntity.set(entity);
 
-				return AbortableIterationConsumer.Continuation.ABORT;
+				return Continuation.ABORT;
 			}
 
-			return AbortableIterationConsumer.Continuation.CONTINUE;
+			return Continuation.CONTINUE;
 		});
 
 		if (foundEntity.get() == null) {

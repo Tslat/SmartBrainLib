@@ -1,6 +1,7 @@
 # Changelog
 #### Version
-2.0.1
+2.0.2
 
 ## Changes
-- Fixed Fabric not having the logo png
+- Update to 26.3
+- Add `BrainUtil#computeMemory` and `BrainUtil#computeMemoryIfPresent`

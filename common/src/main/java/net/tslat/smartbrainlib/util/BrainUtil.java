@@ -27,7 +27,9 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -44,18 +46,18 @@ public final class BrainUtil {
 		return (Brain<T>)entity.getBrain();
 	}
 
-	/// Get a memory value from an [Entity], or fall back to a provided value if the memory isn't present
+	/// Get a memory value from an [entity][LivingEntity], or fall back to a provided value if the memory isn't present
 	///
 	/// @param entity The entity to retrieve the memory for
 	/// @param memory The memory to retrieve the value for
 	/// @param fallback A supplier for the fallback value to return if the memory isn't present
 	/// @return The stored memory, or fallback value if no memory was stored
 	/// @param <T> The value type of the memory
-	public static <T> @Nullable T memoryOrDefault(LivingEntity entity, MemoryModuleType<T> memory, Supplier<@Nullable T> fallback) {
+	public static <T> @Nullable T memoryOrDefault(LivingEntity entity, MemoryModuleType<T> memory, Supplier<? extends @Nullable T> fallback) {
 		return memoryOrDefault(entity.getBrain(), memory, fallback);
 	}
 
-	/// Get a memory value from an [Entity] with a fallback value if no memory is present
+	/// Get a memory value from an [entity][LivingEntity] with a fallback value if no memory is present
 	///
 	/// @param entity The entity to retrieve the memory for
 	/// @param memory The memory to retrieve the value for
@@ -74,7 +76,7 @@ public final class BrainUtil {
 	/// @param fallback A supplier for the fallback value to return if the memory isn't present
 	/// @return The stored memory, or fallback value if no memory was stored
 	/// @param <T> The value type of the memory
-	public static <T> @Nullable T memoryOrDefault(Brain<?> brain, MemoryModuleType<T> memory, Supplier<@Nullable T> fallback) {
+	public static <T> @Nullable T memoryOrDefault(Brain<?> brain, MemoryModuleType<T> memory, Supplier<? extends @Nullable T> fallback) {
 		return brain.getMemory(memory).orElseGet(fallback);
 	}
 
@@ -90,14 +92,14 @@ public final class BrainUtil {
 		return brain.getMemory(memory).orElse(fallback);
 	}
 
-	/// Get a memory value from an [Entity] or insert a new value if not already present
+	/// Get a memory value from an [entity][LivingEntity] or insert a new value if not already present
 	///
 	/// @param entity The entity to retrieve the memory for
 	/// @param memory The memory to retrieve the value for
 	/// @param fallback A supplier for the fallback value to set and return if the memory isn't present
 	/// @return The stored memory, or fallback value if no memory was stored
 	/// @param <T> The value type of the memory
-	public static <T> @Nullable T computeMemoryIfAbsent(LivingEntity entity, MemoryModuleType<T> memory, Supplier<@Nullable T> fallback) {
+	public static <T> @Nullable T computeMemoryIfAbsent(LivingEntity entity, MemoryModuleType<T> memory, Supplier<? extends @Nullable T> fallback) {
 		return computeMemoryIfAbsent(entity.getBrain(), memory, fallback);
 	}
 
@@ -108,7 +110,7 @@ public final class BrainUtil {
 	/// @param fallback The fallback value to set and return if the memory isn't present
 	/// @return The stored memory, or fallback value if no memory was stored
 	/// @param <T> The value type of the memory
-	public static <T> @Nullable T computeMemoryIfAbsent(Brain<?> brain, MemoryModuleType<T> memory, Supplier<@Nullable T> fallback) {
+	public static <T> @Nullable T computeMemoryIfAbsent(Brain<?> brain, MemoryModuleType<T> memory, Supplier<? extends @Nullable T> fallback) {
 		return brain.getMemory(memory).orElseGet(() -> {
 			final T newMemory = fallback.get();
 
@@ -119,7 +121,7 @@ public final class BrainUtil {
 		});
 	}
 
-	/// Get a memory value from an [Entity] or insert a new value if not already present
+	/// Get a memory value from an [entity][LivingEntity] or insert a new value if not already present
 	///
 	/// @param entity The entity to retrieve the memory for
 	/// @param memory The memory to retrieve the value for
@@ -146,6 +148,64 @@ public final class BrainUtil {
 
 			return fallback;
 		});
+	}
+
+	/// Compute a new memory value for an [entity][LivingEntity] if one already exists and is not `null`, returning the new value or `null` if no value existed
+	///
+	/// @param entity The entity to retrieve the memory for
+	/// @param memory The memory to retrieve the value for
+	/// @param mappingFunction A function for the new value to set and return if the memory is present. Returning `null` removes the memory entirely
+	/// @return The newly computed memory value, or `null` if the memory did not exist
+	/// @param <T> The value type of the memory
+	public static <T> @Nullable T computeMemoryIfPresent(LivingEntity entity, MemoryModuleType<T> memory, Function<? super T, ? extends @Nullable T> mappingFunction) {
+		return computeMemoryIfPresent(entity.getBrain(), memory, mappingFunction);
+	}
+
+	/// Compute a new memory value for a [Brain] if one already exists and is not `null`, returning the new value or `null` if no value existed
+	///
+	/// @param brain The brain to retrieve the memory from
+	/// @param memory The memory to retrieve the value for
+	/// @param mappingFunction A function for the new value to set and return if the memory is present. Returning `null` removes the memory entirely
+	/// @return The newly computed memory value, or `null` if the memory did not exist
+	/// @param <T> The value type of the memory
+	public static <T> @Nullable T computeMemoryIfPresent(Brain<?> brain, MemoryModuleType<T> memory, Function<? super T, ? extends @Nullable T> mappingFunction) {
+		final T existingValue = memoryOrDefault(brain, memory, (T)null);
+
+		if (existingValue == null)
+			return null;
+
+		final T newValue = mappingFunction.apply(existingValue);
+
+		setOrClearMemory(brain, memory, newValue);
+
+		return newValue;
+	}
+
+	/// Compute a new memory value for a [Brain] using its existing key and value, or `null` if no value currently exists
+	///
+	/// @param entity The entity to retrieve the memory for
+	/// @param memory The memory to retrieve the value for
+	/// @param mappingFunction A function for the new value to set and return if the memory is present. Returning `null` removes the memory entirely
+	/// @return The newly computed memory value, or `null` if the compute returns null
+	/// @param <T> The value type of the memory
+	public static <T> @Nullable T computeMemory(LivingEntity entity, MemoryModuleType<T> memory, BiFunction<MemoryModuleType<? super T>, ? super @Nullable T, ? extends @Nullable T> mappingFunction) {
+		return computeMemory(entity.getBrain(), memory, mappingFunction);
+	}
+
+	/// Compute a new memory value for a [Brain] using its existing key and value, or `null` if no value currently exists
+	///
+	/// @param brain The brain to retrieve the memory from
+	/// @param memory The memory to retrieve the value for
+	/// @param mappingFunction A function for the new value to set and return if the memory is present. Returning `null` removes the memory entirely
+	/// @return The newly computed memory value, or `null` if the compute returns null
+	/// @param <T> The value type of the memory
+	public static <T> @Nullable T computeMemory(Brain<?> brain, MemoryModuleType<T> memory, BiFunction<MemoryModuleType<? super T>, ? super @Nullable T, ? extends @Nullable T> mappingFunction) {
+		final T existingValue = memoryOrDefault(brain, memory, (T)null);
+		final T newValue = mappingFunction.apply(memory, existingValue);
+
+		setOrClearMemory(brain, memory, newValue);
+
+		return newValue;
 	}
 
 	/// Get a memory value from an [Entity] or null if no memory is present
@@ -417,7 +477,7 @@ public final class BrainUtil {
 	/// @param entity The entity to retrieve the target of
 	/// @param fallback An optional fallback entity to return if no attack target is present
 	/// @return The current attack target of the entity, the fallback entity if provided, or null otherwise
-	public static @Nullable LivingEntity getTargetOfEntity(LivingEntity entity, Supplier<@Nullable LivingEntity> fallback) {
+	public static @Nullable LivingEntity getTargetOfEntity(LivingEntity entity, Supplier<? extends @Nullable LivingEntity> fallback) {
 		return memoryOrDefault(entity.getBrain(), MemoryModuleType.ATTACK_TARGET, (Supplier<LivingEntity>)() -> {
 			if (entity instanceof Mob mob && mob.getTarget() != null)
 				return mob.getTarget();

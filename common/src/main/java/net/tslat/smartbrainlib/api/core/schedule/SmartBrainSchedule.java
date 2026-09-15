@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.api.core.schedule;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.clock.ServerClockManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.schedule.Activity;
@@ -37,7 +38,7 @@ public class SmartBrainSchedule<BO extends LivingEntity & SmartBrainOwner<BO>, N
 			final MinecraftServer server = entity.level().getServer();
 
 			//noinspection DataFlowIssue
-			return level.dimensionType().defaultClock().map(server.clockManager()::getTotalTicks).orElse(0L) % 24000L;
+			return level.dimensionType().defaultClock().map(server.clockManager()::getInstance).map(ServerClockManager.ServerClockInstance::totalTicks).orElse(0L) % 24000L;
 		}));
 	}
 

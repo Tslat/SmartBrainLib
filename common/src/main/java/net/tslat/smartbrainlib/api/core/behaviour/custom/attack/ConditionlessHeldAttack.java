@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.behavior.declarative.MemoryCondition;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -24,7 +25,7 @@ import java.util.function.*;
 /// @see #startCondition(Predicate)
 /// @see HeldBehaviour#whenTicking(Consumer)
 /// @param <BO> The brain owner entity
-public class ConditionlessHeldAttack<BO extends LivingEntity> extends HeldBehaviour<BO> {
+public class ConditionlessHeldAttack<BO extends Mob> extends HeldBehaviour<BO> {
 	protected MemoryTest memoryRequirements = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
 	
 	protected ToIntBiFunction<BO, @Nullable LivingEntity> attackInterval = (_, _) -> 20;
@@ -76,7 +77,7 @@ public class ConditionlessHeldAttack<BO extends LivingEntity> extends HeldBehavi
 	
 	/// Set a callback for when the behaviour successfully begins
 	///
-	/// This is called immediately prior to [#start(LivingEntity)]
+	/// This is called immediately prior to [#start(Mob)]
 	@ApiStatus.NonExtendable
 	@Override
 	public ConditionlessHeldAttack<BO> whenStarting(Consumer<BO> callback) {
@@ -85,7 +86,7 @@ public class ConditionlessHeldAttack<BO extends LivingEntity> extends HeldBehavi
 	
 	/// Set a callback for when the behaviour stops
 	///
-	/// This is called immediately prior to [#stop(LivingEntity)]
+	/// This is called immediately prior to [#stop(Mob)]
 	///
 	/// Note that the behaviour stopping does not necessarily mean it was successful
 	@ApiStatus.NonExtendable
@@ -216,7 +217,7 @@ public class ConditionlessHeldAttack<BO extends LivingEntity> extends HeldBehavi
 	@MustBeInvokedByOverriders
 	@Override
 	protected void start(BO entity) {
-		entity.swing(InteractionHand.MAIN_HAND);
+		entity.swingForAttack(InteractionHand.MAIN_HAND);
 
 		if (this.requireTarget && this.target != null)
 			BehaviorUtils.lookAtEntity(entity, this.target);

@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.api.core.behaviour.custom.attack;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -20,7 +21,7 @@ import java.util.function.*;
 /// Natively supports animation hit delays
 ///
 /// @param <BO> The brain owner entity
-public class BowAttack<BO extends LivingEntity & RangedAttackMob> extends AnimatableRangedAttack<BO> {
+public class BowAttack<BO extends Mob & RangedAttackMob> extends AnimatableRangedAttack<BO> {
 	public BowAttack(int delayTicks) {
 		super(delayTicks);
 	}
@@ -76,7 +77,7 @@ public class BowAttack<BO extends LivingEntity & RangedAttackMob> extends Animat
 
 	/// Set a callback for when the behaviour successfully begins
 	///
-	/// This is called immediately prior to [#start(LivingEntity)]
+	/// This is called immediately prior to [#start(Mob)]
 	@ApiStatus.NonExtendable
 	@Override
 	public BowAttack<BO> whenStarting(Consumer<BO> callback) {
@@ -85,7 +86,7 @@ public class BowAttack<BO extends LivingEntity & RangedAttackMob> extends Animat
 
 	/// Set a callback for when the behaviour stops
 	///
-	/// This is called immediately prior to [#stop(LivingEntity)]
+	/// This is called immediately prior to [#stop(Mob)]
 	///
 	/// Note that the behaviour stopping does not necessarily mean it was successful
 	@ApiStatus.NonExtendable

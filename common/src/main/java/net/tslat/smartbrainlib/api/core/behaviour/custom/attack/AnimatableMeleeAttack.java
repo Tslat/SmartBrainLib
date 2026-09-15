@@ -208,7 +208,7 @@ public class AnimatableMeleeAttack<BO extends Mob> extends DelayedBehaviour<BO> 
 	@MustBeInvokedByOverriders
 	@Override
 	protected void start(BO entity) {
-		entity.swing(InteractionHand.MAIN_HAND);
+		entity.swingForAttack(InteractionHand.MAIN_HAND);
 		//noinspection DataFlowIssue
 		BehaviorUtils.lookAtEntity(entity, this.target);
 	}

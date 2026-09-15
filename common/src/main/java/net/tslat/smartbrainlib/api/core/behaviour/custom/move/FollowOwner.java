@@ -3,7 +3,6 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.move;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.TamableAnimal;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -12,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// A movement behaviour for automatically following the owner of a [TameableAnimal][TamableAnimal]
+/// A movement behaviour for automatically following the owner of an [OwnableEntity]
 ///
 /// @param <BO> The brain owner entity
 public class FollowOwner<BO extends PathfinderMob & OwnableEntity> extends FollowEntity<BO> {

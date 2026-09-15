@@ -185,7 +185,7 @@ public class SetPlayerLookTarget<BO extends LivingEntity> extends ExtendedBehavi
 		if (!SensoryUtil.hasLineOfSight(entity, player))
 			return false;
 
-		return entity.closerThan(player, Math.max(player.getVisibilityPercent(entity) * 16, 2));
+		return entity.closerThan(player, Math.max(player.getVisibilityPercent((ServerLevel)entity.level(), entity) * 16, 2));
 	}
 	
 	/// Run the core functionality this behaviour has when starting<br/>

@@ -1,5 +1,6 @@
 package net.tslat.smartbrainlib.library.object;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -116,7 +117,7 @@ public class ExtendedTargetingConditions implements BiPredicate<@Nullable Living
         final double range = this.maxRange.applyAsDouble(entity);
 
         if (range > 0) {
-            double sightRange = Math.max(range * (this.ignoresInvisibility ? 1 : target.getVisibilityPercent(entity)), 2);
+            double sightRange = Math.max(range * (this.ignoresInvisibility ? 1 : target.getVisibilityPercent((ServerLevel)target.level(), entity)), 2);
 
             if (entity.distanceToSqr(target) > sightRange * sightRange)
                 return false;

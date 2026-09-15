@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.blockscan.OrderedBlockMatcher;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatTriFunction;
@@ -24,7 +25,6 @@ import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.*;
 
@@ -333,12 +333,15 @@ public class Panic<BO extends PathfinderMob> extends ExtendedBehaviour<BO> {
 	protected @Nullable Vec3 findNearbyWater(BO entity, SquareRadius radius) {
 		final BlockPos pos = entity.blockPosition();
 		final Level level = entity.level();
-		
-		return !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty() ?
-		       null :
-		       BlockPos.findClosestMatch(pos, Mth.floor(radius.xzRadius()), Mth.floor(radius.yRadius()), checkPos -> level.getFluidState(checkPos).is(FluidTags.WATER))
-		               .map(Vec3::atBottomCenterOf)
-		               .orElse(null);
+
+		if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty())
+			return null;
+
+
+		final OrderedBlockMatcher blockMatcher = level.findBlocksInBoxByManhattanDistance(pos, Mth.floor(radius.xzRadius()), Mth.floor(radius.yRadius()))
+				.filterState(state -> state.getFluidState().is(FluidTags.WATER));
+
+		return blockMatcher.findFirst().map(Vec3::atBottomCenterOf).orElse(null);
 	}
 	//</editor-fold>
 }
