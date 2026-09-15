@@ -2,7 +2,7 @@ import org.gradle.internal.file.FileException
 import java.nio.file.Files
 import java.util.regex.Pattern
 
-val modId: String by project
+val modId = project.property("modId") as String
 
 /**
  * Create a task for refactoring the project when initially created, automatically handling
