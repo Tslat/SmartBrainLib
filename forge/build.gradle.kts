@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.minotaur)
     alias(libs.plugins.curseforgegradle)
     alias(libs.plugins.forgegradle)
-    alias(libs.plugins.forge.at)
 }
 
 val modId           = project.property("modId") as String

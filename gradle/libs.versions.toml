@@ -15,15 +15,15 @@
     fabric-api-range                = "0.160.5+26.3"
 
 # Forge
-    forge                           = "65.0.1"
-    forge-mc                        = "26.3-65.0.1"
-    forge-fml-range                 = "[65.0.0,)"
-    forge-range                     = "[65.0.0,)"
+    forge                           = "66.0.2"
+    forge-mc                        = "26.3-66.0.2"
+    forge-fml-range                 = "[66,)"
+    forge-range                     = "[66.0.0,)"
     forge-eventbusvalidator         = "7.0.5"
 
 # Neoforge
     neoforge-loader-range           = "[5,)"
-    neoforge                        = "26.3.0.0-beta"
+    neoforge                        = "26.3.0.7-beta"
     neoforge-range                  = "[26.3.0.0-beta,)"
 
 # Mixin
