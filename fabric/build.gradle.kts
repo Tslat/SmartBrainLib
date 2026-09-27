@@ -54,6 +54,7 @@ modrinth {
     versionName = "Fabric ${libs.versions.minecraft.asProvider().get()}"
     versionType = "release"
     loaders.set(listOf("fabric"))
+    environment.set("client_and_server")
     versionNumber.set(project.version.toString())
     gameVersions.set(listOf(libs.versions.minecraft.asProvider().get()))
     dependencies {

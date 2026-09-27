@@ -56,6 +56,7 @@ modrinth {
     versionName = "NeoForge ${libs.versions.minecraft.asProvider().get()}"
     versionType = "release"
     loaders.set(listOf("neoforge"))
+    environment.set("client_and_server")
     versionNumber.set(project.version.toString())
     gameVersions.set(listOf(libs.versions.minecraft.asProvider().get()))
 
