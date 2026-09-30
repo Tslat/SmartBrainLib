@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
@@ -107,8 +106,8 @@ public class NearbyAdultSensor<BO extends LivingEntity> extends NearestVisibleEn
 	/// @param matcher The nearby entities list retrieved from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
 	/// @return The match(es) to save in memory
 	@Override
-	protected @Nullable AgeableMob findMatches(BO entity, NearestVisibleLivingEntities matcher) {
-		return (AgeableMob)matcher.findClosest(target -> predicate().test(entity, target)).orElse(null);
+	protected @Nullable LivingEntity findMatches(BO entity, NearestVisibleLivingEntities matcher) {
+		return matcher.findClosest(target -> predicate().test(entity, target)).orElse(null);
 	}
 	//</editor-fold>
 }
