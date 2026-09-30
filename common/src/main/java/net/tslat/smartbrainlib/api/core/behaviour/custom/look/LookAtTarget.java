@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtil;
+import net.tslat.smartbrainlib.util.SensoryUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
@@ -20,16 +21,18 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-/// Look at the look target for as long as it is present
+/// Look at the look target for as long as it is present and visible, clearing it once finished
 ///
 /// Additionally, invalidates the look target if it is an [EntityTracker] and the entity has expired
+///
+/// Runs for 45-90 ticks by default, like vanilla's [net.minecraft.world.entity.ai.behavior.LookAtTargetSink]
 ///
 /// @param <BO> The brain owner entity
 public class LookAtTarget<BO extends Mob> extends ExtendedBehaviour<BO> {
 	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.LOOK_TARGET);
 
 	public LookAtTarget() {
-		noTimeout();
+		runFor(45, 90);
 	}
 	
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
@@ -167,7 +170,13 @@ public class LookAtTarget<BO extends Mob> extends ExtendedBehaviour<BO> {
 	/// Memories are not guaranteed to be in their required state here, so if you have required memories, it might be worth checking them here
 	@Override
 	protected boolean shouldKeepRunning(BO entity) {
-		return testAndInvalidateLookTarget(entity, true);
+		if (!testAndInvalidateLookTarget(entity, true))
+			return false;
+
+		if (BrainUtil.getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() instanceof LivingEntity target)
+			return SensoryUtil.isInFollowRange(entity, target) && SensoryUtil.hasLineOfSight(entity, target);
+
+		return true;
 	}
 	
 	/// Run the per-tick behaviour for this behaviour<br/>
@@ -182,6 +191,16 @@ public class LookAtTarget<BO extends Mob> extends ExtendedBehaviour<BO> {
 		super.tick(entity);
 		
 		BrainUtil.withMemory(entity, MemoryModuleType.LOOK_TARGET, target -> entity.getLookControl().setLookAt(target.currentPosition()));
+	}
+	
+	/// Called when this behaviour is instructed to stop<br/>
+	/// This may be due to timing out, failing to meet a condition, or for any other reason
+	///
+	/// This method is non-negotiable, and it must be safe to assume that if this method is called, this behaviour is safe to discard
+	@MustBeInvokedByOverriders
+	@Override
+	protected void stop(BO entity) {
+		BrainUtil.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 	}
 	
 	/// Check and expire the look target if it is no longer valid
