@@ -269,11 +269,11 @@ public class StayWithinDistanceOfAttackTarget<BO extends PathfinderMob> extends 
 
 		BrainUtil.setMemory(entity, MemoryModuleType.LOOK_TARGET, new EntityTracker(target, true));
 
-		if (distToTargetSqr > Mth.square(maxDist * 0.5f)) {
+		if (distToTargetSqr > Mth.square(maxDist) * 0.5f) {
 			entity.lookAt(target, 30, 30);
 			entity.getMoveControl().strafe(0.5f * this.strafeSpeedModifier.applyAsFloat(entity, target), 0);
 		}
-		else if (distToTargetSqr < Mth.square(minDist * 3f)) {
+		else if (distToTargetSqr < Mth.square(minDist) * 3f) {
 			entity.lookAt(target, 30, 30);
 			entity.getMoveControl().strafe(-0.5f * this.strafeSpeedModifier.applyAsFloat(entity, target), 0);
 		}

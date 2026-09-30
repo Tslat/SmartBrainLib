@@ -244,10 +244,10 @@ public class StrafeTarget<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 		}
 
 		if (this.strafeCounter > -1) {
-			if (distanceToTarget > Mth.square(strafeDistance * 0.75f)) {
+			if (distanceToTarget > Mth.square(strafeDistance) * 0.75f) {
 				this.strafingBack = false;
 			}
-			else if (distanceToTarget < Mth.square(strafeDistance * 0.25f)) {
+			else if (distanceToTarget < Mth.square(strafeDistance) * 0.25f) {
 				this.strafingBack = true;
 			}
 
