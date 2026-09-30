@@ -87,7 +87,7 @@ public class BreezeSpecificSensor<BO extends LivingEntity> extends PredicateSens
     protected void doTick(ServerLevel level, BO entity) {
         final List<LivingEntity> entities = BrainUtil.memoryOrDefault(entity, MemoryModuleType.NEAREST_LIVING_ENTITIES, List.of());
 
-        BrainUtil.setOrClearMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, entities.isEmpty() ? null : entities.getFirst());
+        BrainUtil.setOrClearMemory(entity, MemoryModuleType.NEAREST_ATTACKABLE, entities.stream().filter(target -> predicate().test(entity, target)).findFirst().orElse(null));
     }
     //</editor-fold>
 }
