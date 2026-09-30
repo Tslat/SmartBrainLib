@@ -170,13 +170,20 @@ public class MoveToWalkTarget<BO extends PathfinderMob> extends ExtendedBehaviou
 	protected boolean checkExtraStartConditions(ServerLevel level, BO entity) {
 		final Brain<?> brain = entity.getBrain();
 		final WalkTarget walkTarget = BrainUtil.getMemory(brain, MemoryModuleType.WALK_TARGET);
+		//noinspection DataFlowIssue
+		final boolean reachedTarget = hasReachedTarget(entity, walkTarget);
 		
 		//noinspection DataFlowIssue
-		if (!hasReachedTarget(entity, walkTarget) && attemptNewPath(entity, walkTarget, false)) {
+		if (!reachedTarget && attemptNewPath(entity, walkTarget, false)) {
 			this.lastTargetPos = walkTarget.getTarget().currentBlockPosition();
 
 			return true;
 		}
+
+		BrainUtil.clearMemory(brain, MemoryModuleType.WALK_TARGET);
+
+		if (reachedTarget)
+			BrainUtil.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		return false;
 	}
@@ -189,8 +196,6 @@ public class MoveToWalkTarget<BO extends PathfinderMob> extends ExtendedBehaviou
 	/// If you are not making a custom behaviour and are instead just using an existing behaviour; you would use [#whenStarting(Consumer)] instead of overriding this method
 	@Override
 	protected void start(BO entity) {
-		BrainUtil.clearMemories(entity, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-		
 		if (this.path != null)
 			startOnNewPath(entity, this.path);
 	}
