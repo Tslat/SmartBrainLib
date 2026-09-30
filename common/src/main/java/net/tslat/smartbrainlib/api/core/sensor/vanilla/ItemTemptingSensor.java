@@ -35,7 +35,7 @@ public class ItemTemptingSensor<BO extends LivingEntity> extends ExtendedSensor<
 	protected static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.NEAREST_PLAYERS);
 
 	protected TriPredicate<BO, ItemStack, Player> temptPredicate = (_, _, _) -> false;
-	protected Function<BO, SquareRadius> radius = entity -> new SquareRadius(entity.getAttributeValue(Attributes.TEMPT_RANGE));
+	protected Function<BO, SquareRadius> radius = entity -> new SquareRadius(entity.getAttributes().hasAttribute(Attributes.TEMPT_RANGE) ? entity.getAttributeValue(Attributes.TEMPT_RANGE) : 10);
 
 	/// Set the radius for the player sensor to scan
 	///
