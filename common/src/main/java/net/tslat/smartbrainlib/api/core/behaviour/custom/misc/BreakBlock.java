@@ -235,7 +235,9 @@ public class BreakBlock<BO extends LivingEntity> extends ExtendedBehaviour<BO> {
 	@Override
 	protected boolean shouldKeepRunning(BO entity) {
 		//noinspection DataFlowIssue
-		return this.breakingTicks <= this.timeToBreak && this.supportedBlocks.test(entity, this.block) && !this.earlyStopCondition.test(entity, this.block);
+		final BlockInWorld block = new BlockInWorld(entity.level(), this.block.getPos(), false);
+
+		return this.breakingTicks <= this.timeToBreak && this.supportedBlocks.test(entity, block) && !this.earlyStopCondition.test(entity, block);
 	}
 	
 	/// Run the per-tick behaviour for this behaviour<br/>
