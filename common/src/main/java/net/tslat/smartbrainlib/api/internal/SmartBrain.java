@@ -10,6 +10,7 @@ import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
@@ -409,6 +410,9 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 		profiler.popPush("smartBrainActivityUpdate");
 		updateCurrentActivity(entity);
 		profiler.pop();
+
+		if (entity instanceof Mob mob)
+			mob.setAggressive(BrainUtil.hasMemory(mob, MemoryModuleType.ATTACK_TARGET));
 	}
 
 	@Override
