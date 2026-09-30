@@ -285,7 +285,7 @@ public class BreedWithPartner<BO extends Animal> extends ExtendedBehaviour<BO> {
 		final int closeEnoughDist = this.closeEnoughDist.applyAsInt(entity, this.partner);
 		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedModifier.applyAsFloat(entity, this.partner), closeEnoughDist);
 
-		if (entity.closerThan(this.partner, closeEnoughDist) && entity.tickCount == this.childBreedTick) {
+		if (entity.closerThan(this.partner, closeEnoughDist + 1) && entity.tickCount == this.childBreedTick) {
 			entity.spawnChildFromBreeding((ServerLevel)entity.level(), this.partner);
 			BrainUtil.clearMemory(entity, MemoryModuleType.BREED_TARGET);
 			BrainUtil.clearMemory(this.partner, MemoryModuleType.BREED_TARGET);
