@@ -176,7 +176,7 @@ public final class BrainUtil {
 
 		final T newValue = mappingFunction.apply(existingValue);
 
-		setOrClearMemory(brain, memory, newValue);
+		replaceMemory(brain, memory, newValue);
 
 		return newValue;
 	}
@@ -203,9 +203,24 @@ public final class BrainUtil {
 		final T existingValue = memoryOrDefault(brain, memory, (T)null);
 		final T newValue = mappingFunction.apply(memory, existingValue);
 
-		setOrClearMemory(brain, memory, newValue);
+		replaceMemory(brain, memory, newValue);
 
 		return newValue;
+	}
+
+	/// Replace a [Brain]'s memory value for the given memory type, keeping the existing memory's expiry time if it has one, or clear it if the new value is null
+	private static <T> void replaceMemory(Brain<?> brain, MemoryModuleType<T> memoryType, @Nullable T memory) {
+		if (memory != null && hasMemory(brain, memoryType)) {
+			final long timeToLive = brain.getTimeUntilExpiry(memoryType);
+
+			if (timeToLive != Long.MAX_VALUE) {
+				brain.setMemoryWithExpiry(memoryType, memory, timeToLive);
+
+				return;
+			}
+		}
+
+		setOrClearMemory(brain, memoryType, memory);
 	}
 
 	/// Get a memory value from an [Entity] or null if no memory is present
