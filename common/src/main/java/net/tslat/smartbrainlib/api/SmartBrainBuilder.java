@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /// Interface representing a builder of a [SmartBrain]
 ///
@@ -196,7 +196,7 @@ public interface SmartBrainBuilder<BO extends LivingEntity & SmartBrainOwner<BO>
     }
 
     //<editor-fold defaultstate="collapsed" desc="<Boilerplate>">
-    Map<EntityType<?>, MemoryModuleType<?>[]> COMPUTED_MEMORIES = new Reference2ObjectOpenHashMap<>();
+    Map<EntityType<?>, MemoryModuleType<?>[]> COMPUTED_MEMORIES = new ConcurrentHashMap<>();
 
     /// Construct the brain for the given entity for the brain being built
     ///
