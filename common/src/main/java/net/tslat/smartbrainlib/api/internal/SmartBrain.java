@@ -426,7 +426,10 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 	public void forgetOutdatedMemories() {
 		this.expirableMemories.forEach(MemorySlot::tick);
 		this.expirableMemories.removeIf(memory -> {
-			if (!memory.canExpire() || !memory.hasValue() || memory.hasExpired()) {
+			if (!memory.canExpire() || !memory.hasValue())
+				return true;
+
+			if (memory.hasExpired()) {
 				memory.clear();
 
 				return true;
@@ -448,7 +451,7 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 
 		final MemorySlot<M> memory = getMemorySlotIfPresent(type);
 
-		if (memory.hasValue() && memory.canExpire() && !memory.hasExpired())
+		if (memory.hasValue() && memory.canExpire() && !this.expirableMemories.contains(memory))
 			this.expirableMemories.add(memory);
 	}
 
