@@ -29,14 +29,10 @@ public class LeapAtTarget<BO extends Mob> extends AnimatableMeleeAttack<BO> {
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
-        
-        canAttack((entity, target) -> target.isAlive() && BrainUtil.canSee(entity, target) && entity.closerThan(target, this.leapRange.applyAsFloat(entity, target)));
     }
     
     public LeapAtTarget(ToIntFunction<BO> delayTicks) {
         super(delayTicks);
-        
-        canAttack((entity, target) -> target.isAlive() && BrainUtil.canSee(entity, target) && entity.closerThan(target, this.leapRange.applyAsFloat(entity, target)));
     }
 
     /// Set how far away (in blocks) the entity can be to leap
@@ -241,7 +237,7 @@ public class LeapAtTarget<BO extends Mob> extends AnimatableMeleeAttack<BO> {
     protected boolean checkExtraStartConditions(ServerLevel level, BO entity) {
         this.target = BrainUtil.getTargetOfEntity(entity);
 
-        return this.target != null && entity.onGround() && this.validTarget.test(entity, this.target);
+        return this.target != null && entity.onGround() && this.target.isAlive() && BrainUtil.canSee(entity, this.target) && entity.closerThan(this.target, this.leapRange.applyAsFloat(entity, this.target));
     }
     
     /// Run the core functionality this behaviour has when starting<br/>
