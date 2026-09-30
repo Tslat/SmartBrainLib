@@ -1,5 +1,6 @@
 package net.tslat.smartbrainlib.library.object.collection;
 
+import it.unimi.dsi.fastutil.objects.ObjectIterators;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -83,52 +84,30 @@ public class TransformingListView<R, T> extends TransformingCollectionView<List<
 
 	@Override
 	public ListIterator<T> listIterator(int startingIndex) {
-		return new ListIterator<>() {
-			int index = startingIndex;
-
+		return new ObjectIterators.AbstractIndexBasedListIterator<>(0, startingIndex) {
 			@Override
-			public boolean hasNext() {
-				return this.index < TransformingListView.this.collection.size();
+			protected T get(int index) {
+				return transformToView(TransformingListView.this.collection.get(index));
 			}
 
 			@Override
-			public T next() {
-				return transformToView(TransformingListView.this.collection.get(this.index++));
+			protected void add(int index, T element) {
+				TransformingListView.this.collection.add(index, transformToBase(element));
 			}
 
 			@Override
-			public void remove() {
-				TransformingListView.this.collection.remove(this.index);
+			protected void set(int index, T element) {
+				TransformingListView.this.collection.set(index, transformToBase(element));
 			}
 
 			@Override
-			public boolean hasPrevious() {
-				return this.index > 0;
+			protected void remove(int index) {
+				TransformingListView.this.collection.remove(index);
 			}
 
 			@Override
-			public T previous() {
-				return transformToView(TransformingListView.this.collection.get(--this.index));
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.index + 1;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.index - 1;
-			}
-
-			@Override
-			public void set(T element) {
-				TransformingListView.this.collection.set(this.index, transformToBase(element));
-			}
-
-			@Override
-			public void add(T element) {
-				TransformingListView.this.collection.add(this.index, transformToBase(element));
+			protected int getMaxPos() {
+				return TransformingListView.this.collection.size();
 			}
 		};
 	}
