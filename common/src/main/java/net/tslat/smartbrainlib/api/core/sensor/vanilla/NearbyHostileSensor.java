@@ -80,7 +80,7 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	/// Set the predicate for the sensor. The subclass of this class determines its usage
 	@Override
 	public NearbyHostileSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		return (NearbyHostileSensor<BO>)super.setPredicate(predicate);
+		return setHostilePredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor

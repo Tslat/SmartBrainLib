@@ -53,7 +53,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	@ApiStatus.NonExtendable
 	@Override
 	public AxolotlSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		return (AxolotlSpecificSensor<BO>)super.setPredicate(predicate);
+		return onlyTargetIf(predicate);
 	}
 
 	/// Set the scan rate for this sensor

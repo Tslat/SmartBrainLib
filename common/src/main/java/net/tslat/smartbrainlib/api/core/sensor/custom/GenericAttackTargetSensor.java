@@ -36,7 +36,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	@ApiStatus.NonExtendable
 	@Override
 	public GenericAttackTargetSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		return (GenericAttackTargetSensor<BO>)super.setPredicate(predicate);
+		return onlyTargetIf(predicate);
 	}
 
 	/// Set the scan rate for this sensor

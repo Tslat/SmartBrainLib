@@ -37,7 +37,7 @@ public class NearbyBabySensor<BO extends LivingEntity> extends NearestVisibleEnt
 	@ApiStatus.NonExtendable
 	@Override
 	public NearbyBabySensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		return (NearbyBabySensor<BO>)super.setPredicate(predicate);
+		return setBabyPredicate(predicate);
 	}
 
 	/// Set the scan rate for this sensor

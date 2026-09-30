@@ -52,7 +52,7 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	@ApiStatus.NonExtendable
 	@Override
 	public FrogSpecificSensor<BO> setPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		return (FrogSpecificSensor<BO>)super.setPredicate(predicate);
+		return onlyTargetIf(predicate);
 	}
 
 	/// Set the scan rate for this sensor
