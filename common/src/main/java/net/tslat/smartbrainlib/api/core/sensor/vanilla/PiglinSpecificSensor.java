@@ -210,7 +210,7 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 		Player nearestPlayerWithWantedItem = null;
 		int adultHoglinCount = 0;
 
-		for (LivingEntity target : entities.nearbyEntities()) {
+		for (LivingEntity target : entities.findAll(_ -> true)) {
 			switch (target) {
 				case Hoglin hoglin -> {
 					if (nearestBabyHoglin == null && this.babyHoglinPredicate.test(entity, hoglin)) {
@@ -251,6 +251,11 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 					}
 				}
 			}
+		}
+
+		for (LivingEntity target : BrainUtil.memoryOrDefault(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, List.<LivingEntity>of())) {
+			if (target instanceof AbstractPiglin piglin && this.adultPiglinPredicate.test(entity, piglin))
+				adultPiglins.add(piglin);
 		}
 
 		final OrderedBlockMatcher blockMatcher = level.findBlocksInBoxByManhattanDistance(entity.blockPosition(), 8, 4).filterState(state -> this.isRepellent.test(entity, state));
