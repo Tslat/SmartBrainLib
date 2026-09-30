@@ -2,7 +2,6 @@ package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
@@ -115,7 +114,7 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	@Override
 	protected BiPredicate<BO, LivingEntity> predicate() {
 		return (entity, target) -> {
-			if (!entity.closerThan(target, Mth.sqrt(this.detectionRange.applyAsFloat(entity, target))))
+			if (!entity.closerThan(target, this.detectionRange.applyAsFloat(entity, target)))
 				return false;
 
 			if (!this.validTargetCondition.test(entity, target))
