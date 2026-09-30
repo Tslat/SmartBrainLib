@@ -319,7 +319,7 @@ public final class BrainUtil {
 	/// @param memory The memory to check the expiry of
 	/// @return The ticks until the memory expires, 0 if the memory doesn't exist or [Long#MAX_VALUE] if present but with no expiration
 	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
-		return brain.getTimeUntilExpiry(memory);
+		return hasMemory(brain, memory) ? brain.getTimeUntilExpiry(memory) : 0;
 	}
 
 	/// Set an [Entity]'s memory value for the given memory type
@@ -522,9 +522,11 @@ public final class BrainUtil {
 		}
 
 		if (target == null) {
+			final LivingEntity previousTarget = hasMemory(entity, MemoryModuleType.ATTACK_TARGET) ? getMemory(entity, MemoryModuleType.ATTACK_TARGET) : null;
+
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 			
-			if (getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == entity)
+			if (getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == previousTarget)
 				clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 		}
 		else {
