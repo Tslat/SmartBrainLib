@@ -22,11 +22,14 @@ import java.util.function.ToIntFunction;
 /// @see #whenStarting(Consumer)
 /// @param <BO> The brain owner entity
 public final class CustomHeldBehaviour<BO extends LivingEntity> extends HeldBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
+	private Set<MemoryCondition<?, ?>> memoryConditions;
 	private final Predicate<BO> onTick;
 	
 	public CustomHeldBehaviour(Predicate<BO> tickCallback) {
+		this.memoryConditions = Set.of();
 		this.onTick = tickCallback;
+		
+		super();
 	}
 	
 	/// Set the memory conditions for this behaviour to start

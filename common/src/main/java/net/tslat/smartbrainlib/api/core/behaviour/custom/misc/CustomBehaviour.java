@@ -20,7 +20,13 @@ import java.util.function.ToIntFunction;
 /// @see #whenStarting(Consumer)
 /// @param <BO> The brain owner entity
 public final class CustomBehaviour<BO extends LivingEntity> extends ExtendedBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
+	private Set<MemoryCondition<?, ?>> memoryConditions;
+	
+	public CustomBehaviour() {
+		this.memoryConditions = Set.of();
+		
+		super();
+	}
 	
 	/// Set the memory conditions for this behaviour to start
 	///

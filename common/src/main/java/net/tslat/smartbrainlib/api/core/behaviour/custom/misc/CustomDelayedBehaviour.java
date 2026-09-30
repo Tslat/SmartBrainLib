@@ -20,13 +20,17 @@ import java.util.function.ToIntFunction;
 /// @see #startCondition(Predicate)
 /// @param <BO> The brain owner entity
 public final class CustomDelayedBehaviour<BO extends LivingEntity> extends DelayedBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
+	private Set<MemoryCondition<?, ?>> memoryConditions;
 	
 	public CustomDelayedBehaviour(int delayTicks) {
+		this.memoryConditions = Set.of();
+		
 		super(delayTicks);
 	}
 	
 	public CustomDelayedBehaviour(ToIntFunction<BO> delayTicks) {
+		this.memoryConditions = Set.of();
+		
 		super(delayTicks);
 	}
 	

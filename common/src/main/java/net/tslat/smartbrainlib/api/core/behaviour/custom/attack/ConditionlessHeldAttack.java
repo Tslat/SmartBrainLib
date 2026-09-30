@@ -26,13 +26,19 @@ import java.util.function.*;
 /// @see HeldBehaviour#whenTicking(Consumer)
 /// @param <BO> The brain owner entity
 public class ConditionlessHeldAttack<BO extends Mob> extends HeldBehaviour<BO> {
-	protected MemoryTest memoryRequirements = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	protected MemoryTest memoryRequirements;
 	
 	protected ToIntBiFunction<BO, @Nullable LivingEntity> attackInterval = (_, _) -> 20;
 	protected BiPredicate<BO, @Nullable LivingEntity> attackTickTest = (_, _) -> false;
 	protected boolean requireTarget = false;
 	
 	protected @Nullable LivingEntity target = null;
+	
+	public ConditionlessHeldAttack() {
+		this.memoryRequirements = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+		
+		super();
+	}
 	
 	/// Set that the attack requires that the entity have an attack target set to activate
 	@ApiStatus.NonExtendable
