@@ -3,6 +3,7 @@ package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -172,8 +173,9 @@ public class ItemTemptingSensor<BO extends LivingEntity> extends ExtendedSensor<
 	@Override
 	protected void doTick(ServerLevel level, BO entity) {
 		final List<Player> nearbyPlayers = BrainUtil.getMemory(entity, MemoryModuleType.NEAREST_PLAYERS);
-		final AABB bounds = this.radius.apply(entity).inflateAABB(entity.getBoundingBox());
-		final Predicate<Player> predicate = pl -> bounds.contains(pl.position()) && (this.temptPredicate.test(entity, pl.getMainHandItem(), pl) || this.temptPredicate.test(entity, pl.getOffhandItem(), pl));
+		final SquareRadius radius = this.radius.apply(entity);
+		final AABB bounds = radius.inflateAABB(entity.getBoundingBox());
+		final Predicate<Player> predicate = pl -> isInTemptRadius(entity, pl, radius) && (this.temptPredicate.test(entity, pl.getMainHandItem(), pl) || this.temptPredicate.test(entity, pl.getOffhandItem(), pl));
 		Optional<Player> player;
 
 		if (nearbyPlayers != null) {
@@ -198,6 +200,15 @@ public class ItemTemptingSensor<BO extends LivingEntity> extends ExtendedSensor<
 		}
 
 		BrainUtil.setOrClearMemory(entity, MemoryModuleType.TEMPTING_PLAYER, player.orElse(null));
+	}
+
+	/// Determine whether the given player is within the tempting radius of the entity
+	///
+	/// The radius forms an ellipsoid around the entity's position, which is a sphere when the lateral and vertical radius are equal (such as with the default [Attributes#TEMPT_RANGE] radius)
+	protected boolean isInTemptRadius(BO entity, Player player, SquareRadius radius) {
+		final double lateralDistanceSqr = Mth.square(player.getX() - entity.getX()) + Mth.square(player.getZ() - entity.getZ());
+
+		return lateralDistanceSqr / Mth.square(radius.xzRadius()) + Mth.square(player.getY() - entity.getY()) / Mth.square(radius.yRadius()) <= 1;
 	}
 	//</editor-fold>
 }
