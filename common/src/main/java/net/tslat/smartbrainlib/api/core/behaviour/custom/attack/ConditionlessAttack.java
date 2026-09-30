@@ -227,44 +227,11 @@ public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
             BehaviorUtils.lookAtEntity(entity, this.target);
 	}
 	
-	/// Start the behaviour<br/>
-	/// All pre-start checks have been checked and passed by this point
-	///
-	/// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
-	///
-	/// @see #start(Mob)
-	/// @see #whenStarting(Consumer)
-	@ApiStatus.Internal
+	/// The action to take once the delay period has elapsed
+	@MustBeInvokedByOverriders
 	@Override
-	protected void start(ServerLevel level, BO entity, long gameTime) {
-		final int nextDelay = this.delayTime.applyAsInt(entity);
-
-		if (nextDelay > 0) {
-			this.delayFinishedAt = gameTime + nextDelay;
-
-			super.start(level, entity, gameTime);
-		}
-		else {
-			super.start(level, entity, gameTime);
-			doDelayedAction(entity);
-			this.delayedCallback.accept(entity);
-			this.attackCallback.accept(entity, BrainUtil.getTargetOfEntity(entity));
-		}
-	}
-	
-	/// Perform any internal per-tick functionality for this behaviour
-	///
-	/// <u>NOTE:</u> This is an API method. You should not be calling or overriding this method unless you know what you are doing
-	@ApiStatus.Internal
-	@Override
-	protected void tick(ServerLevel level, BO entity, long gameTime) {
-		super.tick(level, entity, gameTime);
-
-		if (this.delayFinishedAt <= gameTime) {
-			doDelayedAction(entity);
-			this.delayedCallback.accept(entity);
-			this.attackCallback.accept(entity, BrainUtil.getTargetOfEntity(entity));
-		}
+	protected void doDelayedAction(BO entity) {
+		this.attackCallback.accept(entity, BrainUtil.getTargetOfEntity(entity));
 	}
 	
 	/// Called when this behaviour is instructed to stop<br/>
