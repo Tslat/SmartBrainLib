@@ -569,7 +569,7 @@ public final class BrainUtil {
 	@SuppressWarnings({"rawtypes", "unchecked"})
     public static <E extends LivingEntity> Stream<BehaviorControl<? super E>> getAllBehaviours(Brain<E> brain) {
 		return brain.availableBehaviorsByPriority.values().stream()
-				.mapMulti((map, consumer) -> map.values().forEach((Consumer)consumer));
+				.mapMulti((map, consumer) -> map.values().forEach(behaviours -> behaviours.forEach((Consumer)consumer)));
 	}
 
 	/// Removes the first behaviour matching the given [BrainBehaviourPredicate] from the provided [Brain].<br/>
