@@ -342,15 +342,15 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 	@MustBeInvokedByOverriders
 	@Override
 	protected void stop(BO entity) {
-		this.followingEntity = null;
-		this.oldWaterPathMalus = 0;
-		this.oldLavaPathMalus = 0;
-		
 		entity.setPathfindingMalus(PathType.WATER, this.oldWaterPathMalus);
 
 		if (entity.fireImmune())
 			entity.setPathfindingMalus(PathType.LAVA, this.oldLavaPathMalus);
 
+		this.followingEntity = null;
+		this.oldWaterPathMalus = 0;
+		this.oldLavaPathMalus = 0;
+		
 		if (BrainUtil.getMemory(entity, MemoryModuleType.WALK_TARGET) == this.walkTarget)
 			BrainUtil.clearMemory(entity, MemoryModuleType.WALK_TARGET);
 
