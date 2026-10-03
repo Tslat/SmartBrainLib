@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.AbortableIterationConsumer;
 import net.minecraft.util.Continuation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -100,7 +99,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	An optional containing the closest entity to the origin point, or an empty optional if none found
 	public static Optional<Entity> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin);
 	}
 
 	/// Get the closest [Entity] to an origin point, only including entities within a specified area
@@ -168,7 +167,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	An optional containing the closest entity to the origin point, or an empty optional if none found
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, minimumClass);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin, minimumClass);
 	}
 
 	/// Get the closest [Entity] to an origin point, only including entities within a specified area, filtering by entity class.<br/>
@@ -234,7 +233,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible entities to return
 	/// @return         	An optional containing the closest entity to the origin point, or an empty optional if none found
 	public static Optional<Entity> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Entity> predicate) {
-		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin, predicate);
 	}
 
 	/// Get the closest [Entity] to an origin point, only including entities within a specified area, filtering by a [Predicate]
@@ -292,7 +291,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	An optional containing the closest entity to the origin point, or an empty optional if none found
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return getNearestEntity(level, AABB.ofSize(origin, radius, radius, radius), origin, minimumClass, predicate);
+		return getNearestEntity(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), origin, minimumClass, predicate);
 	}
 
 	/// Get the closest [Entity] to an origin point, only including entities within a radius of that point, filtering by entity class and a [Predicate].<br/>
@@ -308,7 +307,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	An optional containing the closest entity to the origin point, or an empty optional if none found
 	public static <T extends Entity> Optional<T> getNearestEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return getNearestEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, minimumClass, predicate);
+		return getNearestEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin, minimumClass, predicate);
 	}
 
 	/// Get the closest [Entity] to an origin point, only including entities within a specified area, filtering by a [Predicate]
@@ -392,7 +391,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	An optional containing the closest player to the origin point, or an empty optional if none found
 	public static Optional<Player> getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getNearestPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin);
+		return getNearestPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin);
 	}
 
 	/// Get the closest [Player] to an origin point, only including players within a specified area.<br/>
@@ -463,7 +462,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible players to return
 	/// @return         	An optional containing the closest player to the origin point, or an empty optional if none found
 	public static Optional<Player> getNearestPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getNearestPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
+		return getNearestPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin, predicate);
 	}
 
 	/// Get the closest [Player] to an origin point, only including players within a specified area, filtering by a [Predicate].<br/>
@@ -546,7 +545,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	An optional containing the closest player to the origin point, or an empty optional if none found
 	public static Optional<ServerPlayer> getNearestServerPlayer(ServerLevel level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getNearestServerPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin);
+		return getNearestServerPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin);
 	}
 
 	/// Get the closest [ServerPlayer] to an origin point, only including players within a specified area.<br/>
@@ -619,7 +618,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible players to return
 	/// @return         	An optional containing the closest player to the origin point, or an empty optional if none found
 	public static Optional<ServerPlayer> getNearestServerPlayer(ServerLevel level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<ServerPlayer> predicate) {
-		return getNearestServerPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), origin, predicate);
+		return getNearestServerPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), origin, predicate);
 	}
 
 	/// Get the closest [ServerPlayer] to an origin point, only including players within a specified area, filtering by [Predicate].<br/>
@@ -700,7 +699,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	The list of all players within a radius of the origin point
 	public static List<Player> getPlayers(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ));
+		return getPlayers(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2));
 	}
 
 	/// Get all [Player]s within a specified area<br/>
@@ -770,7 +769,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible players to return
 	/// @return         	The list of all players within an area
 	public static List<Player> getPlayers(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return getPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return getPlayers(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Get all [Player]s within a specified area, filtering by a [Predicate].<br/>
@@ -845,7 +844,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	The list of all players within a radius of the origin point
 	public static List<ServerPlayer> getServerPlayers(ServerLevel level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getServerPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ));
+		return getServerPlayers(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2));
 	}
 
 	/// Get all [ServerPlayer]s within a specified area<br/>
@@ -917,7 +916,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible players to return
 	/// @return         	The list of all players within an area
 	public static List<ServerPlayer> getServerPlayers(ServerLevel level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<ServerPlayer> predicate) {
-		return getServerPlayers(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return getServerPlayers(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Get all [ServerPlayer]s within a radius of an origin entity, filtering by a [Predicate].<br/>
@@ -996,7 +995,7 @@ public final class EntityRetrievalUtil {
 	/// @param radius 		The radius to search within from the center
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radius) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius));
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2));
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point
@@ -1007,7 +1006,7 @@ public final class EntityRetrievalUtil {
 	/// @param max			The maximum number of entities to retrieve before returning
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radius, int max) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), max);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), max);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point
@@ -1019,7 +1018,7 @@ public final class EntityRetrievalUtil {
 	/// @param radiusZ 		The radius to search within from the center, on the Z axis
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ));
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2));
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point
@@ -1032,7 +1031,7 @@ public final class EntityRetrievalUtil {
 	/// @param max			The maximum number of entities to retrieve before returning
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, int max) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), max);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), max);
 	}
 
 	/// Get all [entities][Entity] within a specified area
@@ -1119,7 +1118,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), minimumClass);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), minimumClass);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class
@@ -1131,7 +1130,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass, int max) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), minimumClass, max);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), minimumClass, max);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class
@@ -1144,7 +1143,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), minimumClass);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), minimumClass);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class
@@ -1158,7 +1157,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, int max) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), minimumClass, max);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), minimumClass, max);
 	}
 
 	/// Get all [entities][Entity] within a specified area, filtering by entity class
@@ -1248,7 +1247,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible entities to return
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), predicate);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by a [Predicate]
@@ -1260,7 +1259,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible entities to return
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radius, int max, Predicate<Entity> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), max, predicate);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), max, predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by a [Predicate]
@@ -1273,7 +1272,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible entities to return
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Entity> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by a [Predicate]
@@ -1286,7 +1285,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine eligible entities to return
 	/// @return         	The list of all entities within a radius of the origin point
 	public static List<Entity> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, int max, Predicate<Entity> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), max, predicate);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), max, predicate);
 	}
 
 	/// Get all [entities][Entity] within a specified area, filtering by a [Predicate]
@@ -1384,7 +1383,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), minimumClass, predicate);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), minimumClass, predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class and a [Predicate]
@@ -1398,7 +1397,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radius, Class<T> minimumClass, int max, Predicate<? super T> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radius, radius, radius), minimumClass, max, predicate);
+		return getEntities(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), minimumClass, max, predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class and a [Predicate]
@@ -1413,7 +1412,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), minimumClass, predicate);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), minimumClass, predicate);
 	}
 
 	/// Get all [entities][Entity] within a radius of an origin point, filtering by entity class and a [Predicate]
@@ -1429,7 +1428,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return         	The list of all entities within a radius of the origin point
 	public static <T extends Entity> List<T> getEntities(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, int max, Predicate<? super T> predicate) {
-		return getEntities(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), minimumClass, max, predicate);
+		return getEntities(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), minimumClass, max, predicate);
 	}
 
 	/// Get all [entities][Entity] within a specified area, filtering by entity class and a [Predicate]
@@ -1527,7 +1526,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the entity to return
 	/// @return				The first entity to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<Entity> findEntity(Level level, Vec3 origin, double radius, Predicate<Entity> predicate) {
-		return findEntity(level, AABB.ofSize(origin, radius, radius, radius), predicate);
+		return findEntity(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), predicate);
 	}
 
 	/// Find the first [Entity] matching a [Predicate] within a radius of an origin point
@@ -1542,7 +1541,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the entity to return
 	/// @return				The first entity to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<Entity> findEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Entity> predicate) {
-		return findEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return findEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Find the first [Entity] matching a [Predicate] within a specified area
@@ -1607,7 +1606,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return				The first entity to meet the predicate condition, or an empty [Optional] if no match found
 	public static <T extends Entity> Optional<T> findEntity(Level level, Vec3 origin, double radius, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return findEntity(level, AABB.ofSize(origin, radius, radius, radius), minimumClass, predicate);
+		return findEntity(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), minimumClass, predicate);
 	}
 
 	/// Find the first [Entity] matching a [Predicate] within a radius of an origin point, filtering by entity class type.<br/>
@@ -1625,7 +1624,7 @@ public final class EntityRetrievalUtil {
 	/// @param <T> 			The class in which all checked entities should be or extend. More specific types are more efficient
 	/// @return				The first entity to meet the predicate condition, or an empty [Optional] if no match found
 	public static <T extends Entity> Optional<T> findEntity(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Class<T> minimumClass, Predicate<? super T> predicate) {
-		return findEntity(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), minimumClass, predicate);
+		return findEntity(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), minimumClass, predicate);
 	}
 
 	/// Find the first [Entity] matching a [Predicate] within a radius of an origin point, filtering by entity class type.<br/>
@@ -1717,7 +1716,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the player to return
 	/// @return				The first player to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<Player> findPlayer(Level level, Vec3 origin, double radius, Predicate<Player> predicate) {
-		return findPlayer(level, AABB.ofSize(origin, radius, radius, radius), predicate);
+		return findPlayer(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), predicate);
 	}
 
 	/// Find the first [Player] matching a [Predicate] within a radius of an origin point.<br/>
@@ -1734,7 +1733,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the player to return
 	/// @return				The first player to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<Player> findPlayer(Level level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<Player> predicate) {
-		return findPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return findPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Find the first [Player] matching a [Predicate] within a radius of an origin point.<br/>
@@ -1805,7 +1804,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the player to return
 	/// @return				The first player to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<ServerPlayer> findServerPlayer(ServerLevel level, Vec3 origin, double radius, Predicate<ServerPlayer> predicate) {
-		return findServerPlayer(level, AABB.ofSize(origin, radius, radius, radius), predicate);
+		return findServerPlayer(level, AABB.ofSize(origin, radius * 2, radius * 2, radius * 2), predicate);
 	}
 
 	/// Find the first [ServerPlayer] matching a [Predicate] within a radius of an origin point.<br/>
@@ -1822,7 +1821,7 @@ public final class EntityRetrievalUtil {
 	/// @param predicate	A predicate to apply to determine the player to return
 	/// @return				The first player to meet the predicate condition, or an empty [Optional] if no match found
 	public static Optional<ServerPlayer> findServerPlayer(ServerLevel level, Vec3 origin, double radiusX, double radiusY, double radiusZ, Predicate<ServerPlayer> predicate) {
-		return findServerPlayer(level, AABB.ofSize(origin, radiusX, radiusY, radiusZ), predicate);
+		return findServerPlayer(level, AABB.ofSize(origin, radiusX * 2, radiusY * 2, radiusZ * 2), predicate);
 	}
 
 	/// Find the first [ServerPlayer] matching a [Predicate] within a radius of an origin point.<br/>
