@@ -501,19 +501,21 @@ public final class BrainUtil {
 	/// @param entity The entity to set the target of
 	/// @param target The target entity to set, or null to clear the current target
 	public static void setTargetOfEntity(LivingEntity entity, @Nullable LivingEntity target) {
-		if (entity instanceof Mob mob) {
-			mob.setTarget(target);
-			mob.setAggressive(target != null);
-		}
-
 		if (target == null) {
+			final LivingEntity previousTarget = getTargetOfEntity(entity);
+
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
 			
-			if (getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == entity)
+			if (previousTarget != null && getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == previousTarget)
 				clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 		}
 		else {
 			setMemory(entity, MemoryModuleType.ATTACK_TARGET, target);
+		}
+
+		if (entity instanceof Mob mob) {
+			mob.setTarget(target);
+			mob.setAggressive(target != null);
 		}
 	}
 	
