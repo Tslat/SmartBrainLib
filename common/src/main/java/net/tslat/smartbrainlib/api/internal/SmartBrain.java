@@ -56,6 +56,10 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
         //noinspection rawtypes
         ((Brain)this).sensors = this.sensors.sensors;
 		this.schedule = schedule;
+
+		for (ExtendedSensor<BO> sensor : this.sensors) {
+			sensor.randomlyDelayStart(random);
+		}
 	}
 
 	/// Get the [Sensors] collection for this [SmartBrain] instance
@@ -79,7 +83,7 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 
 	//<editor-fold defaultstate="collapsed" desc="<Sensors>">
 	/// Container object holding all of a [SmartBrain]'s [Sensor]s, sorted by insertion order
-	public class Sensors {
+	public class Sensors implements Iterable<ExtendedSensor<BO>> {
 		protected final Map<SensorType<?>, ExtendedSensor<BO>> sensors;
 
 		@ApiStatus.Internal
@@ -120,6 +124,11 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 		/// Tick all sensors on this [SmartBrain] instance
 		public void tickSensors(ServerLevel level, BO entity) {
 			SmartBrain.this.tickSensors(level, entity);
+		}
+
+		@Override
+		public Iterator<ExtendedSensor<BO>> iterator() {
+			return this.sensors.values().iterator();
 		}
 	}
 	//</editor-fold>

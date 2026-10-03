@@ -14,7 +14,10 @@ import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.pathfinder.*;
+import net.minecraft.world.level.pathfinder.FlyNodeEvaluator;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
+import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
@@ -26,9 +29,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.*;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /// A movement behaviour for automatically following a [nearby visible entity][MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES]
 ///
@@ -384,7 +389,7 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 	protected BlockPos getTeleportPos(BO entity, LivingEntity target, BlockPos targetPos) {
 		final Level level = entity.level();
 
-		return RandomUtil.positionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, !this.canTeleportOffGround.test(entity, target), level, 10, (state, statePos) ->
+		return RandomUtil.positionWithinRange(targetPos, 5, 5, 5, 1, 1, 1, !this.canTeleportOffGround.test(entity, target), level, 10, (_, statePos) ->
 				this.canTeleportTo.test(entity, target, new BlockInWorld(level, statePos, false)));
 	}
 
