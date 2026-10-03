@@ -13,7 +13,6 @@ import net.minecraft.world.entity.schedule.Activity;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -42,7 +41,20 @@ public abstract class ExtendedBehaviour<BO extends LivingEntity> extends Behavio
 	public ExtendedBehaviour() {
 		super(new Reference2ObjectArrayMap<>());
 
-		for (MemoryCondition<?, ?> condition : getMemoryRequirements()) {
+		computeEntryCondition();
+	}
+
+	/// Clear and calculate the memory condition set for this behaviour based on the current [#getMemoryRequirements()]
+	protected final void computeEntryCondition() {
+		final Set<MemoryCondition<?, ?>> memoryRequirements = getMemoryRequirements();
+
+		//noinspection ConstantValue
+		if (memoryRequirements == null)
+			throw new IllegalStateException(getClass().getSimpleName() + " is using dynamic memory requirements, but didn't register before the constructor");
+
+		this.entryCondition.clear();
+
+		for (MemoryCondition<?, ?> condition : memoryRequirements) {
 			this.entryCondition.put(condition.memory(), condition.condition());
 		}
 	}

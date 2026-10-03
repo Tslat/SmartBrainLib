@@ -15,7 +15,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.*;
 
@@ -26,7 +25,7 @@ import java.util.function.*;
 /// @see DelayedBehaviour#doDelayedAction(LivingEntity)
 /// @param <BO> The brain owner entity
 public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
-	protected MemoryTest memoryRequirements = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+	protected MemoryTest memoryRequirements;
 
 	protected ToIntBiFunction<BO, @Nullable LivingEntity> attackInterval = (_, _) -> 20;
 	protected BiConsumer<BO, @Nullable LivingEntity> attackCallback = (_, _) -> {};
@@ -35,6 +34,8 @@ public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
 	protected @Nullable LivingEntity target = null;
 
 	public ConditionlessAttack(int delayTicks) {
+		this.memoryRequirements = MemoryTest.builder(1).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+
 		super(delayTicks);
 	}
 
@@ -65,6 +66,8 @@ public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
 	public ConditionlessAttack<BO> requiresTarget() {
 		this.requireTarget = true;
 		this.memoryRequirements = MemoryTest.builder(2).hasMemory(MemoryModuleType.ATTACK_TARGET).noMemory(MemoryModuleType.ATTACK_COOLING_DOWN);
+
+		computeEntryCondition();
 
 		return this;
 	}

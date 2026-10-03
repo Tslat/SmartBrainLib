@@ -7,6 +7,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -20,14 +21,20 @@ import java.util.function.ToIntFunction;
 /// @see #whenStarting(Consumer)
 /// @param <BO> The brain owner entity
 public final class CustomBehaviour<BO extends LivingEntity> extends ExtendedBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
-	
+	private Set<MemoryCondition<?, ?>> memoryConditions;
+
+	public CustomBehaviour() {
+		this.memoryConditions = Collections.emptySet();
+	}
+
 	/// Set the memory conditions for this behaviour to start
 	///
 	/// @see MemoryTest
 	/// @see #getMemoryRequirements()
 	public CustomBehaviour<BO> memoryConditions(Set<MemoryCondition<?, ?>> memoryConditions) {
 		this.memoryConditions = memoryConditions;
+
+		computeEntryCondition();
 		
 		return this;
 	}
