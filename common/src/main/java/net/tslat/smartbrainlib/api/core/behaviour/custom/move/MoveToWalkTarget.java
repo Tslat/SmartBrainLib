@@ -21,7 +21,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -189,8 +188,6 @@ public class MoveToWalkTarget<BO extends PathfinderMob> extends ExtendedBehaviou
 	/// If you are not making a custom behaviour and are instead just using an existing behaviour; you would use [#whenStarting(Consumer)] instead of overriding this method
 	@Override
 	protected void start(BO entity) {
-		BrainUtil.clearMemories(entity, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-		
 		if (this.path != null)
 			startOnNewPath(entity, this.path);
 	}
@@ -254,9 +251,13 @@ public class MoveToWalkTarget<BO extends PathfinderMob> extends ExtendedBehaviou
 	protected void stop(BO entity) {
 		final Brain<?> brain = entity.getBrain();
 		final WalkTarget walkTarget = BrainUtil.getMemory(brain, MemoryModuleType.WALK_TARGET);
+		final boolean reachedTarget = walkTarget == null || hasReachedTarget(entity, walkTarget);
 
-		if (!entity.getNavigation().isStuck() || walkTarget == null || hasReachedTarget(entity, walkTarget))
+		if (!entity.getNavigation().isStuck() || reachedTarget)
 			this.cooldownFinishedAt = 0;
+
+		if (reachedTarget)
+			BrainUtil.clearMemory(brain, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
 		entity.getNavigation().stop();
 		BrainUtil.clearMemories(brain, MemoryModuleType.WALK_TARGET, MemoryModuleType.PATH);
