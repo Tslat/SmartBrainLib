@@ -347,10 +347,6 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 	@MustBeInvokedByOverriders
 	@Override
 	protected void stop(BO entity) {
-		this.followingEntity = null;
-		this.oldWaterPathMalus = 0;
-		this.oldLavaPathMalus = 0;
-		
 		entity.setPathfindingMalus(PathType.WATER, this.oldWaterPathMalus);
 
 		if (entity.fireImmune())
@@ -361,6 +357,10 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 
 		if (BrainUtil.getMemory(entity, MemoryModuleType.LOOK_TARGET) == this.lookTarget)
 			BrainUtil.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
+
+		this.followingEntity = null;
+		this.oldWaterPathMalus = 0;
+		this.oldLavaPathMalus = 0;
 	}
 
 	/// Attempt to teleport to a random safe position near the target entity
