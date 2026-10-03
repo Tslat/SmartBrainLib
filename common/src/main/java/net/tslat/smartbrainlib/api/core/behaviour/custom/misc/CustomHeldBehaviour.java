@@ -8,6 +8,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.base.HeldBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -22,11 +23,14 @@ import java.util.function.ToIntFunction;
 /// @see #whenStarting(Consumer)
 /// @param <BO> The brain owner entity
 public final class CustomHeldBehaviour<BO extends LivingEntity> extends HeldBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
+	private Set<MemoryCondition<?, ?>> memoryConditions;
 	private final Predicate<BO> onTick;
 	
 	public CustomHeldBehaviour(Predicate<BO> tickCallback) {
+		this.memoryConditions = Collections.emptySet();
 		this.onTick = tickCallback;
+
+		super();
 	}
 	
 	/// Set the memory conditions for this behaviour to start
@@ -35,6 +39,8 @@ public final class CustomHeldBehaviour<BO extends LivingEntity> extends HeldBeha
 	/// @see #getMemoryRequirements()
 	public CustomHeldBehaviour<BO> memoryConditions(Set<MemoryCondition<?, ?>> memoryConditions) {
 		this.memoryConditions = memoryConditions;
+
+		computeEntryCondition();
 		
 		return this;
 	}

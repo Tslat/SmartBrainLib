@@ -8,6 +8,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.base.DelayedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.object.MemoryTest;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -20,13 +21,17 @@ import java.util.function.ToIntFunction;
 /// @see #startCondition(Predicate)
 /// @param <BO> The brain owner entity
 public final class CustomDelayedBehaviour<BO extends LivingEntity> extends DelayedBehaviour<BO> {
-	private Set<MemoryCondition<?, ?>> memoryConditions = Set.of();
+	private Set<MemoryCondition<?, ?>> memoryConditions;
 	
 	public CustomDelayedBehaviour(int delayTicks) {
+		this.memoryConditions = Collections.emptySet();
+
 		super(delayTicks);
 	}
 	
 	public CustomDelayedBehaviour(ToIntFunction<BO> delayTicks) {
+		this.memoryConditions = Collections.emptySet();
+
 		super(delayTicks);
 	}
 	
@@ -36,6 +41,8 @@ public final class CustomDelayedBehaviour<BO extends LivingEntity> extends Delay
 	/// @see #getMemoryRequirements()
 	public CustomDelayedBehaviour<BO> memoryConditions(Set<MemoryCondition<?, ?>> memoryConditions) {
 		this.memoryConditions = memoryConditions;
+
+		computeEntryCondition();
 		
 		return this;
 	}
