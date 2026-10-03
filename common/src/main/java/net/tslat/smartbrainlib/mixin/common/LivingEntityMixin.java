@@ -22,7 +22,7 @@ public class LivingEntityMixin {
     @Inject(method = "makeBrain", at = @At("HEAD"), cancellable = true)
     public <BO extends LivingEntity & SmartBrainOwner<BO>> void sbl$makeSmartBrain(Brain.Packed packedBrain, CallbackInfoReturnable<Brain<? extends LivingEntity>> cir) {
         if ((LivingEntity)(Object)this instanceof SmartBrainOwner<?> smartBrainOwner)
-            cir.setReturnValue(new SmartBrainProvider<>(((BO)smartBrainOwner).getBrainBuilder()).makeBrain((BO)smartBrainOwner, Brain.Packed.EMPTY));
+            cir.setReturnValue(new SmartBrainProvider<>(((BO)smartBrainOwner).getBrainBuilder()).makeBrain((BO)smartBrainOwner, packedBrain));
     }
 
     /// Inject automatic brain ticking
