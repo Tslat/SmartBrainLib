@@ -225,7 +225,7 @@ public final class BrainUtil {
 	/// @return The stored memory, or null if no memory was stored
 	/// @param <T> The value type of the memory
 	public static <T> @Nullable T getMemory(Brain<?> brain, MemoryModuleType<T> memory) {
-		return memoryOrDefault(brain, memory, (T)null);
+        return memoryOrDefault(brain, memory, (T)null);
 	}
 
 	/// Perform an operation using an [Entity]'s memory value, if present
@@ -285,7 +285,7 @@ public final class BrainUtil {
 			if (!hasMemory(brain, memory))
 				return false;
 		}
-
+		
 		return true;
 	}
 
@@ -368,7 +368,7 @@ public final class BrainUtil {
 	/// @param memory The memory value to set or empty if clearing the memory
 	/// @param <T> The value type of the memory
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public static <T> void setOrClearMemory(LivingEntity entity, MemoryModuleType<T> memoryType, Optional<T> memory) {
+    public static <T> void setOrClearMemory(LivingEntity entity, MemoryModuleType<T> memoryType, Optional<T> memory) {
 		setOrClearMemory(entity.getBrain(), memoryType, memory);
 	}
 
@@ -379,7 +379,7 @@ public final class BrainUtil {
 	/// @param memory The memory value to set or empty if clearing the memory
 	/// @param <T> The value type of the memory
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public static <T> void setOrClearMemory(Brain<?> brain, MemoryModuleType<T> memoryType, Optional<T> memory) {
+    public static <T> void setOrClearMemory(Brain<?> brain, MemoryModuleType<T> memoryType, Optional<T> memory) {
 		setOrClearMemory(brain, memoryType, memory.orElse(null));
 	}
 
@@ -505,7 +505,7 @@ public final class BrainUtil {
 			final LivingEntity previousTarget = getTargetOfEntity(entity);
 
 			clearMemory(entity, MemoryModuleType.ATTACK_TARGET);
-
+			
 			if (previousTarget != null && getMemory(entity, MemoryModuleType.LOOK_TARGET) instanceof EntityTracker entityTracker && entityTracker.getEntity() == previousTarget)
 				clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 		}
@@ -518,7 +518,7 @@ public final class BrainUtil {
 			mob.setAggressive(target != null);
 		}
 	}
-
+	
 	/// Replacement of [BehaviorUtils#canSee], falling back to a raytrace check in the event the target entity isn't in the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
 	///
 	/// @param entity The entity to check line of sight of
@@ -568,10 +568,10 @@ public final class BrainUtil {
 	}
 
 	/// Returns a **<u>read-only</u>** stream of all [Behaviours][BehaviorControl] registered to this brain
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static <E extends LivingEntity> Stream<BehaviorControl<? super E>> getAllBehaviours(Brain<E> brain) {
+    public static <E extends LivingEntity> Stream<BehaviorControl<? super E>> getAllBehaviours(Brain<E> brain) {
 		return brain.availableBehaviorsByPriority.values().stream()
-				.mapMulti((map, consumer) -> map.values().forEach((Consumer)consumer));
+				.mapMulti((byActivity, consumer) ->
+								  byActivity.values().forEach(behaviours -> behaviours.forEach(consumer)));
 	}
 
 	/// Removes the first behaviour matching the given [BrainBehaviourPredicate] from the provided [Brain].<br/>
@@ -582,12 +582,12 @@ public final class BrainUtil {
 	/// @param predicate The predicate checked for each
 	/// @return true if a behaviour was removed
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static <T extends LivingEntity> boolean removeBehaviour(T entity, Activity activity, BrainBehaviourPredicate<T> predicate) {
+    public static <T extends LivingEntity> boolean removeBehaviour(T entity, Activity activity, BrainBehaviourPredicate<T> predicate) {
 		if (!(entity.level() instanceof ServerLevel))
 			return false;
 
 		if (entity.getBrain() instanceof SmartBrain smartBrain)
-			return smartBrain.getBehaviours().removeBehaviour(activity, entity, predicate);
+            return smartBrain.getBehaviours().removeBehaviour(activity, entity, predicate);
 
 		for (Map.Entry<Integer, Map<Activity, Set<BehaviorControl<? super T>>>> byPriority : ((Brain<T>)entity.getBrain()).availableBehaviorsByPriority.entrySet()) {
 			final int priority = byPriority.getKey();
@@ -635,7 +635,7 @@ public final class BrainUtil {
 	/// @param priority The priority index the behaviour belongs to (lower runs earlier)
 	/// @param behaviourControl The behaviour to add
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static <E extends LivingEntity> void addBehaviour(Brain<E> brain, Activity activity, int priority, BehaviorControl<? super E> behaviourControl) {
+    public static <E extends LivingEntity> void addBehaviour(Brain<E> brain, Activity activity, int priority, BehaviorControl<? super E> behaviourControl) {
 		if (brain instanceof SmartBrain<?> smartBrain) {
 			((SmartBrain)smartBrain).getBehaviours().addBehaviour(activity, priority, behaviourControl, true);
 
@@ -653,7 +653,7 @@ public final class BrainUtil {
 
 	/// Adds a full [ActivityBuilder] to the brain, inclusive of activities and conditions
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static <E extends LivingEntity> void addActivity(Brain<E> brain, ActivityBuilder<?> activityBuilder) {
+    public static <E extends LivingEntity> void addActivity(Brain<E> brain, ActivityBuilder<?> activityBuilder) {
 		if (brain instanceof SmartBrain<?> smartBrain) {
 			smartBrain.getBehaviours().addActivity((ActivityBuilder)activityBuilder, true);
 
@@ -680,8 +680,8 @@ public final class BrainUtil {
 			if (!(sensor instanceof ExtendedSensor<?> extendedSensor))
 				throw new IllegalArgumentException("Attempted to provide sensor to SmartBrain, only ExtendedSensor subclasses acceptable. Sensor: " + sensor.getClass());
 
-			//noinspection rawtypes,unchecked
-			smartBrain.getSensors().addSensor((ExtendedSensor)extendedSensor, random, true);
+            //noinspection rawtypes,unchecked
+            smartBrain.getSensors().addSensor((ExtendedSensor)extendedSensor, random, true);
 
 			return;
 		}
