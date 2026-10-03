@@ -14,22 +14,34 @@ import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
-import java.util.List;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 /// Look at the look target for as long as it is present
 ///
-/// Additionally, invalidates the look target if it is an [EntityTracker] and the entity has expired
+/// Additionally, invalidates the look target if it is an [EntityTracker] and the entity is no longer valid
 ///
 /// @param <BO> The brain owner entity
 public class LookAtTarget<BO extends Mob> extends ExtendedBehaviour<BO> {
 	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(1).hasMemory(MemoryModuleType.LOOK_TARGET);
 
+	protected BiPredicate<BO, PositionTracker> invalidTarget = (entity, pos) -> !pos.isVisibleBy(entity);
+
 	public LookAtTarget() {
 		noTimeout();
+	}
+
+	/// Set a predicate to determine when a target should be considered no longer valid
+	///
+	/// Once a target becomes invalid, its [memory][MemoryModuleType#LOOK_TARGET] is removed
+	@ApiStatus.NonExtendable
+	public LookAtTarget<BO> invalidateTargetIf(BiPredicate<BO, PositionTracker> predicate) {
+		this.invalidTarget = predicate;
+
+		return this;
 	}
 	
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
@@ -193,7 +205,7 @@ public class LookAtTarget<BO extends Mob> extends ExtendedBehaviour<BO> {
 		if (lookTarget == null)
 			return false;
 
-		if (lookTarget instanceof EntityTracker entityTracker && (!entityTracker.getEntity().isAlive() || entityTracker.getEntity().isSpectator())) {
+		if (this.invalidTarget.test(entity, lookTarget)) {
 			if (invalidate)
 				BrainUtil.clearMemory(entity, MemoryModuleType.LOOK_TARGET);
 
