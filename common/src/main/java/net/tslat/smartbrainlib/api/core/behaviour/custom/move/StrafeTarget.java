@@ -14,7 +14,6 @@ import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -244,10 +243,10 @@ public class StrafeTarget<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 		}
 
 		if (this.strafeCounter > -1) {
-			if (distanceToTarget > Mth.square(strafeDistance * 0.75f)) {
+			if (distanceToTarget > Mth.square(strafeDistance)  * 0.75f) {
 				this.strafingBack = false;
 			}
-			else if (distanceToTarget < Mth.square(strafeDistance * 0.25f)) {
+			else if (distanceToTarget < Mth.square(strafeDistance)  * 0.25f) {
 				this.strafingBack = true;
 			}
 
