@@ -480,8 +480,9 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 		if (schedule != null) {
 			final Activity scheduledActivity = schedule.tick(entity);
 
-			if (scheduledActivity != null && !isActive(scheduledActivity) && activityRequirementsAreMet(scheduledActivity)) {
-				setActiveActivity(scheduledActivity);
+			if (scheduledActivity != null && activityRequirementsAreMet(scheduledActivity)) {
+				if (!isActive(scheduledActivity))
+					setActiveActivity(scheduledActivity);
 
 				return;
 			}
