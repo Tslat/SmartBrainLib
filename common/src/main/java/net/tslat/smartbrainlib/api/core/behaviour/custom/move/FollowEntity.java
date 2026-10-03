@@ -396,7 +396,7 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 	/// Determine whether the given teleport target location is suitable to teleport to
 	protected boolean checkTeleportDestination(BO entity, LivingEntity following, BlockInWorld block) {
 		final BlockPos pos = block.getPos();
-		final PathType pathType = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
+		final PathType pathType = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY() - 1, pos.getZ());
 
 		if (!this.canTeleportOffGround.test(entity, following)) {
 			if (pathType != PathType.WALKABLE)
