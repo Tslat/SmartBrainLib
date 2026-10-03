@@ -29,7 +29,7 @@ import java.util.function.*;
 public class EscapeSun<BO extends PathfinderMob> extends ExtendedBehaviour<BO> {
 	protected static final MemoryTest MEMORY_REQUIREMENTS = MemoryTest.builder(2).noMemory(MemoryModuleType.ATTACK_TARGET).usesMemory(MemoryModuleType.WALK_TARGET);
 
-	protected Predicate<BO> hideIf = entity -> entity.level().isBrightOutside() && entity.isOnFire() && entity.level().canSeeSky(entity.blockPosition()) && entity.hasItemInSlot(EquipmentSlot.HEAD);
+	protected Predicate<BO> hideIf = entity -> entity.level().isBrightOutside() && entity.isOnFire() && entity.level().canSeeSky(entity.blockPosition()) && !entity.hasItemInSlot(EquipmentSlot.HEAD);
 	protected ToFloatBiFunction<BO, Vec3> speedModifier = (_, _) -> 1f;
 	protected Function<BO, SquareRadius> searchRadius = _ -> new SquareRadius(10, 3);
 	protected BiPredicate<BO, BlockPos> validPositionPredicate = (entity, pos) -> !entity.level().canSeeSky(pos) && entity.getWalkTargetValue(pos) < 0;
@@ -190,6 +190,9 @@ public class EscapeSun<BO extends PathfinderMob> extends ExtendedBehaviour<BO> {
 	/// @return Whether the conditions have been met to start the behaviour
 	@Override
 	protected boolean checkExtraStartConditions(ServerLevel level, BO entity) {
+		if (!this.hideIf.test(entity))
+			return false;
+
 		if (this.hidePos != null && this.hidePos == BrainUtil.getMemory(entity, MemoryModuleType.WALK_TARGET))
 			return false;
 		
