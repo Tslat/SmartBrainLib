@@ -94,7 +94,7 @@ public abstract class ExtendedSensor<BO extends LivingEntity> extends Sensor<BO>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
 	@Override
 	public final void tick(ServerLevel level, BO entity) {
-		if (this.nextTickTime < level.getGameTime()) {
+		if (this.nextTickTime <= level.getGameTime()) {
 			this.nextTickTime = level.getGameTime() + this.scanRate.applyAsInt(entity);
 
 			if (this.scanCondition.test(entity)) {
