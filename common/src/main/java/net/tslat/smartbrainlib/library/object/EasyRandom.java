@@ -1,6 +1,7 @@
 package net.tslat.smartbrainlib.library.object;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -264,8 +265,32 @@ public class EasyRandom implements RandomSource  {
 
 			mutablePos.setWithOffset(centerPos, x, y, z);
 
-			if (level != null && safeSurfacePlacement)
-				mutablePos.set(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos));
+			if (level != null && safeSurfacePlacement) {
+				BlockPos heightmapPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos);
+
+				if (mutablePos.getY() >= heightmapPos.getY()) {
+					mutablePos.set(heightmapPos);
+				}
+				else {
+					while (mutablePos.getY() > level.getMinY()) {
+						mutablePos.move(Direction.DOWN);
+
+						if (level.getBlockState(mutablePos).isFaceSturdy(level, mutablePos, Direction.UP)) {
+							mutablePos.move(Direction.UP);
+
+							break;
+						}
+					}
+				}
+
+				if (mutablePos.getY() == level.getMinY())
+					continue;
+
+				if (Math.abs(mutablePos.getX() - centerPos.getX()) > xRadius ||
+					Math.abs(mutablePos.getY() - centerPos.getY()) > yRadius ||
+					Math.abs(mutablePos.getZ() - centerPos.getZ()) > zRadius)
+					continue;
+			}
 
 			if (level == null || statePredicate == null || statePredicate.test(level.getBlockState(mutablePos), mutablePos))
 				return mutablePos.immutable();
