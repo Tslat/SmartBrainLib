@@ -2,10 +2,7 @@ package net.tslat.smartbrainlib.library.object.collection;
 
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.function.Function;
 
 /// Implementation of a view of another [List], transforming elements between the two formats
@@ -85,20 +82,11 @@ public class TransformingListView<R, T> extends TransformingCollectionView<List<
 	public ListIterator<T> listIterator(int startingIndex) {
 		return new ListIterator<>() {
 			int index = startingIndex;
+			int last = -1;
 
 			@Override
 			public boolean hasNext() {
 				return this.index < TransformingListView.this.collection.size();
-			}
-
-			@Override
-			public T next() {
-				return transformToView(TransformingListView.this.collection.get(this.index++));
-			}
-
-			@Override
-			public void remove() {
-				TransformingListView.this.collection.remove(this.index);
 			}
 
 			@Override
@@ -107,13 +95,33 @@ public class TransformingListView<R, T> extends TransformingCollectionView<List<
 			}
 
 			@Override
+			public T next() {
+				if (!hasNext())
+					throw new NoSuchElementException();
+
+				return transformToView(TransformingListView.this.collection.get(this.last = this.index++));
+			}
+
+			@Override
+			public void remove() {
+				if (this.last == -1)
+					throw new IllegalStateException();
+
+				TransformingListView.this.collection.remove(this.last);
+				this.last = -1;
+			}
+
+			@Override
 			public T previous() {
+				if (!hasPrevious())
+					throw new NoSuchElementException();
+
 				return transformToView(TransformingListView.this.collection.get(--this.index));
 			}
 
 			@Override
 			public int nextIndex() {
-				return this.index + 1;
+				return this.index;
 			}
 
 			@Override
@@ -123,12 +131,16 @@ public class TransformingListView<R, T> extends TransformingCollectionView<List<
 
 			@Override
 			public void set(T element) {
-				TransformingListView.this.collection.set(this.index, transformToBase(element));
+				if (this.last == -1)
+					throw new IllegalStateException();
+
+				TransformingListView.this.collection.set(this.last, transformToBase(element));
 			}
 
 			@Override
 			public void add(T element) {
-				TransformingListView.this.collection.add(this.index, transformToBase(element));
+				TransformingListView.this.collection.add(this.index++, transformToBase(element));
+				this.last = -1;
 			}
 		};
 	}
