@@ -24,7 +24,7 @@ public abstract class DelayedBehaviour<BO extends LivingEntity> extends Extended
 	public DelayedBehaviour(ToIntFunction<BO> delayTicks) {
 		this.delayTime = delayTicks;
 
-		runFor(entity -> this.delayTime.applyAsInt(entity) + 1);
+		noTimeout();
 	}
 
 	/// Set an additional callback to run when the delayed activation is called
