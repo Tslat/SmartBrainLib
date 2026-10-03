@@ -268,8 +268,8 @@ public class EasyRandom implements RandomSource  {
 			if (level != null && safeSurfacePlacement) {
 				BlockPos heightmapPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutablePos);
 
-				if (mutablePos.getY() >= heightmapPos.getY()) {
-					mutablePos.set(heightmapPos);
+				if (mutablePos.getY() > heightmapPos.getY()) {
+					mutablePos.set(heightmapPos.above());
 				}
 				else {
 					while (mutablePos.getY() > level.getMinY()) {
