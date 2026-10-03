@@ -283,7 +283,7 @@ public class EasyRandom implements RandomSource  {
 					}
 				}
 
-				if (mutablePos.getY() == level.getMinY())
+				if (mutablePos.getY() <= level.getMinY())
 					continue;
 
 				if (Math.abs(mutablePos.getX() - centerPos.getX()) > xRadius ||
