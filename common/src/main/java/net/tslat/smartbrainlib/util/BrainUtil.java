@@ -192,7 +192,7 @@ public final class BrainUtil {
 	///
 	/// @param entity The entity to check the memory of
 	/// @param memory The memory to check
-	/// @return True if the memory value is present, or false if the memory value is absent or unregistered
+	/// @return `True` if the memory value is present, or `false` if the memory value is absent or unregistered
 	public static boolean hasMemory(LivingEntity entity, MemoryModuleType<?> memory) {
 		return hasMemory(entity.getBrain(), memory);
 	}
@@ -201,7 +201,7 @@ public final class BrainUtil {
 	///
 	/// @param brain The brain to check the memory of
 	/// @param memory The memory to check
-	/// @return True if the memory value is present, or false if the memory value is absent or unregistered
+	/// @return `True` if the memory value is present, or `false` if the memory value is absent or unregistered
 	public static boolean hasMemory(Brain<?> brain, MemoryModuleType<?> memory) {
 		return brain.hasMemoryValue(memory);
 	}
@@ -210,7 +210,7 @@ public final class BrainUtil {
 	///
 	/// @param entity The entity to check the memories of
 	/// @param memories The memories to check
-	/// @return True if all of the memory values are present, or false if any of the memory values are absent or unregistered
+	/// @return `True` if all of the memory values are present, or `false` if any of the memory values are absent or unregistered
 	public static boolean hasMemories(LivingEntity entity, MemoryModuleType<?>... memories) {
 		return hasMemories(entity.getBrain(), memories);
 	}
@@ -219,7 +219,7 @@ public final class BrainUtil {
 	///
 	/// @param brain The brain to check the memories of
 	/// @param memories The memories to check
-	/// @return True if all of the memory values are present, or false if any of the memory values are absent or unregistered
+	/// @return `True` if all of the memory values are present, or `false` if any of the memory values are absent or unregistered
 	public static boolean hasMemories(Brain<?> brain, MemoryModuleType<?>... memories) {
 		for (MemoryModuleType<?> memory : memories) {
 			if (!hasMemory(brain, memory))
@@ -233,7 +233,7 @@ public final class BrainUtil {
 	///
 	/// @param entity The entity to check the memory of
 	/// @param memory The memory to check the expiry of
-	/// @return The ticks until the memory expires, 0 if the memory doesn't exist or [Long#MAX_VALUE] if present but with no expiration
+	/// @return The ticks until the memory expires, or [Long#MAX_VALUE] if the memory isn't present or has no expiration
 	public static long getTimeUntilMemoryExpires(LivingEntity entity, MemoryModuleType<?> memory) {
 		return getTimeUntilMemoryExpires(entity.getBrain(), memory);
 	}
@@ -242,7 +242,7 @@ public final class BrainUtil {
 	///
 	/// @param brain The brain to check the memory of
 	/// @param memory The memory to check the expiry of
-	/// @return The ticks until the memory expires, 0 if the memory doesn't exist or [Long#MAX_VALUE] if present but with no expiration
+	/// @return The ticks until the memory expires, or [Long#MAX_VALUE] if the memory isn't present or has no expiration
 	public static long getTimeUntilMemoryExpires(Brain<?> brain, MemoryModuleType<?> memory) {
 		return brain.getTimeUntilExpiry(memory);
 	}
