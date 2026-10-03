@@ -299,7 +299,10 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 
 			for (ByPriority byPriority : this.behaviours) {
 				byPriority.behaviours.getOrDefault(activity, List.of())
-						.forEach(behaviour -> behaviour.doStop(level, entity, gameTime));
+						.forEach(behaviour -> {
+							if (behaviour.getStatus() == Behavior.Status.RUNNING)
+								behaviour.doStop(level, entity, gameTime);
+						});
 			}
 		}
 
@@ -379,7 +382,8 @@ public class SmartBrain<BO extends LivingEntity & SmartBrainOwner<BO>> extends B
 				//noinspection ConstantValue
 				if (removedBehaviours != null) {
 					for (BehaviorControl<? super BO> behaviour : removedBehaviours) {
-						behaviour.doStop((ServerLevel)entity.level(), entity, entity.level().getGameTime());
+						if (behaviour.getStatus() == Behavior.Status.RUNNING)
+							behaviour.doStop((ServerLevel)entity.level(), entity, entity.level().getGameTime());
 					}
 
 					SmartBrain.this.activityRequirements.remove(activity);
