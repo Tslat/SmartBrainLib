@@ -1,6 +1,6 @@
 [versions]
 # Mod
-    mod                             = "2.0.2"
+    mod                             = "2.0.3"
 
 # Common
     minecraft-range                 = "[26.3,)"
