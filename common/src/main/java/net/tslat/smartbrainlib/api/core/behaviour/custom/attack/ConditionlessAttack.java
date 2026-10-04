@@ -244,10 +244,12 @@ public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
 		if (nextDelay > 0) {
 			this.delayFinishedAt = gameTime + nextDelay;
 
-			super.start(level, entity, gameTime);
+			this.onStartCallback.accept(entity);
+			start(entity);
 		}
 		else {
-			super.start(level, entity, gameTime);
+			this.onStartCallback.accept(entity);
+			start(entity);
 			doDelayedAction(entity);
 			this.delayedCallback.accept(entity);
 			this.attackCallback.accept(entity, BrainUtil.getTargetOfEntity(entity));
@@ -260,7 +262,7 @@ public class ConditionlessAttack<BO extends Mob> extends DelayedBehaviour<BO> {
 	@ApiStatus.Internal
 	@Override
 	protected void tick(ServerLevel level, BO entity, long gameTime) {
-		super.tick(level, entity, gameTime);
+		tick(entity);
 
 		if (this.delayFinishedAt <= gameTime) {
 			doDelayedAction(entity);
