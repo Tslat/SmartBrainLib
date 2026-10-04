@@ -39,10 +39,10 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 		map.put(EntityTypes.RAVAGER, 12f);
 		map.put(EntityTypes.PILLAGER, 15f);
 	});
-	protected BiPredicate<BO, LivingEntity> hostilePredicate = (target, entity) -> {
+	protected BiPredicate<BO, LivingEntity> hostilePredicate = (entity, target) -> {
 		final float distance = this.hostileDistanceMap.getOrDefault(target.getType(), -1);
 
-		return distance >= 0 && target.distanceToSqr(entity) <= distance * distance;
+		return distance >= 0 && entity.distanceToSqr(target) <= distance * distance;
 	};
 
 	/// Set the predicate that determines a valid hostile entity
