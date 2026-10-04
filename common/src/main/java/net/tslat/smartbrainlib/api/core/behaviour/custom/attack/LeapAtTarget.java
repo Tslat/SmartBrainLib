@@ -6,7 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jetbrains.annotations.ApiStatus;
@@ -26,17 +25,21 @@ public class LeapAtTarget<BO extends Mob> extends AnimatableMeleeAttack<BO> {
     protected ToFloatBiFunction<BO, LivingEntity> jumpStrength = (_, _) -> 0.4f;
     protected ToFloatBiFunction<BO, LivingEntity> moveSpeedContribution = (_, _) -> 0.2f;
     protected ToFloatBiFunction<BO, LivingEntity> leapRange = (_, _) -> 8f;
+    protected BiPredicate<BO, LivingEntity> canLeap = (entity, target) -> target.isAlive() && BrainUtil.canSee(entity, target) && entity.closerThan(target, this.leapRange.applyAsFloat(entity, target));
 
     public LeapAtTarget(int delayTicks) {
         super(delayTicks);
-        
-        canAttack((entity, target) -> target.isAlive() && BrainUtil.canSee(entity, target) && entity.closerThan(target, this.leapRange.applyAsFloat(entity, target)));
     }
     
     public LeapAtTarget(ToIntFunction<BO> delayTicks) {
         super(delayTicks);
-        
-        canAttack((entity, target) -> target.isAlive() && BrainUtil.canSee(entity, target) && entity.closerThan(target, this.leapRange.applyAsFloat(entity, target)));
+    }
+
+    /// Set a predicate to determine whether the current target is eligible for leaping
+    public LeapAtTarget<BO> canLeapIf(BiPredicate<BO, LivingEntity> predicate) {
+        this.canLeap = predicate;
+
+        return this;
     }
 
     /// Set how far away (in blocks) the entity can be to leap
@@ -137,7 +140,7 @@ public class LeapAtTarget<BO extends Mob> extends AnimatableMeleeAttack<BO> {
     
     /// Set a callback for when the behaviour stops
     ///
-    /// This is called immediately prior to [#stop(LivingEntity)]
+    /// This is called immediately prior to [#stop(Mob)]
     ///
     /// Note that the behaviour stopping does not necessarily mean it was successful
     @ApiStatus.NonExtendable
@@ -241,7 +244,7 @@ public class LeapAtTarget<BO extends Mob> extends AnimatableMeleeAttack<BO> {
     protected boolean checkExtraStartConditions(ServerLevel level, BO entity) {
         this.target = BrainUtil.getTargetOfEntity(entity);
 
-        return this.target != null && entity.onGround() && this.validTarget.test(entity, this.target);
+        return this.target != null && entity.onGround() && this.canLeap.test(entity, this.target);
     }
     
     /// Run the core functionality this behaviour has when starting<br/>
