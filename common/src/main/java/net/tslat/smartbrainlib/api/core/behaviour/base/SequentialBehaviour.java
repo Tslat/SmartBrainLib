@@ -206,6 +206,8 @@ public class SequentialBehaviour<BO extends LivingEntity> extends GroupBehaviour
 			if (pickBehaviour(level, owner, gameTime, this.behaviours) != null)
 				return;
 
+			this.runningBehaviour = null;
+
 			doStop(level, owner, gameTime);
 		}
 	}
