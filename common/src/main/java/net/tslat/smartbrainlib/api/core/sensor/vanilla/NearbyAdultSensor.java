@@ -23,22 +23,20 @@ import java.util.function.ToIntFunction;
 /// @see net.minecraft.world.entity.ai.sensing.AdultSensor
 /// @param <BO> The brain owner entity
 public class NearbyAdultSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
-	protected BiPredicate<BO, LivingEntity> predicate = (entity, target) -> target.getType() == entity.getType() && !target.isBaby();
-
-	/// Override the default predicate for testing for nearby adults
-	@ApiStatus.NonExtendable
-	public NearbyAdultSensor<BO> setAdultPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		this.predicate = predicate;
-
-		return this;
+	public NearbyAdultSensor() {
+		setPredicate((entity, target) -> target.getType() == entity.getType() && !target.isBaby());
 	}
 
-	/// Modify the detection [#setAdultPredicate] to support any friendly adult entity, rather than the same entity type as [BO]
+	/// Modify the detection [#predicate()] to support any friendly adult entity, rather than the same entity type as [BO]
 	///
 	/// @see AdultSensorAnyType
 	@ApiStatus.NonExtendable
 	public NearbyAdultSensor<BO> supportAnyFriendlyAdult() {
-		return setAdultPredicate((entity, target) -> target.is(EntityTypeTags.FOLLOWABLE_FRIENDLY_MOBS) && !target.isBaby());
+		return setPredicate((entity, target) ->
+									target.getType() == entity.getType() &&
+									!target.isBaby() &&
+									target.is(EntityTypeTags.FOLLOWABLE_FRIENDLY_MOBS) &&
+									!target.isBaby());
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
@@ -92,12 +90,6 @@ public class NearbyAdultSensor<BO extends LivingEntity> extends NearestVisibleEn
 	@Override
 	public SensorType<? extends ExtendedSensor<?>> type() {
 		return SBLSensors.NEARBY_ADULT.get();
-	}
-
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return this.predicate;
 	}
 
 	/// Find and return matches based on the provided list of entities.<br/>

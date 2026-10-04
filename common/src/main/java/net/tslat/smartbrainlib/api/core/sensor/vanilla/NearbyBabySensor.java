@@ -22,14 +22,8 @@ import java.util.function.ToIntFunction;
 /// @see net.minecraft.world.entity.ai.sensing.VillagerBabiesSensor
 /// @param <BO> The brain owner entity
 public class NearbyBabySensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, List<LivingEntity>> {
-	protected BiPredicate<BO, LivingEntity> predicate = (entity, target) -> target.getType() == entity.getType() && target.isBaby();
-
-	/// Override the default predicate for testing for nearby babies
-	@ApiStatus.NonExtendable
-	public NearbyBabySensor<BO> setBabyPredicate(BiPredicate<BO, LivingEntity> predicate) {
-		this.predicate = predicate;
-
-		return this;
+	public NearbyBabySensor() {
+		setPredicate((entity, target) -> target.getType() == entity.getType() && target.isBaby());
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
@@ -83,12 +77,6 @@ public class NearbyBabySensor<BO extends LivingEntity> extends NearestVisibleEnt
 	@Override
 	public MemoryModuleType<List<LivingEntity>> getMemory() {
 		return MemoryModuleType.VISIBLE_VILLAGER_BABIES;
-	}
-
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return this.predicate;
 	}
 
 	/// Find and return matches based on the provided list of entities.<br/>

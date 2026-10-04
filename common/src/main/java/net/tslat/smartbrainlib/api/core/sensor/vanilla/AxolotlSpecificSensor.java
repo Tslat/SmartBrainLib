@@ -30,20 +30,17 @@ import java.util.function.ToIntFunction;
 /// @param <BO> The brain owner entity
 public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
 	protected ToFloatBiFunction<BO, LivingEntity> detectionRange = (_, _) -> 8f;
-	protected BiPredicate<BO, LivingEntity> validTargetCondition = (entity, target) -> target.isInWater() && (target.is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) || (!BrainUtil.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN) && target.is(EntityTypeTags.AXOLOTL_HUNT_TARGETS)));
+
+	public AxolotlSpecificSensor() {
+		setPredicate((entity, target) ->
+							 target.isInWater() &&
+							 (target.is(EntityTypeTags.AXOLOTL_ALWAYS_HOSTILES) || (!BrainUtil.hasMemory(entity, MemoryModuleType.HAS_HUNTING_COOLDOWN) && target.is(EntityTypeTags.AXOLOTL_HUNT_TARGETS))));
+	}
 
 	/// Set the block range at which the entity can identify targets
 	@ApiStatus.NonExtendable
 	public AxolotlSpecificSensor<BO> detectionRange(ToFloatBiFunction<BO, LivingEntity> range) {
 		this.detectionRange = range;
-
-		return this;
-	}
-
-	/// Set a targeting condition for valid targets
-	@ApiStatus.NonExtendable
-	public AxolotlSpecificSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
-		this.validTargetCondition = predicate;
 
 		return this;
 	}
@@ -110,20 +107,6 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 		return MemoryModuleType.NEAREST_ATTACKABLE;
 	}
 
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return (entity, target) -> {
-			if (!entity.closerThan(target, this.detectionRange.applyAsFloat(entity, target)))
-				return false;
-
-			if (!this.validTargetCondition.test(entity, target))
-				return false;
-
-			return Sensor.isEntityAttackable((ServerLevel)target.level(), entity, target);
-		};
-	}
-
 	/// Find and return matches based on the provided list of entities.
 	/// The returned value is saved as the memory for this sensor.
 	///
@@ -132,7 +115,15 @@ public class AxolotlSpecificSensor<BO extends LivingEntity> extends NearestVisib
 	/// @return The match(es) to save in memory
 	@Override
 	protected @Nullable LivingEntity findMatches(BO entity, NearestVisibleLivingEntities matcher) {
-		return matcher.findClosest(target -> predicate().test(entity, target)).orElse(null);
+		return matcher.findClosest(target -> {
+			if (!entity.closerThan(target, this.detectionRange.applyAsFloat(entity, target)))
+				return false;
+
+			if (!predicate().test(entity, target))
+				return false;
+
+			return Sensor.isEntityAttackable((ServerLevel)target.level(), entity, target);
+		}).orElse(null);
 	}
 	//</editor-fold>
 }
