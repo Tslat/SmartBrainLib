@@ -2,6 +2,7 @@ package net.tslat.smartbrainlib.api.core.behaviour.custom.misc;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.*;
 
@@ -283,9 +283,16 @@ public class BreedWithPartner<BO extends Animal> extends ExtendedBehaviour<BO> {
 	protected void tick(BO entity) {
 		//noinspection DataFlowIssue
 		final int closeEnoughDist = this.closeEnoughDist.applyAsInt(entity, this.partner);
+
 		BehaviorUtils.lockGazeAndWalkToEachOther(entity, this.partner, this.speedModifier.applyAsFloat(entity, this.partner), closeEnoughDist);
 
-		if (entity.closerThan(this.partner, closeEnoughDist) && entity.tickCount == this.childBreedTick) {
+		if (entity.tickCount != this.childBreedTick)
+			return;
+
+		final double dist = entity.distanceToSqr(this.partner);
+
+		if ((int)dist <= closeEnoughDist * closeEnoughDist ||
+			dist <= Mth.square(Math.max(entity.getBbWidth(), this.partner.getBbWidth()) / 2d) || entity.getBoundingBox().intersects(this.partner.getBoundingBox())) {
 			entity.spawnChildFromBreeding((ServerLevel)entity.level(), this.partner);
 			BrainUtil.clearMemory(entity, MemoryModuleType.BREED_TARGET);
 			BrainUtil.clearMemory(this.partner, MemoryModuleType.BREED_TARGET);
