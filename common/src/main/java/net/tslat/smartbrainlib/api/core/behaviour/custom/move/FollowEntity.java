@@ -12,12 +12,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraft.world.level.pathfinder.FlyNodeEvaluator;
-import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.pathfinder.PathfindingContext;
-import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
+import net.minecraft.world.level.pathfinder.*;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.base.ExtendedBehaviour;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
@@ -49,7 +47,7 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 	protected ToFloatBiFunction<BO, LivingEntity> closeEnoughDist = (_, _) -> 4f;
 	protected ToFloatBiFunction<BO, LivingEntity> startFollowingAfter = (_, _) -> 8f;
 	protected ToFloatBiFunction<BO, LivingEntity> teleportAfterDist = (_, _) -> Float.MAX_VALUE;
-	protected BiPredicate<BO, LivingEntity> canTeleportOffGround = (entity, _) -> entity.getNavigation().getNodeEvaluator() instanceof SwimNodeEvaluator || entity.getNavigation().getNodeEvaluator() instanceof FlyNodeEvaluator;
+	protected BiPredicate<BO, LivingEntity> canTeleportOffGround = this::doesNavigatorSupportOffGround;
 	protected TriPredicate<BO, LivingEntity, BlockInWorld> canTeleportTo = this::checkTeleportDestination;
 
 	protected @Nullable LivingEntity followingEntity = null;
@@ -393,17 +391,34 @@ public class FollowEntity<BO extends PathfinderMob> extends ExtendedBehaviour<BO
 				this.canTeleportTo.test(entity, target, new BlockInWorld(level, statePos, false)));
 	}
 
+	/// @return `true` if the entity's current [PathNavigation] supports teleporting into midair (or mid-water) positions
+	protected boolean doesNavigatorSupportOffGround(BO entity, LivingEntity following) {
+		final NodeEvaluator nodeEvaluator = entity.getNavigation().getNodeEvaluator();
+
+		return nodeEvaluator instanceof FlyNodeEvaluator || nodeEvaluator instanceof SwimNodeEvaluator || nodeEvaluator instanceof AmphibiousNodeEvaluator;
+	}
+
 	/// Determine whether the given teleport target location is suitable to teleport to
 	protected boolean checkTeleportDestination(BO entity, LivingEntity following, BlockInWorld block) {
 		final BlockPos pos = block.getPos();
 		final PathType pathType = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY() - 1, pos.getZ());
+		final NodeEvaluator nodeEvaluator = entity.getNavigation().getNodeEvaluator();
 
 		if (!this.canTeleportOffGround.test(entity, following)) {
-			if (pathType != PathType.WALKABLE)
+			if (pathType != PathType.WALKABLE && pathType != PathType.RAIL)
 				return false;
 		}
-		else if (pathType != PathType.OPEN && pathType != PathType.WALKABLE) {
-			return false;
+		else if (nodeEvaluator instanceof SwimNodeEvaluator) {
+			if (pathType != PathType.WATER && pathType != PathType.WATER_BORDER)
+				return false;
+		}
+		else if (nodeEvaluator instanceof AmphibiousNodeEvaluator) {
+			if (pathType != PathType.WATER && pathType != PathType.WATER_BORDER && pathType != PathType.WALKABLE && pathType != PathType.RAIL)
+				return false;
+		}
+		else if (nodeEvaluator instanceof FlyNodeEvaluator) {
+			if (pathType != PathType.WALKABLE && pathType != PathType.OPEN && pathType != PathType.RAIL)
+				return false;
 		}
 
 		return entity.level().noCollision(entity, entity.getBoundingBox().move(Vec3.atBottomCenterOf(pos).subtract(entity.position())));
