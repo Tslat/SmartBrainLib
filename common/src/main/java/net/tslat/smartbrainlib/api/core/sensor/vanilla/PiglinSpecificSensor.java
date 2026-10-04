@@ -1,7 +1,6 @@
 package net.tslat.smartbrainlib.api.core.sensor.vanilla;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
 import net.tslat.smartbrainlib.util.BrainUtil;
@@ -210,6 +208,9 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 		int adultHoglinCount = 0;
 
 		for (LivingEntity target : entities.nearbyEntities()) {
+			if (!entities.lineOfSightTest.test(target))
+				continue;
+
 			switch (target) {
 				case Hoglin hoglin -> {
 					if (nearestBabyHoglin == null && this.babyHoglinPredicate.test(entity, hoglin)) {
@@ -249,6 +250,12 @@ public class PiglinSpecificSensor<BO extends LivingEntity> extends ExtendedSenso
 						nearestZombified = target;
 					}
 				}
+			}
+		}
+
+		for (LivingEntity nearby : BrainUtil.memoryOrDefault(brain, MemoryModuleType.NEAREST_LIVING_ENTITIES, List.of())) {
+			if (nearby instanceof AbstractPiglin piglin && piglin.isAdult()) {
+				adultPiglins.add(piglin);
 			}
 		}
 
