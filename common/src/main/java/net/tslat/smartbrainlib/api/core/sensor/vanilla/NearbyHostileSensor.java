@@ -38,18 +38,13 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 		map.put(EntityType.RAVAGER, 12f);
 		map.put(EntityType.PILLAGER, 15f);
 	});
-	protected BiPredicate<BO, LivingEntity> hostilePredicate = (entity, target) -> {
-		final float distance = this.hostileDistanceMap.getOrDefault(target.getType(), -1);
 
-		return distance >= 0 && entity.distanceToSqr(target) <= distance * distance;
-	};
+	public NearbyHostileSensor() {
+		setPredicate((entity, target) -> {
+			final float distance = this.hostileDistanceMap.getOrDefault(target.getType(), -1);
 
-	/// Set the predicate that determines a valid hostile entity
-	@ApiStatus.NonExtendable
-	public NearbyHostileSensor<BO> setHostilePredicate(BiPredicate<BO, LivingEntity> predicate) {
-		this.hostilePredicate = predicate;
-
-		return this;
+			return distance >= 0 && entity.distanceToSqr(target) <= distance * distance;
+		});
 	}
 
 	/// Clear the hostile types map and replace it with all the provided entries
@@ -120,12 +115,6 @@ public class NearbyHostileSensor<BO extends LivingEntity> extends NearestVisible
 	@Override
 	public MemoryModuleType<LivingEntity> getMemory() {
 		return MemoryModuleType.NEAREST_HOSTILE;
-	}
-
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return this.hostilePredicate;
 	}
 
 	/// Find and return matches based on the provided list of entities<br/>

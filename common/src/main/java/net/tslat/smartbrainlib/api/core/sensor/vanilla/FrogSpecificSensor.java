@@ -5,7 +5,6 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.animal.frog.Frog;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.library.interfaces.ToFloatBiFunction;
@@ -29,20 +28,17 @@ import java.util.function.ToIntFunction;
 /// @param <BO> The brain owner entity
 public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
 	protected ToFloatBiFunction<BO, LivingEntity> detectionRange = (_, _) -> 10f;
-	protected BiPredicate<BO, LivingEntity> validTargetCondition = (entity, target) -> Frog.canEat(target) && !BrainUtil.memoryOrDefault(entity, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS, List.of()).contains(target.getUUID());
+
+	public FrogSpecificSensor() {
+		setPredicate((entity, target) ->
+							 Frog.canEat(target) &&
+							 !BrainUtil.memoryOrDefault(entity, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS, List.of()).contains(target.getUUID()));
+	}
 
 	/// Set the block range at which the entity can identify targets
 	@ApiStatus.NonExtendable
 	public FrogSpecificSensor<BO> detectionRange(ToFloatBiFunction<BO, LivingEntity> range) {
 		this.detectionRange = range;
-
-		return this;
-	}
-
-	/// Set a targeting condition for valid targets
-	@ApiStatus.NonExtendable
-	public FrogSpecificSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
-		this.validTargetCondition = predicate;
 
 		return this;
 	}
@@ -108,20 +104,6 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 		return List.of(getMemory(), MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.UNREACHABLE_TONGUE_TARGETS);
 	}
 
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return (entity, target) -> {
-			if (!entity.closerThan(target, this.detectionRange.applyAsFloat(entity, target)))
-				return false;
-
-			if (!this.validTargetCondition.test(entity, target))
-				return false;
-
-			return SensoryUtil.isEntityAttackable(entity, target);
-		};
-	}
-
 	/// Find and return matches based on the provided list of entities.
 	/// The returned value is saved as the memory for this sensor.
 	///
@@ -130,7 +112,15 @@ public class FrogSpecificSensor<BO extends LivingEntity> extends NearestVisibleE
 	/// @return The match(es) to save in memory
 	@Override
 	protected @Nullable LivingEntity findMatches(BO entity, NearestVisibleLivingEntities matcher) {
-		return matcher.findClosest(target -> predicate().test(entity, target)).orElse(null);
+		return matcher.findClosest(target -> {
+			if (!entity.closerThan(target, this.detectionRange.applyAsFloat(entity, target)))
+				return false;
+
+			if (!predicate().test(entity, target))
+				return false;
+
+			return SensoryUtil.isEntityAttackable(entity, target);
+		}).orElse(null);
 	}
 	//</editor-fold>
 }

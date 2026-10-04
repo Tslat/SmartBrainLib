@@ -4,7 +4,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
 import net.minecraft.world.entity.ai.sensing.SensorType;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.base.NearestVisibleEntityFilteredSensor;
 import net.tslat.smartbrainlib.registry.SBLSensors;
@@ -21,14 +20,8 @@ import java.util.function.ToIntFunction;
 ///
 /// @param <BO> The brain owner entity
 public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestVisibleEntityFilteredSensor<BO, LivingEntity> {
-	protected BiPredicate<BO, LivingEntity> targetPredicate = SensoryUtil::isEntityAttackable;
-
-	/// Set a custom predicate for valid attackable targets
-	@ApiStatus.NonExtendable
-	public GenericAttackTargetSensor<BO> onlyTargetIf(BiPredicate<BO, LivingEntity> predicate) {
-		this.targetPredicate = predicate;
-
-		return this;
+	public GenericAttackTargetSensor() {
+		setPredicate(SensoryUtil::isEntityAttackable);
 	}
 
 	//<editor-fold defaultstate="collapsed" desc="<Polymorphic Overloads>">
@@ -70,6 +63,7 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	public GenericAttackTargetSensor<BO> onlyScanIf(Predicate<BO> predicate) {
 		return (GenericAttackTargetSensor<BO>)super.onlyScanIf(predicate);
 	}
+
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="<Internal Handling>">
 	/// @return The [SensorType] of the sensor, used for reverse lookups
@@ -82,12 +76,6 @@ public class GenericAttackTargetSensor<BO extends LivingEntity> extends NearestV
 	@Override
 	protected MemoryModuleType<LivingEntity> getMemory() {
 		return MemoryModuleType.NEAREST_ATTACKABLE;
-	}
-
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected BiPredicate<BO, LivingEntity> predicate() {
-		return this.targetPredicate;
 	}
 
 	/// Find and return matches based on the provided list of entities<br/>

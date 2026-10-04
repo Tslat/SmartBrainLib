@@ -4,7 +4,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.util.BrainUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -23,10 +22,6 @@ import java.util.function.ToIntFunction;
 public abstract class NearestVisibleEntityFilteredSensor<BO extends LivingEntity, T> extends PredicateSensor<BO, LivingEntity> {
 	/// @return Which memory the sensor should set if an entity meets the given criteria
 	protected abstract MemoryModuleType<T> getMemory();
-
-	/// @return The predicate to determine which entities are valid from the [MemoryModuleType#NEAREST_VISIBLE_LIVING_ENTITIES] memory
-	@Override
-	protected abstract BiPredicate<BO, LivingEntity> predicate();
 
 	/// Find and return matches based on the provided list of entities<br/>
 	/// The returned value is saved as the memory for this sensor
